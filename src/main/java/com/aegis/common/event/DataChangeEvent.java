@@ -1,4 +1,4 @@
-package com.aegis.common.listener;
+package com.aegis.common.event;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

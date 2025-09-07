@@ -1,4 +1,4 @@
-package com.aegis.common.listener;
+package com.aegis.common.event;
 
 import com.aegis.modules.log.domain.entity.SysOperateLog;
 import lombok.RequiredArgsConstructor;

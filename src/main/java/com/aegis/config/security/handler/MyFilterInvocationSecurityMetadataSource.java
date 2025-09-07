@@ -2,7 +2,7 @@ package com.aegis.config.security.handler;
 
 import com.aegis.common.constant.CommonConstants;
 import com.aegis.common.constant.RedisConstants;
-import com.aegis.common.listener.DataChangeListener;
+import com.aegis.common.event.DataChangeListener;
 import com.aegis.modules.menu.domain.entity.Menu;
 import com.aegis.modules.menu.mapper.MenuMapper;
 import com.aegis.modules.role.domain.entity.Role;

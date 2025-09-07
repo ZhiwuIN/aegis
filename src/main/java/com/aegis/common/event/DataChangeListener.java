@@ -1,4 +1,4 @@
-package com.aegis.common.listener;
+package com.aegis.common.event;
 
 import com.aegis.common.constant.RedisConstants;
 import com.aegis.config.security.handler.MyFilterInvocationSecurityMetadataSource;
