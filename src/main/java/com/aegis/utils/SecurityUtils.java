@@ -1,5 +1,6 @@
 package com.aegis.utils;
 
+import com.aegis.common.constant.CommonConstants;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 
@@ -17,7 +18,7 @@ public final class SecurityUtils {
     public static String getUsername() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication == null || authentication.getPrincipal() == null) {
-            return "anonymous";
+            return CommonConstants.ANONYMOUS;
         }
         return authentication.getName();
     }

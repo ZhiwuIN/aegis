@@ -105,4 +105,11 @@ public class SysLoginLog implements Serializable {
     @ExcelProperty(value = "操作状态", converter = StatusConvert.class)
     private String loginStatus;
 
+    /**
+     * 错误响应
+     */
+    @ApiModelProperty("错误响应")
+    @TableField(value = "error_message")
+    @ExcelProperty("错误响应")
+    private String errorMessage;
 }

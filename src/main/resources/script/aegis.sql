@@ -285,6 +285,7 @@ CREATE TABLE `t_sys_login_log`
     `login_os`       VARCHAR(50)              DEFAULT NULL COMMENT '操作系统',
     `login_time`     DATETIME        NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '登录时间',
     `login_status`   CHAR(1)         NOT NULL DEFAULT '0' COMMENT '操作状态(0-成功,1-失败)',
+    `error_message`  LONGTEXT                 DEFAULT NULL COMMENT '错误响应',
     PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB
   DEFAULT CHARSET = utf8mb4 COMMENT ='登录日志表';

@@ -2,6 +2,7 @@ package com.aegis.common.repeat;
 
 import cn.hutool.crypto.digest.DigestUtil;
 import cn.hutool.json.JSONUtil;
+import com.aegis.common.constant.CommonConstants;
 import com.aegis.common.exception.BusinessException;
 import com.aegis.common.result.ResultCodeEnum;
 import com.aegis.utils.IpUtils;
@@ -108,7 +109,7 @@ public class RepeatSubmitAspect {
             } catch (Exception e) {
                 log.debug("获取用户ID失败，使用会话ID", e);
                 String sessionId = request.getSession(false) != null ?
-                        request.getSession().getId() : "anonymous";
+                        request.getSession().getId() : CommonConstants.ANONYMOUS;
                 keyBuilder.append(sessionId).append(":");
             }
         }

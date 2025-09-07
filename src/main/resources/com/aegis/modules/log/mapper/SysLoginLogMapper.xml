@@ -13,10 +13,11 @@
         <result property="loginOs" column="login_os"/>
         <result property="loginTime" column="login_time"/>
         <result property="loginStatus" column="login_status"/>
+        <result property="errorMessage" column="error_message"/>
     </resultMap>
 
     <sql id="Base_Column_List">
         id,login_username,login_ip,login_local,login_browser,login_os,
-        login_time,login_status
+        login_time,login_status,error_message
     </sql>
 </mapper>

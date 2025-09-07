@@ -66,4 +66,9 @@ public class CommonConstants {
      * 无权限标识
      */
     public static final String NONE = "none";
+
+    /**
+     * 匿名用户标识
+     */
+    public static final String ANONYMOUS = "anonymous";
 }

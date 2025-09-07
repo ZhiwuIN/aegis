@@ -9,6 +9,7 @@ import com.aegis.common.result.ResultCodeEnum;
 import com.aegis.config.security.email.EmailAuthenticationToken;
 import com.aegis.config.security.sms.SmsAuthenticationToken;
 import com.aegis.utils.CaptchaUtils;
+import com.aegis.utils.RequestUtils;
 import com.aegis.utils.SpringContextUtil;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -45,8 +46,8 @@ public class MultiLoginAuthenticationFilter extends AbstractAuthenticationProces
             throw new LoginException("只支持 application/json 请求");
         }
 
-        // 解析请求体
-        Map<String, Object> map = objectMapper.readValue(request.getInputStream(), new TypeReference<Map<String, Object>>() {
+        String rawJson = RequestUtils.getRequestBody(request);
+        Map<String, Object> map = objectMapper.readValue(rawJson, new TypeReference<Map<String, Object>>() {
         });
 
         // 获取登录类型
@@ -58,30 +59,31 @@ public class MultiLoginAuthenticationFilter extends AbstractAuthenticationProces
         // 校验滑块验证码
         checkSlideCaptcha(map);
 
-        Authentication authToken;
+        // 根据不同类型构建 Authentication
+        Authentication authToken = buildAuthenticationToken(loginType, map);
 
+        setDetails(request, authToken);
+
+        return this.getAuthenticationManager().authenticate(authToken);
+    }
+
+    private Authentication buildAuthenticationToken(String loginType, Map<String, Object> map) {
         switch (loginType) {
             case LoginRequestConstants.PASSWORD:
-                PasswordLoginRequestDTO passwordRequest = objectMapper.convertValue(map, PasswordLoginRequestDTO.class);
-                checkRequestParam(passwordRequest.getUsername(), passwordRequest.getPassword());
-                authToken = new UsernamePasswordAuthenticationToken(passwordRequest.getUsername(), passwordRequest.getPassword());
-                break;
+                PasswordLoginRequestDTO passwordDTO = objectMapper.convertValue(map, PasswordLoginRequestDTO.class);
+                checkRequestParam(passwordDTO.getUsername(), passwordDTO.getPassword());
+                return new UsernamePasswordAuthenticationToken(passwordDTO.getUsername(), passwordDTO.getPassword());
             case LoginRequestConstants.EMAIL:
-                EmailLoginRequestDTO emailLoginRequestDTO = objectMapper.convertValue(map, EmailLoginRequestDTO.class);
-                checkRequestParam(emailLoginRequestDTO.getEmail(), emailLoginRequestDTO.getCode());
-                authToken = new EmailAuthenticationToken(emailLoginRequestDTO.getEmail(), emailLoginRequestDTO.getCode());
-                break;
+                EmailLoginRequestDTO emailDTO = objectMapper.convertValue(map, EmailLoginRequestDTO.class);
+                checkRequestParam(emailDTO.getEmail(), emailDTO.getCode());
+                return new EmailAuthenticationToken(emailDTO.getEmail(), emailDTO.getCode());
             case LoginRequestConstants.SMS:
-                SmsLoginRequestDTO smsLoginRequestDTO = objectMapper.convertValue(map, SmsLoginRequestDTO.class);
-                checkRequestParam(smsLoginRequestDTO.getPhone(), smsLoginRequestDTO.getCode());
-                authToken = new SmsAuthenticationToken(smsLoginRequestDTO.getPhone(), smsLoginRequestDTO.getCode());
-                break;
+                SmsLoginRequestDTO smsDTO = objectMapper.convertValue(map, SmsLoginRequestDTO.class);
+                checkRequestParam(smsDTO.getPhone(), smsDTO.getCode());
+                return new SmsAuthenticationToken(smsDTO.getPhone(), smsDTO.getCode());
             default:
                 throw new LoginException("不支持的 loginType: " + loginType);
         }
-
-        setDetails(request, authToken);
-        return this.getAuthenticationManager().authenticate(authToken);
     }
 
     protected void setDetails(HttpServletRequest request, Authentication authRequest) {
