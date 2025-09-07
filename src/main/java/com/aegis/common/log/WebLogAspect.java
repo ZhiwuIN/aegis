@@ -4,7 +4,7 @@ import cn.hutool.json.JSONUtil;
 import com.aegis.common.constant.CommonConstants;
 import com.aegis.common.constant.FileConstants;
 import com.aegis.common.ip2region.Ip2regionService;
-import com.aegis.common.log.listener.LogEventPublish;
+import com.aegis.common.listener.DataChangePublisher;
 import com.aegis.modules.log.domain.entity.SysOperateLog;
 import com.aegis.utils.IpUtils;
 import com.aegis.utils.SecurityUtils;
@@ -35,7 +35,7 @@ import java.time.LocalDateTime;
 @RequiredArgsConstructor
 public class WebLogAspect {
 
-    private final LogEventPublish logEventPublish;
+    private final DataChangePublisher dataChangePublisher;
 
     private final Ip2regionService ip2regionService;
 
@@ -98,7 +98,7 @@ public class WebLogAspect {
         if (ObjectUtils.isNotEmpty(result)) {
             sysOperateLog.setResponseResult(JSONUtil.toJsonStr(result));
         }
-        logEventPublish.publishEvent(sysOperateLog);
+        dataChangePublisher.publishLog(sysOperateLog);
     }
 
     private ServletRequestAttributes getRequestAttributes() {

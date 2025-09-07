@@ -2,6 +2,7 @@ package com.aegis.config.security.handler;
 
 import com.aegis.common.constant.CommonConstants;
 import com.aegis.common.constant.RedisConstants;
+import com.aegis.common.listener.DataChangeListener;
 import com.aegis.modules.menu.domain.entity.Menu;
 import com.aegis.modules.menu.mapper.MenuMapper;
 import com.aegis.modules.role.domain.entity.Role;
@@ -46,12 +47,12 @@ public class MyFilterInvocationSecurityMetadataSource implements FilterInvocatio
         // 系统启动时预加载菜单数据
         loadDataSourceAllUrl();
         // 系统启动时预加载白名单数据
-        loadWhitelistFromCache();
+        loadDataSourceAllWhitelist();
     }
 
     /**
      * 加载所有的URL存入Redis中
-     * TODO 在新增、修改、删除角色关联菜单时,删除Redis中的数据,重新加载
+     * 在新增、修改、删除角色关联菜单时,发布事件监听器{@link DataChangeListener},重新加载
      */
     public List<Menu> loadDataSourceAllUrl() {
         if (redisUtils.hasKey(RedisConstants.MENUS)) {
@@ -65,9 +66,9 @@ public class MyFilterInvocationSecurityMetadataSource implements FilterInvocatio
 
     /**
      * 加载所有的白名单存入Redis中
-     * TODO 在新增、修改、删除白名单时,删除Redis中的数据,重新加载
+     * 在新增、修改、删除白名单时,发布事件监听器{@link DataChangeListener},重新加载
      */
-    public List<Whitelist> loadWhitelistFromCache() {
+    public List<Whitelist> loadDataSourceAllWhitelist() {
         if (redisUtils.hasKey(RedisConstants.WHITELIST)) {
             return redisUtils.getList(RedisConstants.WHITELIST, Whitelist.class);
         } else {
@@ -92,7 +93,7 @@ public class MyFilterInvocationSecurityMetadataSource implements FilterInvocatio
         final String requestURI = request.getRequestURI();
 
         // 判断请求路径是否在白名单内,在白名单内直接放行
-        List<Whitelist> whitelists = loadWhitelistFromCache();
+        List<Whitelist> whitelists = loadDataSourceAllWhitelist();
         for (Whitelist whitelist : whitelists) {
             if (CommonConstants.REQUEST_METHOD_ALL.equalsIgnoreCase(whitelist.getRequestMethod()) || whitelist.getRequestMethod().equalsIgnoreCase(method)) {
                 if (antPathMatcher.match(whitelist.getRequestUri(), requestURI)) {
