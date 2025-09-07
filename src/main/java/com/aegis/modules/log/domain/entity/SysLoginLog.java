@@ -1,5 +1,12 @@
 package com.aegis.modules.log.domain.entity;
 
+import cn.idev.excel.annotation.ExcelIgnoreUnannotated;
+import cn.idev.excel.annotation.ExcelProperty;
+import cn.idev.excel.annotation.write.style.ColumnWidth;
+import cn.idev.excel.annotation.write.style.HeadRowHeight;
+import cn.idev.excel.annotation.write.style.HeadStyle;
+import cn.idev.excel.enums.poi.FillPatternTypeEnum;
+import com.aegis.common.excel.StatusConvert;
 import com.baomidou.mybatisplus.annotation.*;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -24,6 +31,10 @@ import java.util.Date;
 @EqualsAndHashCode(callSuper = false)
 @ApiModel("登录日志表")
 @TableName(value = "t_sys_login_log")
+@ColumnWidth(25)
+@HeadRowHeight(30)
+@ExcelIgnoreUnannotated
+@HeadStyle(fillPatternType = FillPatternTypeEnum.SOLID_FOREGROUND, fillForegroundColor = 17)
 public class SysLoginLog implements Serializable {
 
     @TableField(exist = false)
@@ -41,6 +52,7 @@ public class SysLoginLog implements Serializable {
      */
     @ApiModelProperty("用户名")
     @TableField(value = "login_username")
+    @ExcelProperty("用户名")
     private String loginUsername;
 
     /**
@@ -48,6 +60,7 @@ public class SysLoginLog implements Serializable {
      */
     @ApiModelProperty("登录IP地址")
     @TableField(value = "login_ip")
+    @ExcelProperty("登录IP地址")
     private String loginIp;
 
     /**
@@ -55,6 +68,7 @@ public class SysLoginLog implements Serializable {
      */
     @ApiModelProperty("登录地点")
     @TableField(value = "login_local")
+    @ExcelProperty("登录地点")
     private String loginLocal;
 
     /**
@@ -62,6 +76,7 @@ public class SysLoginLog implements Serializable {
      */
     @ApiModelProperty("浏览器类型")
     @TableField(value = "login_browser")
+    @ExcelProperty("浏览器类型")
     private String loginBrowser;
 
     /**
@@ -69,6 +84,7 @@ public class SysLoginLog implements Serializable {
      */
     @ApiModelProperty("操作系统")
     @TableField(value = "login_os")
+    @ExcelProperty("操作系统")
     private String loginOs;
 
     /**
@@ -78,6 +94,7 @@ public class SysLoginLog implements Serializable {
     @TableField(value = "login_time")
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @ExcelProperty("登录时间")
     private Date loginTime;
 
     /**
@@ -85,6 +102,7 @@ public class SysLoginLog implements Serializable {
      */
     @ApiModelProperty("操作状态(0-成功,1-失败)")
     @TableField(value = "login_status")
+    @ExcelProperty(value = "操作状态", converter = StatusConvert.class)
     private String loginStatus;
 
 }

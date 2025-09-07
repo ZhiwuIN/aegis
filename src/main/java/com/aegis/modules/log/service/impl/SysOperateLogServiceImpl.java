@@ -1,9 +1,19 @@
 package com.aegis.modules.log.service.impl;
 
+import cn.idev.excel.FastExcel;
+import com.aegis.common.domain.vo.PageVO;
+import com.aegis.modules.log.domain.dto.SysOperateLogDTO;
+import com.aegis.modules.log.domain.entity.SysOperateLog;
 import com.aegis.modules.log.mapper.SysOperateLogMapper;
 import com.aegis.modules.log.service.SysOperateLogService;
+import com.aegis.utils.PageUtils;
+import com.aegis.utils.ResponseUtils;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import lombok.RequiredArgsConstructor;
+import lombok.SneakyThrows;
 import org.springframework.stereotype.Service;
+
+import javax.servlet.http.HttpServletResponse;
 
 /**
  * @Author: xuesong.lei
@@ -16,4 +26,27 @@ public class SysOperateLogServiceImpl implements SysOperateLogService {
 
     private final SysOperateLogMapper sysOperateLogMapper;
 
+    @Override
+    public PageVO<SysOperateLog> pageList(SysOperateLogDTO dto) {
+        LambdaQueryWrapper<SysOperateLog> queryWrapper = getQueryWrapper(dto);
+        return PageUtils.of(dto).paging(sysOperateLogMapper, queryWrapper);
+    }
+
+    @Override
+    @SneakyThrows
+    public void export(SysOperateLogDTO dto, HttpServletResponse response) {
+        ResponseUtils.setExcelResponse(response);
+        LambdaQueryWrapper<SysOperateLog> queryWrapper = getQueryWrapper(dto);
+        FastExcel.write(response.getOutputStream(), SysOperateLog.class).sheet("操作日志").doWrite(sysOperateLogMapper.selectList(queryWrapper));
+    }
+
+    private LambdaQueryWrapper<SysOperateLog> getQueryWrapper(SysOperateLogDTO dto) {
+        LambdaQueryWrapper<SysOperateLog> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.like(SysOperateLog::getModuleTitle, dto.getModuleTitle())
+                .like(SysOperateLog::getOperateUser, dto.getOperateUser())
+                .eq(SysOperateLog::getBusinessType, dto.getBusinessType())
+                .eq(SysOperateLog::getOperateStatus, dto.getOperateStatus())
+                .between(SysOperateLog::getOperateTime, dto.getBeginTime(), dto.getEndTime());
+        return queryWrapper;
+    }
 }

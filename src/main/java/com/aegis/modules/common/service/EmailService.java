@@ -7,5 +7,11 @@ package com.aegis.modules.common.service;
  */
 public interface EmailService {
 
+    /**
+     * 发送注册验证码
+     *
+     * @param email 邮箱
+     * @return 响应消息
+     */
     String sendRegisterCode(String email);
 }

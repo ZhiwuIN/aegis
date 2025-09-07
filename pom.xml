@@ -49,6 +49,7 @@
         <hutool-all.version>5.8.39</hutool-all.version>
         <jjwt.version>0.13.0</jjwt.version>
         <bitwalker.version>1.21</bitwalker.version>
+        <fastexcel.version>1.3.0</fastexcel.version>
     </properties>
 
     <dependencies>
@@ -169,6 +170,12 @@
             <groupId>eu.bitwalker</groupId>
             <artifactId>UserAgentUtils</artifactId>
             <version>${bitwalker.version}</version>
+        </dependency>
+        <!--fastexcel-->
+        <dependency>
+            <groupId>cn.idev.excel</groupId>
+            <artifactId>fastexcel</artifactId>
+            <version>${fastexcel.version}</version>
         </dependency>
         <!--配置提示-->
         <dependency>

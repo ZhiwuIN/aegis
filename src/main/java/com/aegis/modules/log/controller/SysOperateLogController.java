@@ -1,10 +1,17 @@
 package com.aegis.modules.log.controller;
 
+import com.aegis.common.domain.vo.PageVO;
+import com.aegis.common.log.BusinessType;
+import com.aegis.common.log.OperationLog;
+import com.aegis.modules.log.domain.dto.SysOperateLogDTO;
+import com.aegis.modules.log.domain.entity.SysOperateLog;
 import com.aegis.modules.log.service.SysOperateLogService;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import javax.servlet.http.HttpServletResponse;
 
 /**
  * @Author: xuesong.lei
@@ -18,4 +25,17 @@ import org.springframework.web.bind.annotation.RestController;
 public class SysOperateLogController {
 
     private final SysOperateLogService sysOperateLogService;
+
+    @ApiOperation("分页列表")
+    @PostMapping("/pageList")
+    public PageVO<SysOperateLog> pageList(@RequestBody SysOperateLogDTO dto) {
+        return sysOperateLogService.pageList(dto);
+    }
+
+    @GetMapping("/export")
+    @ApiOperation("导出操作日志")
+    @OperationLog(moduleTitle = "导出操作日志", businessType = BusinessType.EXPORT)
+    public void export(SysOperateLogDTO dto, HttpServletResponse response) {
+        sysOperateLogService.export(dto, response);
+    }
 }

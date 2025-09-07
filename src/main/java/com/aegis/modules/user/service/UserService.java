@@ -10,5 +10,12 @@ import javax.servlet.http.HttpServletResponse;
  */
 public interface UserService {
 
+    /**
+     * 刷新令牌
+     *
+     * @param request  请求
+     * @param response 响应
+     * @return 新的令牌
+     */
     String refreshToken(HttpServletRequest request, HttpServletResponse response);
 }

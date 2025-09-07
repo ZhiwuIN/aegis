@@ -26,4 +26,14 @@ public enum BusinessType {
      * 删除
      */
     DELETE,
+
+    /**
+     * 导出
+     */
+    EXPORT,
+
+    /**
+     * 导入
+     */
+    IMPORT,
 }

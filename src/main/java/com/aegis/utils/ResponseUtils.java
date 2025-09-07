@@ -18,6 +18,17 @@ public final class ResponseUtils {
     }
 
     /**
+     * 设置Excel文件响应头
+     *
+     * @param response HttpServletResponse
+     */
+    public static void setExcelResponse(HttpServletResponse response) {
+        response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+        response.setCharacterEncoding("utf-8");
+        response.setHeader("Content-disposition", "attachment;filename*=utf-8''" + System.currentTimeMillis() + ".xlsx");
+    }
+
+    /**
      * 输出统一响应体
      *
      * @param response HttpServletResponse
