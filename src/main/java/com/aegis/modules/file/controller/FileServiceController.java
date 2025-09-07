@@ -6,9 +6,11 @@ import cn.hutool.core.util.StrUtil;
 import com.aegis.common.constant.FileConstants;
 import com.aegis.common.exception.BusinessException;
 import com.aegis.common.file.FileStorageServiceFactory;
-import com.aegis.common.file.FileUploadResult;
+import com.aegis.common.domain.vo.FileUploadResultVO;
 import com.aegis.common.file.StoragePlatform;
 import com.aegis.common.file.service.FileStorageService;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
@@ -34,30 +36,34 @@ import java.util.stream.Collectors;
  */
 @Slf4j
 @RestController
+@Api(tags = "文件服务接口")
 @RequiredArgsConstructor
 @RequestMapping("/file")
 public class FileServiceController {
 
     private final FileStorageServiceFactory fileStorageServiceFactory;
 
+    @ApiOperation("文件上传")
     @PostMapping("/upload")
-    public FileUploadResult uploadFile(@RequestParam("file") MultipartFile file, @RequestParam(value = "directory", required = false) String directory) {
+    public FileUploadResultVO uploadFile(@RequestParam("file") MultipartFile file, @RequestParam(value = "directory", required = false) String directory) {
         FileStorageService storageService = fileStorageServiceFactory.getFileStorageService();
-        FileUploadResult result = storageService.upload(file, directory);
+        FileUploadResultVO result = storageService.upload(file, directory);
         log.info("文件上传成功: {}", result.getFileName());
         return result;
     }
 
+    @ApiOperation("批量文件上传")
     @PostMapping("/upload/batch")
-    public List<FileUploadResult> uploadFiles(@RequestParam("files") MultipartFile[] files, @RequestParam(value = "directory", required = false) String directory) {
+    public List<FileUploadResultVO> uploadFiles(@RequestParam("files") MultipartFile[] files, @RequestParam(value = "directory", required = false) String directory) {
         FileStorageService storageService = fileStorageServiceFactory.getFileStorageService();
-        List<FileUploadResult> results = Arrays.stream(files)
+        List<FileUploadResultVO> results = Arrays.stream(files)
                 .map(file -> storageService.upload(file, directory))
                 .collect(Collectors.toList());
         log.info("批量文件上传成功，共{}个文件", results.size());
         return results;
     }
 
+    @ApiOperation("文件下载")
     @GetMapping("/download")
     public void download(@RequestParam("filePath") String filePath, HttpServletResponse response) throws Exception {
         FileStorageService storageService = fileStorageServiceFactory.getFileStorageService();
@@ -88,14 +94,16 @@ public class FileServiceController {
         }
     }
 
+    @ApiOperation("指定存储平台上传文件")
     @PostMapping("/upload/{platform}")
-    public FileUploadResult uploadFileWithPlatform(@PathVariable StoragePlatform platform, @RequestParam("file") MultipartFile file, @RequestParam(value = "directory", required = false) String directory) {
+    public FileUploadResultVO uploadFileWithPlatform(@PathVariable StoragePlatform platform, @RequestParam("file") MultipartFile file, @RequestParam(value = "directory", required = false) String directory) {
         FileStorageService storageService = fileStorageServiceFactory.getFileStorageService(platform);
-        FileUploadResult result = storageService.upload(file, directory);
+        FileUploadResultVO result = storageService.upload(file, directory);
         log.info("文件上传成功到{}: {}", platform.getDescription(), result.getFileName());
         return result;
     }
 
+    @ApiOperation("文件删除")
     @DeleteMapping("/delete")
     public String deleteFile(@RequestParam("filePath") String filePath) {
         FileStorageService storageService = fileStorageServiceFactory.getFileStorageService();
@@ -108,6 +116,7 @@ public class FileServiceController {
         }
     }
 
+    @ApiOperation("检查文件是否存在")
     @GetMapping("/exists")
     public String checkFileExists(@RequestParam("filePath") String filePath) {
         FileStorageService storageService = fileStorageServiceFactory.getFileStorageService();
@@ -120,6 +129,7 @@ public class FileServiceController {
         }
     }
 
+    @ApiOperation("获取支持的存储平台")
     @GetMapping("/platforms")
     public List<StoragePlatform> getSupportedPlatforms() {
         return Arrays.asList(StoragePlatform.values());
@@ -128,6 +138,7 @@ public class FileServiceController {
     /**
      * 获取预签名上传URL - 用于前端直传
      */
+    @ApiOperation("获取预签名上传URL")
     @PostMapping("/presigned-upload-url")
     public Map<String, String> getPresignedUploadUrl(
             @RequestParam String fileName,
@@ -151,6 +162,7 @@ public class FileServiceController {
     /**
      * 获取临时下载URL
      */
+    @ApiOperation("获取临时下载URL")
     @GetMapping("/temporary-download-url")
     public Map<String, String> getTemporaryDownloadUrl(
             @RequestParam String filePath,

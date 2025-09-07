@@ -5,8 +5,8 @@ import cn.hutool.core.util.StrUtil;
 import cn.hutool.crypto.digest.DigestUtil;
 import com.aegis.common.constant.FileConstants;
 import com.aegis.common.exception.BusinessException;
-import com.aegis.common.file.FileUploadProperties;
-import com.aegis.common.file.FileUploadResult;
+import com.aegis.common.file.config.FileUploadProperties;
+import com.aegis.common.domain.vo.FileUploadResultVO;
 import com.aegis.common.file.StoragePlatform;
 import com.aegis.common.file.service.AbstractFileStorageService;
 import lombok.extern.slf4j.Slf4j;
@@ -37,7 +37,7 @@ public class LocalFileStorageServiceImpl extends AbstractFileStorageService {
     }
 
     @Override
-    public FileUploadResult upload(MultipartFile file, String directory) {
+    public FileUploadResultVO upload(MultipartFile file, String directory) {
         try {
             String fullDirectory = basePath + FileConstants.SEPARATOR +
                     (StrUtil.isNotBlank(directory) ? directory + FileConstants.SEPARATOR : "") +

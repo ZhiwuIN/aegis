@@ -1,5 +1,6 @@
-package com.aegis.common.file;
+package com.aegis.common.file.config;
 
+import com.aegis.common.file.StoragePlatform;
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;

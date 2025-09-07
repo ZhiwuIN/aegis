@@ -1,6 +1,8 @@
 package com.aegis.modules.notice.domain.entity;
 
 import com.baomidou.mybatisplus.annotation.*;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
@@ -20,6 +22,7 @@ import java.util.Date;
 @Data
 @Accessors(chain = true)
 @EqualsAndHashCode(callSuper = false)
+@ApiModel("通知接收记录表")
 @TableName(value = "t_notice_user")
 public class NoticeUser implements Serializable {
 
@@ -29,24 +32,28 @@ public class NoticeUser implements Serializable {
     /**
      * 主键ID
      */
+    @ApiModelProperty("主键ID")
     @TableId(value = "id", type = IdType.ASSIGN_ID)
     private Long id;
 
     /**
      * 创建人
      */
+    @ApiModelProperty("创建人")
     @TableField(value = "create_by")
     private String createBy;
 
     /**
      * 更新人
      */
+    @ApiModelProperty("更新人")
     @TableField(value = "update_by")
     private String updateBy;
 
     /**
      * 创建时间
      */
+    @ApiModelProperty("创建时间")
     @TableField(value = "create_time", fill = FieldFill.INSERT)
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
@@ -55,6 +62,7 @@ public class NoticeUser implements Serializable {
     /**
      * 更新时间
      */
+    @ApiModelProperty("更新时间")
     @TableField(value = "update_time", fill = FieldFill.INSERT_UPDATE)
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
@@ -63,6 +71,7 @@ public class NoticeUser implements Serializable {
     /**
      * 逻辑删除标记(0=正常,1=删除)
      */
+    @ApiModelProperty("逻辑删除标记(0=正常,1=删除)")
     @TableLogic
     @TableField(value = "deleted")
     private Integer deleted;
@@ -70,6 +79,7 @@ public class NoticeUser implements Serializable {
     /**
      * 版本号,用于乐观锁
      */
+    @ApiModelProperty("版本号,用于乐观锁")
     @Version
     @TableField(value = "version")
     private Integer version;
@@ -77,24 +87,28 @@ public class NoticeUser implements Serializable {
     /**
      * 通知ID
      */
+    @ApiModelProperty("通知ID")
     @TableField(value = "notice_id")
     private Long noticeId;
 
     /**
      * 用户ID
      */
+    @ApiModelProperty("用户ID")
     @TableField(value = "user_id")
     private Long userId;
 
     /**
      * 是否已读(0=未读,1=已读)
      */
+    @ApiModelProperty("是否已读(0=未读,1=已读)")
     @TableField(value = "read_flag")
     private Integer readFlag;
 
     /**
      * 阅读时间
      */
+    @ApiModelProperty("阅读时间")
     @TableField(value = "read_time")
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")

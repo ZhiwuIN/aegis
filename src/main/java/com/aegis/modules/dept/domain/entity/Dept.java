@@ -2,6 +2,8 @@ package com.aegis.modules.dept.domain.entity;
 
 import com.baomidou.mybatisplus.annotation.*;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
@@ -19,6 +21,7 @@ import java.util.Date;
 @Data
 @Accessors(chain = true)
 @EqualsAndHashCode(callSuper = false)
+@ApiModel("部门信息表")
 @TableName(value = "t_dept")
 public class Dept implements Serializable {
 
@@ -28,24 +31,28 @@ public class Dept implements Serializable {
     /**
      * 主键ID
      */
+    @ApiModelProperty("主键ID")
     @TableId(value = "id", type = IdType.ASSIGN_ID)
     private Long id;
 
     /**
      * 创建人
      */
+    @ApiModelProperty("创建人")
     @TableField(value = "create_by")
     private String createBy;
 
     /**
      * 更新人
      */
+    @ApiModelProperty("更新人")
     @TableField(value = "update_by")
     private String updateBy;
 
     /**
      * 创建时间
      */
+    @ApiModelProperty("创建时间")
     @TableField(value = "create_time", fill = FieldFill.INSERT)
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
@@ -54,6 +61,7 @@ public class Dept implements Serializable {
     /**
      * 更新时间
      */
+    @ApiModelProperty("更新时间")
     @TableField(value = "update_time", fill = FieldFill.INSERT_UPDATE)
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
@@ -62,6 +70,7 @@ public class Dept implements Serializable {
     /**
      * 逻辑删除标记(0=正常,1=删除)
      */
+    @ApiModelProperty("逻辑删除标记(0=正常,1=删除)")
     @TableLogic
     @TableField(value = "deleted")
     private Integer deleted;
@@ -69,6 +78,7 @@ public class Dept implements Serializable {
     /**
      * 版本号,用于乐观锁
      */
+    @ApiModelProperty("版本号,用于乐观锁")
     @Version
     @TableField(value = "version")
     private Integer version;
@@ -76,54 +86,63 @@ public class Dept implements Serializable {
     /**
      * 备注
      */
+    @ApiModelProperty("备注")
     @TableField(value = "remark")
     private String remark;
 
     /**
      * 祖级列表
      */
+    @ApiModelProperty("祖级列表")
     @TableField(value = "ancestors")
     private String ancestors;
 
     /**
      * 父部门ID
      */
+    @ApiModelProperty("父部门ID")
     @TableField(value = "parent_id")
     private Long parentId;
 
     /**
      * 部门名称
      */
+    @ApiModelProperty("部门名称")
     @TableField(value = "dept_name")
     private String deptName;
 
     /**
      * 显示顺序
      */
+    @ApiModelProperty("显示顺序")
     @TableField(value = "order_num")
     private Integer orderNum;
 
     /**
      * 负责人
      */
+    @ApiModelProperty("负责人")
     @TableField(value = "leader")
     private String leader;
 
     /**
      * 联系电话
      */
+    @ApiModelProperty("联系电话")
     @TableField(value = "phone")
     private String phone;
 
     /**
      * 邮箱
      */
+    @ApiModelProperty("邮箱")
     @TableField(value = "email")
     private String email;
 
     /**
      * 部门状态(0-正常,1-停用)
      */
+    @ApiModelProperty("部门状态(0-正常,1-停用)")
     @TableField(value = "status")
     private String status;
 

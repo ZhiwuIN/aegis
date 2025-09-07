@@ -12,6 +12,8 @@ import com.baomidou.mybatisplus.annotation.*;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 
 <#assign hasDateFields = false>
 <#list tableClass.allFields as field>
@@ -39,16 +41,18 @@ import java.util.Date;
 @Data
 @Accessors(chain = true)
 @EqualsAndHashCode(callSuper = false)
+@ApiModel("${tableClass.remark!}")
 @TableName(value ="${tableClass.tableName}")
 public class ${tableClass.shortClassName} implements Serializable {
 
-    @TableField(exist = false)
-    private static final long serialVersionUID = 1L;
+@TableField(exist = false)
+private static final long serialVersionUID = 1L;
 
 <#list tableClass.allFields as field>
     /**
     * ${field.remark!}
     */
+    @ApiModelProperty("${field.remark!}")
     <#-- 增强的 ID 字段处理 -->
     <#if field.fieldName == "id">
     @TableId(value = "id", type = IdType.ASSIGN_ID)

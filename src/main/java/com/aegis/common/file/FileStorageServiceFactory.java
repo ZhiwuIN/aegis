@@ -2,6 +2,7 @@ package com.aegis.common.file;
 
 import com.aegis.common.constant.FileConstants;
 import com.aegis.common.exception.BusinessException;
+import com.aegis.common.file.config.FileUploadProperties;
 import com.aegis.common.file.service.FileStorageService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

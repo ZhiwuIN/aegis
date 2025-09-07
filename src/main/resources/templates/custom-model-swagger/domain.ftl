@@ -40,7 +40,7 @@ import java.util.Date;
 @Data
 @Accessors(chain = true)
 @EqualsAndHashCode(callSuper = false)
-@ApiModel(value = "${tableClass.remark!}", description = "${tableClass.tableName}")
+@ApiModel("${tableClass.remark!}")
 public class ${tableClass.shortClassName} implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -49,7 +49,7 @@ public class ${tableClass.shortClassName} implements Serializable {
     /**
     * ${field.remark!}
     */
-   <#-- 增强的日期格式 -->
+    @ApiModelProperty("${field.remark!}")
     <#if field.shortTypeName == "Date">
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")

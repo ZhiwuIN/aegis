@@ -6,8 +6,8 @@ import cn.hutool.core.util.StrUtil;
 import cn.hutool.crypto.digest.DigestUtil;
 import com.aegis.common.constant.FileConstants;
 import com.aegis.common.exception.BusinessException;
-import com.aegis.common.file.FileUploadProperties;
-import com.aegis.common.file.FileUploadResult;
+import com.aegis.common.file.config.FileUploadProperties;
+import com.aegis.common.domain.vo.FileUploadResultVO;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
@@ -133,8 +133,8 @@ public abstract class AbstractFileStorageService implements FileStorageService {
     /**
      * 构建文件上传结果
      */
-    protected FileUploadResult buildFileUploadResult(MultipartFile file, String fileName, String objectName, byte[] bytes, String platform) {
-        return FileUploadResult.builder()
+    protected FileUploadResultVO buildFileUploadResult(MultipartFile file, String fileName, String objectName, byte[] bytes, String platform) {
+        return FileUploadResultVO.builder()
                 .fileName(fileName) // 直接使用传入的fileName
                 .originalFileName(file.getOriginalFilename())
                 .suffix(FileUtil.extName(file.getOriginalFilename()))

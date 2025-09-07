@@ -1,7 +1,6 @@
 package com.aegis.common.file.config;
 
 import com.aegis.common.exception.BusinessException;
-import com.aegis.common.file.FileUploadProperties;
 import io.minio.BucketExistsArgs;
 import io.minio.MakeBucketArgs;
 import io.minio.MinioClient;

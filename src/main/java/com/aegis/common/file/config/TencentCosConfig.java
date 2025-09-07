@@ -1,6 +1,5 @@
 package com.aegis.common.file.config;
 
-import com.aegis.common.file.FileUploadProperties;
 import com.qcloud.cos.COSClient;
 import com.qcloud.cos.ClientConfig;
 import com.qcloud.cos.auth.BasicCOSCredentials;

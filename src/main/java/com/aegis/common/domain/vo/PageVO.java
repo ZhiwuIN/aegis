@@ -1,6 +1,8 @@
 package com.aegis.common.domain.vo;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -13,42 +15,50 @@ import java.util.List;
  * @Description: 分页响应VO
  */
 @Data
+@ApiModel("分页响应VO")
 @NoArgsConstructor
 public class PageVO<T> {
 
     /**
      * 数据列表
      */
+    @ApiModelProperty("数据列表")
     private List<T> records;
 
     /**
      * 总记录数
      */
+    @ApiModelProperty("总记录数")
     private Long total;
 
     /**
      * 当前页码
      */
+    @ApiModelProperty("当前页码")
     private Long current;
 
     /**
      * 每页大小
      */
+    @ApiModelProperty("每页大小")
     private Long size;
 
     /**
      * 总页数
      */
+    @ApiModelProperty("总页数")
     private Long pages;
 
     /**
      * 是否有上一页
      */
+    @ApiModelProperty("是否有上一页")
     private Boolean hasPrevious;
 
     /**
      * 是否有下一页
      */
+    @ApiModelProperty("是否有下一页")
     private Boolean hasNext;
 
     // 完整构造函数

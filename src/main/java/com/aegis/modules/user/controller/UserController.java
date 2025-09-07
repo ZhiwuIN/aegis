@@ -5,6 +5,8 @@ import com.aegis.common.domain.vo.CaptchaVO;
 import com.aegis.common.exception.BusinessException;
 import com.aegis.modules.user.service.UserService;
 import com.aegis.utils.CaptchaUtils;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,6 +19,7 @@ import javax.servlet.http.HttpServletResponse;
  * @Description: 用户接口
  */
 @RestController
+@Api(tags = "用户接口")
 @RequestMapping("/user")
 @RequiredArgsConstructor
 public class UserController {
@@ -28,6 +31,7 @@ public class UserController {
     /**
      * 刷新token
      */
+    @ApiOperation("刷新token")
     @PostMapping("/refreshToken")
     public String refreshToken(HttpServletRequest request, HttpServletResponse response) {
         return userService.refreshToken(request, response);
@@ -36,6 +40,7 @@ public class UserController {
     /**
      * 生成验证码
      */
+    @ApiOperation("生成验证码")
     @GetMapping("/captcha/generate")
     public CaptchaVO generateCaptcha() {
         return captchaUtils.generateCaptcha();
@@ -45,6 +50,7 @@ public class UserController {
      * 验证滑动位置
      * //TODO 后期删除的
      */
+    @ApiOperation("验证滑动位置")
     @PostMapping("/captcha/verify")
     public String verifyCaptcha(@RequestBody CaptchaDTO captchaDTO) {
         boolean isValid = captchaUtils.verifyCaptcha(captchaDTO.getCaptchaKey(), captchaDTO.getSlideX());

@@ -1,6 +1,7 @@
 package com.aegis.modules.log.controller;
 
 import com.aegis.modules.log.service.SysOperateLogService;
+import io.swagger.annotations.Api;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
  * @Description: 系统操作日志接口
  */
 @RestController
+@Api(tags = "系统操作日志接口")
 @RequiredArgsConstructor
 @RequestMapping("/operateLog")
 public class SysOperateLogController {

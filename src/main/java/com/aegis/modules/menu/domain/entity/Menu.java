@@ -3,6 +3,8 @@ package com.aegis.modules.menu.domain.entity;
 import com.aegis.modules.role.domain.entity.Role;
 import com.baomidou.mybatisplus.annotation.*;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
@@ -22,6 +24,7 @@ import java.util.List;
 @Data
 @Accessors(chain = true)
 @EqualsAndHashCode(callSuper = false)
+@ApiModel("菜单权限表")
 @TableName(value = "t_menu")
 public class Menu implements Serializable {
 
@@ -31,24 +34,28 @@ public class Menu implements Serializable {
     /**
      * 主键ID
      */
+    @ApiModelProperty("主键ID")
     @TableId(value = "id", type = IdType.ASSIGN_ID)
     private Long id;
 
     /**
      * 创建人
      */
+    @ApiModelProperty("创建人")
     @TableField(value = "create_by")
     private String createBy;
 
     /**
      * 更新人
      */
+    @ApiModelProperty("更新人")
     @TableField(value = "update_by")
     private String updateBy;
 
     /**
      * 创建时间
      */
+    @ApiModelProperty("创建时间")
     @TableField(value = "create_time", fill = FieldFill.INSERT)
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
@@ -57,6 +64,7 @@ public class Menu implements Serializable {
     /**
      * 更新时间
      */
+    @ApiModelProperty("更新时间")
     @TableField(value = "update_time", fill = FieldFill.INSERT_UPDATE)
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
@@ -65,6 +73,7 @@ public class Menu implements Serializable {
     /**
      * 逻辑删除标记(0=正常,1=删除)
      */
+    @ApiModelProperty("逻辑删除标记(0=正常,1=删除)")
     @TableLogic
     @TableField(value = "deleted")
     private Integer deleted;
@@ -72,6 +81,7 @@ public class Menu implements Serializable {
     /**
      * 版本号,用于乐观锁
      */
+    @ApiModelProperty("版本号,用于乐观锁")
     @Version
     @TableField(value = "version")
     private Integer version;
@@ -79,102 +89,119 @@ public class Menu implements Serializable {
     /**
      * 备注
      */
+    @ApiModelProperty("备注")
     @TableField(value = "remark")
     private String remark;
 
     /**
      * 菜单名称
      */
+    @ApiModelProperty("菜单名称")
     @TableField(value = "menu_name")
     private String menuName;
 
     /**
      * 父菜单ID
      */
+    @ApiModelProperty("父菜单ID")
     @TableField(value = "parent_id")
     private Long parentId;
 
     /**
      * 显示顺序
      */
+    @ApiModelProperty("显示顺序")
     @TableField(value = "order_num")
     private Integer orderNum;
 
     /**
      * 请求方法,GET,POST,PUT,DELETE,ALL=不限制
      */
+    @ApiModelProperty("请求方法,GET,POST,PUT,DELETE,ALL=不限制")
     @TableField(value = "request_method")
     private String requestMethod;
 
     /**
      * URL匹配模式,支持Ant风格,比如/api/user/**
      */
+    @ApiModelProperty("URL匹配模式,支持Ant风格,比如/api/user/**")
     @TableField(value = "request_uri")
     private String requestUri;
 
     /**
      * 路由地址
      */
+    @ApiModelProperty("路由地址")
     @TableField(value = "path")
     private String path;
 
     /**
      * 组件路径
      */
+    @ApiModelProperty("组件路径")
     @TableField(value = "component")
     private String component;
 
     /**
      * 是否为外链(0-是,1-否)
      */
+    @ApiModelProperty("是否为外链(0-是,1-否)")
     @TableField(value = "is_frame")
     private Integer isFrame;
 
     /**
      * 是否缓存(0-缓存,1-不缓存)
      */
+    @ApiModelProperty("是否缓存(0-缓存,1-不缓存)")
     @TableField(value = "is_cache")
     private Integer isCache;
 
     /**
      * 菜单类型(D-目录,M-菜单,B-按钮)
      */
+    @ApiModelProperty("菜单类型(D-目录,M-菜单,B-按钮)")
     @TableField(value = "menu_type")
     private String menuType;
 
     /**
      * 菜单状态(0-显示,1-隐藏)
      */
+    @ApiModelProperty("菜单状态(0-显示,1-隐藏)")
     @TableField(value = "visible")
     private String visible;
 
     /**
      * 菜单状态(0-正常,1-停用)
      */
+    @ApiModelProperty("菜单状态(0-正常,1-停用)")
     @TableField(value = "status")
     private String status;
 
     /**
      * 权限标识
      */
+    @ApiModelProperty("权限标识")
     @TableField(value = "perms")
     private String perms;
 
     /**
      * 菜单图标
      */
+    @ApiModelProperty("菜单图标")
     @TableField(value = "icon")
     private String icon;
 
     /**
      * 角色列表
      */
+    @ApiModelProperty("角色列表")
     @TableField(exist = false)
     private List<Role> roleList;
 
     /**
      * 子菜单
      */
+    @ApiModelProperty("子菜单")
     @TableField(exist = false)
     private List<Menu> children = new ArrayList<>();
 

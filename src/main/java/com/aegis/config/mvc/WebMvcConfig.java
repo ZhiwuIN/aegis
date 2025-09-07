@@ -1,6 +1,6 @@
 package com.aegis.config.mvc;
 
-import com.aegis.common.file.FileUploadProperties;
+import com.aegis.common.file.config.FileUploadProperties;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;

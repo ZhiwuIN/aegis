@@ -1,7 +1,6 @@
 package com.aegis.common.file.config;
 
 import com.aegis.common.exception.BusinessException;
-import com.aegis.common.file.FileUploadProperties;
 import com.aliyun.oss.OSS;
 import com.aliyun.oss.OSSClientBuilder;
 import com.aliyun.oss.model.CannedAccessControlList;

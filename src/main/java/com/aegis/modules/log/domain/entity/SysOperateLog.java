@@ -5,6 +5,8 @@ import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
@@ -21,6 +23,7 @@ import java.time.LocalDateTime;
 @Data
 @Accessors(chain = true)
 @EqualsAndHashCode(callSuper = false)
+@ApiModel("操作日志表")
 @TableName(value = "t_sys_operate_log")
 public class SysOperateLog implements Serializable {
 
@@ -30,78 +33,91 @@ public class SysOperateLog implements Serializable {
     /**
      * 主键ID
      */
+    @ApiModelProperty("主键ID")
     @TableId(value = "id", type = IdType.ASSIGN_ID)
     private Long id;
 
     /**
      * 模块标题
      */
+    @ApiModelProperty("模块标题")
     @TableField(value = "module_title")
     private String moduleTitle;
 
     /**
      * 业务类型(0-其它,1-新增,2-修改,3-删除)
      */
+    @ApiModelProperty("业务类型(0-其它,1-新增,2-修改,3-删除)")
     @TableField(value = "business_type")
     private Integer businessType;
 
     /**
      * 请求地址
      */
+    @ApiModelProperty("请求地址")
     @TableField(value = "request_url")
     private String requestUrl;
 
     /**
      * 请求IP
      */
+    @ApiModelProperty("请求IP")
     @TableField(value = "request_ip")
     private String requestIp;
 
     /**
      * 请求地点
      */
+    @ApiModelProperty("请求地点")
     @TableField(value = "request_local")
     private String requestLocal;
 
     /**
      * 请求方式
      */
+    @ApiModelProperty("请求方式")
     @TableField(value = "request_type")
     private String requestType;
 
     /**
      * 请求方法
      */
+    @ApiModelProperty("请求方法")
     @TableField(value = "request_method")
     private String requestMethod;
 
     /**
      * 请求参数
      */
+    @ApiModelProperty("请求参数")
     @TableField(value = "request_args")
     private String requestArgs;
 
     /**
      * 响应结果
      */
+    @ApiModelProperty("响应结果")
     @TableField(value = "response_result")
     private String responseResult;
 
     /**
      * 错误响应
      */
+    @ApiModelProperty("错误响应")
     @TableField(value = "error_message")
     private String errorMessage;
 
     /**
      * 操作用户
      */
+    @ApiModelProperty("操作用户")
     @TableField(value = "operate_user")
     private String operateUser;
 
     /**
      * 操作时间
      */
+    @ApiModelProperty("操作时间")
     @TableField(value = "operate_time")
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     private LocalDateTime operateTime;
@@ -109,12 +125,14 @@ public class SysOperateLog implements Serializable {
     /**
      * 消耗时间(单位：毫秒)
      */
+    @ApiModelProperty("消耗时间(单位：毫秒)")
     @TableField(value = "deplete_time")
     private Long depleteTime;
 
     /**
      * 操作状态(0-成功,1-失败)
      */
+    @ApiModelProperty("操作状态(0-成功,1-失败)")
     @TableField(value = "operate_status")
     private String operateStatus;
 
