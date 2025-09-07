@@ -9,8 +9,10 @@ import com.aegis.modules.log.service.SysOperateLogService;
 import com.aegis.utils.PageUtils;
 import com.aegis.utils.ResponseUtils;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
+import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletResponse;
@@ -42,11 +44,11 @@ public class SysOperateLogServiceImpl implements SysOperateLogService {
 
     private LambdaQueryWrapper<SysOperateLog> getQueryWrapper(SysOperateLogDTO dto) {
         LambdaQueryWrapper<SysOperateLog> queryWrapper = new LambdaQueryWrapper<>();
-        queryWrapper.like(SysOperateLog::getModuleTitle, dto.getModuleTitle())
-                .like(SysOperateLog::getOperateUser, dto.getOperateUser())
-                .eq(SysOperateLog::getBusinessType, dto.getBusinessType())
-                .eq(SysOperateLog::getOperateStatus, dto.getOperateStatus())
-                .between(SysOperateLog::getOperateTime, dto.getBeginTime(), dto.getEndTime());
+        queryWrapper.like(StringUtils.isNotBlank(dto.getModuleTitle()), SysOperateLog::getModuleTitle, dto.getModuleTitle())
+                .like(StringUtils.isNotBlank(dto.getOperateUser()), SysOperateLog::getOperateUser, dto.getOperateUser())
+                .eq(ObjectUtils.isNotEmpty(dto.getBusinessType()), SysOperateLog::getBusinessType, dto.getBusinessType())
+                .eq(StringUtils.isNotBlank(dto.getOperateStatus()), SysOperateLog::getOperateStatus, dto.getOperateStatus())
+                .between(ObjectUtils.isNotEmpty(dto.getBeginTime()) && ObjectUtils.isNotEmpty(dto.getEndTime()), SysOperateLog::getOperateTime, dto.getBeginTime(), dto.getEndTime());
         return queryWrapper;
     }
 }

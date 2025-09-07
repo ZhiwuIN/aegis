@@ -9,8 +9,10 @@ import com.aegis.modules.log.service.SysLoginLogService;
 import com.aegis.utils.PageUtils;
 import com.aegis.utils.ResponseUtils;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
+import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletResponse;
@@ -42,10 +44,10 @@ public class SysLoginLogServiceImpl implements SysLoginLogService {
 
     private LambdaQueryWrapper<SysLoginLog> getQueryWrapper(SysLoginLogDTO dto) {
         LambdaQueryWrapper<SysLoginLog> queryWrapper = new LambdaQueryWrapper<>();
-        queryWrapper.like(SysLoginLog::getLoginLocal, dto.getLoginLocal())
-                .like(SysLoginLog::getLoginUsername, dto.getLoginUsername())
-                .eq(SysLoginLog::getLoginStatus, dto.getLoginStatus())
-                .between(SysLoginLog::getLoginTime, dto.getBeginTime(), dto.getEndTime());
+        queryWrapper.like(StringUtils.isNotBlank(dto.getLoginLocal()), SysLoginLog::getLoginLocal, dto.getLoginLocal())
+                .like(StringUtils.isNotBlank(dto.getLoginUsername()), SysLoginLog::getLoginUsername, dto.getLoginUsername())
+                .eq(StringUtils.isNotBlank(dto.getLoginStatus()), SysLoginLog::getLoginStatus, dto.getLoginStatus())
+                .between(ObjectUtils.isNotEmpty(dto.getBeginTime()) && ObjectUtils.isNotEmpty(dto.getEndTime()), SysLoginLog::getLoginTime, dto.getBeginTime(), dto.getEndTime());
         return queryWrapper;
     }
 }
