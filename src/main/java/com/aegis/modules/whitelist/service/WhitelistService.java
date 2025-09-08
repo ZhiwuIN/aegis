@@ -20,6 +20,14 @@ public interface WhitelistService {
     PageVO<Whitelist> pageList(WhitelistDTO dto);
 
     /**
+     * 详情
+     *
+     * @param id 白名单ID
+     * @return 白名单详情
+     */
+    Whitelist detail(Long id);
+
+    /**
      * 更新白名单状态
      *
      * @param id 白名单ID

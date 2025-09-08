@@ -15,6 +15,7 @@ import com.baomidou.mybatisplus.core.toolkit.ObjectUtils;
 import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.regex.Pattern;
 
@@ -37,15 +38,24 @@ public class WhitelistServiceImpl implements WhitelistService {
     @Override
     public PageVO<Whitelist> pageList(WhitelistDTO dto) {
         LambdaQueryWrapper<Whitelist> queryWrapper = new LambdaQueryWrapper<>();
+
         queryWrapper.eq(StringUtils.isNotBlank(dto.getRequestMethod()), Whitelist::getRequestMethod, dto.getRequestMethod())
                 .eq(StringUtils.isNotBlank(dto.getStatus()), Whitelist::getStatus, dto.getStatus())
                 .like(StringUtils.isNotBlank(dto.getRequestUri()), Whitelist::getRequestUri, dto.getRequestUri());
+
         return PageUtils.of(dto).paging(whitelistMapper, queryWrapper);
     }
 
     @Override
+    public Whitelist detail(Long id) {
+        return whitelistMapper.selectById(id);
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
     public String updateStatus(Long id) {
         Whitelist whitelist = whitelistMapper.selectById(id);
+
         if (whitelist != null) {
             whitelist.setUpdateBy(SecurityUtils.getUsername());
             whitelist.setStatus(CommonConstants.NORMAL_STATUS.equals(whitelist.getStatus()) ? CommonConstants.DISABLE_STATUS : CommonConstants.NORMAL_STATUS);
@@ -58,15 +68,19 @@ public class WhitelistServiceImpl implements WhitelistService {
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public String delete(Long id) {
         // 删除白名单
         whitelistMapper.deleteById(id);
+
         // 发布白名单变更事件
         dataChangePublisher.publishWhitelistChange("删除白名单,ID: " + id);
+
         return "操作成功";
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public String addOrUpdate(WhitelistDTO dto) {
         final String url = validateAndNormalize(dto.getRequestUri());
 
