@@ -1,4 +1,4 @@
-package com.aegis.common.repeat;
+package com.aegis.common.duplicate;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.Retention;
@@ -10,12 +10,12 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 /**
  * @Author: xuesong.lei
  * @Date: 2025/08/21 13:39
- * @Description: 放重复提交注解
+ * @Description: 防止重复提交注解
  */
 @Target(METHOD)
 @Retention(RUNTIME)
 @Documented
-public @interface RepeatSubmit {
+public @interface PreventDuplicateSubmit {
 
     /**
      * 防重复操作限时标记数值

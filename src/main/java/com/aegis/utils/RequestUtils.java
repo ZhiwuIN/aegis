@@ -1,6 +1,6 @@
 package com.aegis.utils;
 
-import com.aegis.config.repeatable.RepeatableHttpServletRequestWrapper;
+import com.aegis.common.repeatable.RepeatableHttpServletRequestWrapper;
 import org.springframework.util.StreamUtils;
 
 import javax.servlet.http.HttpServletRequest;

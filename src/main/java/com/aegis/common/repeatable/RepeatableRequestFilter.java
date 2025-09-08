@@ -1,4 +1,4 @@
-package com.aegis.config.repeatable;
+package com.aegis.common.repeatable;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.Ordered;

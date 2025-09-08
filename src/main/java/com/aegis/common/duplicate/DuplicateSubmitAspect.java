@@ -1,4 +1,4 @@
-package com.aegis.common.repeat;
+package com.aegis.common.duplicate;
 
 import cn.hutool.crypto.digest.DigestUtil;
 import cn.hutool.json.JSONUtil;
@@ -34,11 +34,11 @@ import java.util.concurrent.TimeUnit;
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class RepeatSubmitAspect {
+public class DuplicateSubmitAspect {
 
     private final RedisUtils redisUtils;
 
-    @Pointcut("@annotation(com.aegis.common.repeat.RepeatSubmit)")
+    @Pointcut("@annotation(com.aegis.common.duplicate.PreventDuplicateSubmit)")
     public void pointcut() {
     }
 
@@ -52,7 +52,7 @@ public class RepeatSubmitAspect {
             }
 
             Method method = ((MethodSignature) joinPoint.getSignature()).getMethod();
-            RepeatSubmit annotation = method.getAnnotation(RepeatSubmit.class);
+            PreventDuplicateSubmit annotation = method.getAnnotation(PreventDuplicateSubmit.class);
 
             String redisKey = buildRedisKey(request, method, annotation, joinPoint.getArgs());
 
@@ -88,7 +88,7 @@ public class RepeatSubmitAspect {
     /**
      * 构建Redis键
      */
-    private String buildRedisKey(HttpServletRequest request, Method method, RepeatSubmit annotation, Object[] args) {
+    private String buildRedisKey(HttpServletRequest request, Method method, PreventDuplicateSubmit annotation, Object[] args) {
         StringBuilder keyBuilder = new StringBuilder();
         keyBuilder.append(annotation.keyPrefix()).append(":");
 
@@ -136,7 +136,7 @@ public class RepeatSubmitAspect {
     /**
      * 设置防重复标记
      */
-    private void setRepeatFlag(String redisKey, RepeatSubmit annotation) {
+    private void setRepeatFlag(String redisKey, PreventDuplicateSubmit annotation) {
         try {
             redisUtils.set(redisKey, System.currentTimeMillis(),
                     annotation.expireSeconds(), TimeUnit.SECONDS);

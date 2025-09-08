@@ -1,4 +1,4 @@
-package com.aegis.config.repeatable;
+package com.aegis.common.repeatable;
 
 import org.jetbrains.annotations.NotNull;
 import org.springframework.util.StreamUtils;
