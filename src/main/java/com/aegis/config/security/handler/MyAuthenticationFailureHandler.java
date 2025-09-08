@@ -48,8 +48,10 @@ public class MyAuthenticationFailureHandler implements AuthenticationFailureHand
         String rawJson = RequestUtils.getRequestBody(request);
         Map<String, Object> map = objectMapper.readValue(rawJson, new TypeReference<Map<String, Object>>() {
         });
+
         // 记录登录日志
         loginLog(request, map, e);
+
         if (e instanceof AccountExpiredException
                 || e instanceof BadCredentialsException
                 || e instanceof CredentialsExpiredException
