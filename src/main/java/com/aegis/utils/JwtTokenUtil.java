@@ -22,7 +22,7 @@ import java.util.stream.Collectors;
  * @Description: JWT工具类
  */
 @Component
-public class JwtTokenUtil {
+public final class JwtTokenUtil {
 
     @Value("${jwt.secret:mySecretKeyForJWTTokenGenerationThatShouldBeLongEnough}")
     private String jwtSecret;
