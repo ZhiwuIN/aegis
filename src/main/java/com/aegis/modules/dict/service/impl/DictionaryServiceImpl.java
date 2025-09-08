@@ -6,10 +6,12 @@ import com.aegis.common.exception.BusinessException;
 import com.aegis.modules.dict.domain.DictionaryDTO;
 import com.aegis.modules.dict.domain.entity.Dictionary;
 import com.aegis.modules.dict.mapper.DictionaryMapper;
+import com.aegis.modules.dict.service.DictionaryConvert;
 import com.aegis.modules.dict.service.DictionaryService;
 import com.aegis.utils.PageUtils;
 import com.aegis.utils.SecurityUtils;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.toolkit.ObjectUtils;
 import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -27,6 +29,8 @@ import java.util.List;
 public class DictionaryServiceImpl implements DictionaryService {
 
     private final DictionaryMapper dictionaryMapper;
+
+    private final DictionaryConvert dictionaryConvert;
 
     @Override
     public PageVO<Dictionary> pageList(DictionaryDTO dto) {
@@ -72,10 +76,61 @@ public class DictionaryServiceImpl implements DictionaryService {
         if (isContainUpperCase(dto.getDictType())) {
             throw new BusinessException("字典类型必须为大写");
         }
-        if (dto.getId() != null) {// 更新
 
-        } else {// 新增
+        Dictionary dictionary = dictionaryConvert.toSysDictionary(dto);
 
+        LambdaQueryWrapper<Dictionary> sameQueryWrapper = new LambdaQueryWrapper<>();
+        sameQueryWrapper.eq(Dictionary::getDictName, dictionary.getDictName())
+                .eq(Dictionary::getDictType, dictionary.getDictType())
+                .eq(Dictionary::getDictLabel, dictionary.getDictLabel())
+                .eq(Dictionary::getDictValue, dictionary.getDictValue())
+                .ne(ObjectUtils.isNotNull(dictionary.getId()), Dictionary::getId, dictionary.getId());
+
+        Dictionary oldDictionary = dictionaryMapper.selectOne(sameQueryWrapper);
+        if (ObjectUtils.isNotNull(oldDictionary)) {
+            throw new BusinessException("存在相同的数据");
+        }
+
+        if (dictionary.getId() != null) {
+            Dictionary oldData = dictionaryMapper.selectById(dictionary.getId());
+            if (!oldData.getDictName().equals(dictionary.getDictName()) || !oldData.getDictType().equals(dictionary.getDictType())) {
+                throw new BusinessException("不允许修改字典名称或字典类型");
+            }
+
+            LambdaQueryWrapper<Dictionary> queryUpdateWrapper = new LambdaQueryWrapper<>();
+            queryUpdateWrapper.eq(Dictionary::getDictType, dictionary.getDictType());
+
+            List<Dictionary> result = dictionaryMapper.selectList(queryUpdateWrapper);
+
+            if (result != null && !result.isEmpty()) {
+                result.forEach(item -> {
+                    if (item.getDictLabel().equals(dictionary.getDictLabel()) && item.getDictValue().equals(dictionary.getDictValue())) {
+                        throw new BusinessException("存在相同的数据");
+                    }
+                });
+            }
+
+            dictionary.setUpdateBy(SecurityUtils.getUsername());
+            dictionaryMapper.updateById(dictionary);
+        } else {
+            LambdaQueryWrapper<Dictionary> queryWrapper = new LambdaQueryWrapper<>();
+            queryWrapper.eq(Dictionary::getDictType, dictionary.getDictType());
+
+            List<Dictionary> result = dictionaryMapper.selectList(queryWrapper);
+
+            if (result != null && !result.isEmpty()) {
+                result.forEach(item -> {
+                    if (!item.getDictName().equals(dictionary.getDictName())) {
+                        throw new BusinessException("字典类型与现存的字典名称不匹配");
+                    }
+                    if (item.getDictLabel().equals(dictionary.getDictLabel()) && item.getDictValue().equals(dictionary.getDictValue())) {
+                        throw new BusinessException("存在相同的数据");
+                    }
+                });
+            }
+
+            dictionary.setCreateBy(SecurityUtils.getUsername());
+            dictionaryMapper.insert(dictionary);
         }
 
         return "操作成功";

@@ -7,6 +7,7 @@ import com.aegis.common.exception.BusinessException;
 import com.aegis.modules.whitelist.domain.dto.WhitelistDTO;
 import com.aegis.modules.whitelist.domain.entity.Whitelist;
 import com.aegis.modules.whitelist.mapper.WhitelistMapper;
+import com.aegis.modules.whitelist.service.WhitelistConvert;
 import com.aegis.modules.whitelist.service.WhitelistService;
 import com.aegis.utils.PageUtils;
 import com.aegis.utils.SecurityUtils;
@@ -31,6 +32,8 @@ public class WhitelistServiceImpl implements WhitelistService {
     private final WhitelistMapper whitelistMapper;
 
     private final DataChangePublisher dataChangePublisher;
+
+    private final WhitelistConvert whitelistConvert;
 
     // 正则：只允许 / 开头，后面可有字母数字、下划线、横杠、单斜杠，最多允许末尾 /** 前缀
     private static final Pattern VALID_PATH_PATTERN = Pattern.compile("^(/[a-zA-Z0-9_-]+)*(?:/\\*{2})?$");
@@ -82,40 +85,35 @@ public class WhitelistServiceImpl implements WhitelistService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public String addOrUpdate(WhitelistDTO dto) {
-        final String url = validateAndNormalize(dto.getRequestUri());
+        Whitelist whitelist = whitelistConvert.toWhitelist(dto);
+
+        final String url = validateAndNormalize(whitelist.getRequestUri());
 
         // 检查是否有重复的路径和方法（排除自身）
         LambdaQueryWrapper<Whitelist> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.eq(Whitelist::getRequestUri, url)
-                .eq(Whitelist::getRequestMethod, dto.getRequestMethod().toUpperCase())
-                .eq(Whitelist::getDeleted, Boolean.FALSE)
-                .ne(ObjectUtils.isNotNull(dto.getId()), Whitelist::getId, dto.getId());
+                .eq(Whitelist::getRequestMethod, whitelist.getRequestMethod().toUpperCase())
+                .ne(ObjectUtils.isNotNull(whitelist.getId()), Whitelist::getId, whitelist.getId());
 
         if (whitelistMapper.selectCount(queryWrapper) > 0) {
             throw new BusinessException("相同请求路径和方法的白名单已存在");
         }
 
-        if (dto.getId() != null) {// 更新
-            Whitelist existing = whitelistMapper.selectById(dto.getId());
+        if (whitelist.getId() != null) {
+            Whitelist existing = whitelistMapper.selectById(whitelist.getId());
             if (existing == null) {
                 throw new BusinessException("白名单记录不存在");
             }
-            existing.setRequestUri(url);
-            existing.setRequestMethod(dto.getRequestMethod());
-            existing.setDescription(dto.getDescription());
-            existing.setUpdateBy(SecurityUtils.getUsername());
-            whitelistMapper.updateById(existing);
-        } else {// 新增
-            Whitelist newEntry = new Whitelist();
-            newEntry.setRequestUri(url);
-            newEntry.setRequestMethod(dto.getRequestMethod());
-            newEntry.setDescription(dto.getDescription());
-            newEntry.setCreateBy(SecurityUtils.getUsername());
-            whitelistMapper.insert(newEntry);
+
+            whitelist.setUpdateBy(SecurityUtils.getUsername());
+            whitelistMapper.updateById(whitelist);
+        } else {
+            whitelist.setCreateBy(SecurityUtils.getUsername());
+            whitelistMapper.insert(whitelist);
         }
 
         // 发布白名单变更事件
-        dataChangePublisher.publishWhitelistChange("新增或更新白名单,ID: " + (dto.getId() != null ? dto.getId() : "新建"));
+        dataChangePublisher.publishWhitelistChange("新增或更新白名单,ID: " + (whitelist.getId() != null ? whitelist.getId() : "新建"));
 
         return "操作成功";
     }

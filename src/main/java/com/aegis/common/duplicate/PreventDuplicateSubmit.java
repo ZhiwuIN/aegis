@@ -25,7 +25,7 @@ public @interface PreventDuplicateSubmit {
     /**
      * 防重复操作过期时间(秒)
      */
-    long expireSeconds() default 60;
+    long expireSeconds() default 30;
 
     /**
      * 是否包含用户信息到key中
