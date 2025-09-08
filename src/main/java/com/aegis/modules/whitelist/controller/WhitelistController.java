@@ -1,6 +1,7 @@
 package com.aegis.modules.whitelist.controller;
 
 import com.aegis.common.domain.vo.PageVO;
+import com.aegis.common.duplicate.PreventDuplicateSubmit;
 import com.aegis.common.log.BusinessType;
 import com.aegis.common.log.OperationLog;
 import com.aegis.common.validator.ValidGroup;
@@ -54,6 +55,7 @@ public class WhitelistController {
 
     @ApiOperation("新增或修改白名单")
     @PostMapping("/addOrUpdate")
+    @PreventDuplicateSubmit
     @OperationLog(moduleTitle = "新增或修改白名单", businessType = BusinessType.INSERT)
     public String addOrUpdate(@Validated({ValidGroup.Create.class, ValidGroup.Update.class}) @RequestBody WhitelistDTO dto) {
         return whitelistService.addOrUpdate(dto);

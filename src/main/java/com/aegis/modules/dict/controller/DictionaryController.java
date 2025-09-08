@@ -1,6 +1,7 @@
 package com.aegis.modules.dict.controller;
 
 import com.aegis.common.domain.vo.PageVO;
+import com.aegis.common.duplicate.PreventDuplicateSubmit;
 import com.aegis.common.log.BusinessType;
 import com.aegis.common.log.OperationLog;
 import com.aegis.common.validator.ValidGroup;
@@ -56,6 +57,7 @@ public class DictionaryController {
 
     @ApiOperation("新增或修改字典")
     @PostMapping("/addOrUpdate")
+    @PreventDuplicateSubmit
     @OperationLog(moduleTitle = "新增或修改字典", businessType = BusinessType.INSERT)
     public String addOrUpdate(@Validated({ValidGroup.Update.class, ValidGroup.Create.class,}) @RequestBody DictionaryDTO dto) {
         return dictionaryService.addOrUpdate(dto);

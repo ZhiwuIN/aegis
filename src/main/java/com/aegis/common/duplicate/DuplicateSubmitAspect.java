@@ -2,7 +2,6 @@ package com.aegis.common.duplicate;
 
 import cn.hutool.crypto.digest.DigestUtil;
 import cn.hutool.json.JSONUtil;
-import com.aegis.common.constant.CommonConstants;
 import com.aegis.common.exception.BusinessException;
 import com.aegis.common.result.ResultCodeEnum;
 import com.aegis.utils.IpUtils;
@@ -99,19 +98,9 @@ public class DuplicateSubmitAspect {
         String ip = IpUtils.getIpAddr(request);
         keyBuilder.append(ip).append(":");
 
-        // 用户信息（如果需要）
+        // 用户信息
         if (annotation.includeUser()) {
-            try {
-                String username = SecurityUtils.getUsername();
-                if (username != null) {
-                    keyBuilder.append(username).append(":");
-                }
-            } catch (Exception e) {
-                log.debug("获取用户ID失败，使用会话ID", e);
-                String sessionId = request.getSession(false) != null ?
-                        request.getSession().getId() : CommonConstants.ANONYMOUS;
-                keyBuilder.append(sessionId).append(":");
-            }
+            keyBuilder.append(SecurityUtils.getUsername()).append(":");
         }
 
         // 方法签名
