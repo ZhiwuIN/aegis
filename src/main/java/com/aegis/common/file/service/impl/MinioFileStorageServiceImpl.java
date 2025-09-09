@@ -93,11 +93,6 @@ public class MinioFileStorageServiceImpl extends AbstractFileStorageService {
     }
 
     @Override
-    public String getFileUrl(String filePath) {
-        return config.getEndpoint() + FileConstants.SEPARATOR + config.getBucketName() + FileConstants.SEPARATOR + filePath;
-    }
-
-    @Override
     public boolean exists(String filePath) {
         try {
             minioClient.statObject(StatObjectArgs.builder()

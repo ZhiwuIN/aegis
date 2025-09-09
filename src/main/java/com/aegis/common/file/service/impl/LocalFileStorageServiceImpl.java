@@ -87,12 +87,6 @@ public class LocalFileStorageServiceImpl extends AbstractFileStorageService {
     }
 
     @Override
-    public String getFileUrl(String filePath) {
-        // 本地文件需要通过web服务访问，这里返回相对路径
-        return filePath.replace(basePath, "/files");
-    }
-
-    @Override
     public boolean exists(String filePath) {
         return FileUtil.exist(filePath);
     }

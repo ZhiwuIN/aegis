@@ -29,11 +29,6 @@ public interface FileStorageService {
     boolean delete(String filePath);
 
     /**
-     * 获取文件访问URL
-     */
-    String getFileUrl(String filePath);
-
-    /**
      * 检查文件是否存在
      */
     boolean exists(String filePath);

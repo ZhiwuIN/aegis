@@ -88,12 +88,6 @@ public class AliyunOssFileStorageServiceImpl extends AbstractFileStorageService 
     }
 
     @Override
-    public String getFileUrl(String filePath) {
-        return "https://" + config.getBucketName() + "." +
-                config.getEndpoint().replace("https://", "") + FileConstants.SEPARATOR + filePath;
-    }
-
-    @Override
     public boolean exists(String filePath) {
         try {
             return ossClient.doesObjectExist(config.getBucketName(), filePath);

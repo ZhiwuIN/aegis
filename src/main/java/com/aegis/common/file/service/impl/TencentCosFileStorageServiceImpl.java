@@ -94,11 +94,6 @@ public class TencentCosFileStorageServiceImpl extends AbstractFileStorageService
     }
 
     @Override
-    public String getFileUrl(String filePath) {
-        return "https://" + config.getBucketName() + ".cos." + config.getRegion() + ".myqcloud.com/" + filePath;
-    }
-
-    @Override
     public boolean exists(String filePath) {
         try {
             return cosClient.doesObjectExist(config.getBucketName(), filePath);

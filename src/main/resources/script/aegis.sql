@@ -273,7 +273,6 @@ CREATE TABLE `t_file_metadata`
     `original_file_name` VARCHAR(255)    NOT NULL COMMENT '原始文件名称',
     `suffix`             VARCHAR(20)              DEFAULT NULL COMMENT '文件后缀',
     `file_path`          VARCHAR(500)    NOT NULL COMMENT '文件存储路径',
-    `file_url`           VARCHAR(500)    NOT NULL COMMENT '文件访问URL',
     `file_size`          BIGINT          NOT NULL COMMENT '文件大小,单位字节',
     `content_type`       VARCHAR(50)              DEFAULT NULL COMMENT '文件类型',
     `platform`           VARCHAR(50)              DEFAULT NULL COMMENT '存储平台',

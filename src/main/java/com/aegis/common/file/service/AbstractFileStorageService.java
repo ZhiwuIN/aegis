@@ -145,7 +145,6 @@ public abstract class AbstractFileStorageService implements FileStorageService {
                 .setOriginalFileName(file.getOriginalFilename())
                 .setSuffix(FileUtil.extName(file.getOriginalFilename()))
                 .setFilePath(objectName)
-                .setFileUrl(getFileUrl(objectName))
                 .setFileSize((long) bytes.length)
                 .setContentType(getContentType(file))
                 .setPlatform(platform)

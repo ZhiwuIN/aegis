@@ -121,13 +121,6 @@ public class FileMetadata implements Serializable {
     private String filePath;
 
     /**
-     * 文件访问URL
-     */
-    @ApiModelProperty("文件访问URL")
-    @TableField(value = "file_url")
-    private String fileUrl;
-
-    /**
      * 文件大小,单位字节
      */
     @ApiModelProperty("文件大小,单位字节")
