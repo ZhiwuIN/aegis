@@ -36,22 +36,22 @@ public class DictionaryController {
     }
 
     @ApiOperation("详情")
-    @PostMapping("/detail")
-    public Dictionary detail(@RequestParam("id") Long id) {
+    @PostMapping("/detail/{id}")
+    public Dictionary detail(@PathVariable("id") Long id) {
         return dictionaryService.detail(id);
     }
 
     @ApiOperation("更新字典状态")
-    @PostMapping("/updateStatus")
+    @PostMapping("/updateStatus/{id}")
     @OperationLog(moduleTitle = "更新字典状态", businessType = BusinessType.UPDATE)
-    public String updateStatus(@RequestParam("id") Long id) {
+    public String updateStatus(@PathVariable("id") Long id) {
         return dictionaryService.updateStatus(id);
     }
 
     @ApiOperation("删除字典")
-    @PostMapping("/delete")
+    @PostMapping("/delete/{id}")
     @OperationLog(moduleTitle = "删除字典", businessType = BusinessType.DELETE)
-    public String delete(@RequestParam("id") Long id) {
+    public String delete(@PathVariable("id") Long id) {
         return dictionaryService.delete(id);
     }
 

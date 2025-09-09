@@ -1,0 +1,63 @@
+package com.aegis.modules.dept.controller;
+
+import com.aegis.common.duplicate.PreventDuplicateSubmit;
+import com.aegis.common.log.BusinessType;
+import com.aegis.common.log.OperationLog;
+import com.aegis.common.validator.ValidGroup;
+import com.aegis.modules.dept.domain.dto.DeptDTO;
+import com.aegis.modules.dept.domain.entity.Dept;
+import com.aegis.modules.dept.service.DeptService;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import lombok.RequiredArgsConstructor;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+
+/**
+ * @Author: xuesong.lei
+ * @Date: 2025/9/9 14:28
+ * @Description: 部门接口
+ */
+@RestController
+@Api(tags = "部门接口")
+@RequiredArgsConstructor
+@RequestMapping("/dept")
+public class DeptController {
+
+    private final DeptService deptService;
+
+    @ApiOperation("列表")
+    @GetMapping("/list")
+    public List<Dept> list(DeptDTO dto) {
+        return deptService.list(dto);
+    }
+
+    @ApiOperation("详情")
+    @GetMapping("/detail/{id}")
+    public Dept detail(@PathVariable("id") Long id) {
+        return deptService.detail(id);
+    }
+
+    @ApiOperation("查询部门列表(排除查询节点)")
+    @GetMapping("/exclude/{id}")
+    public List<Dept> exclude(@PathVariable("id") Long id) {
+        return deptService.exclude(id);
+    }
+
+    @ApiOperation("删除")
+    @GetMapping("/delete/{id}")
+    @OperationLog(moduleTitle = "删除部门", businessType = BusinessType.DELETE)
+    public String delete(@PathVariable("id") Long id) {
+        return deptService.delete(id);
+    }
+
+    @ApiOperation("新增或修改部门")
+    @PostMapping("/addOrUpdate")
+    @PreventDuplicateSubmit
+    @OperationLog(moduleTitle = "新增或修改部门", businessType = BusinessType.INSERT)
+    public String addOrUpdate(@Validated({ValidGroup.Update.class, ValidGroup.Create.class,}) @RequestBody DeptDTO dto) {
+        return deptService.addOrUpdate(dto);
+    }
+}

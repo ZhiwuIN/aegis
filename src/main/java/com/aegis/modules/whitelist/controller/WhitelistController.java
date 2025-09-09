@@ -34,22 +34,22 @@ public class WhitelistController {
     }
 
     @ApiOperation("详情")
-    @GetMapping("/detail")
-    public Whitelist detail(@RequestParam("id") Long id) {
+    @GetMapping("/detail/{id}")
+    public Whitelist detail(@PathVariable("id") Long id) {
         return whitelistService.detail(id);
     }
 
     @ApiOperation("更新白名单状态")
-    @GetMapping("/updateStatus")
+    @GetMapping("/updateStatus/{id}")
     @OperationLog(moduleTitle = "更新白名单状态", businessType = BusinessType.UPDATE)
-    public String updateStatus(@RequestParam("id") Long id) {
+    public String updateStatus(@PathVariable("id") Long id) {
         return whitelistService.updateStatus(id);
     }
 
     @ApiOperation("删除白名单")
-    @GetMapping("/delete")
+    @GetMapping("/delete/{id}")
     @OperationLog(moduleTitle = "删除白名单", businessType = BusinessType.DELETE)
-    public String delete(@RequestParam("id") Long id) {
+    public String delete(@PathVariable("id") Long id) {
         return whitelistService.delete(id);
     }
 
