@@ -274,10 +274,10 @@ CREATE TABLE `t_file_metadata`
     `suffix`             VARCHAR(20)              DEFAULT NULL COMMENT '文件后缀',
     `file_path`          VARCHAR(500)    NOT NULL COMMENT '文件存储路径',
     `file_size`          BIGINT          NOT NULL COMMENT '文件大小,单位字节',
-    `content_type`       VARCHAR(50)              DEFAULT NULL COMMENT '文件类型',
-    `platform`           VARCHAR(50)              DEFAULT NULL COMMENT '存储平台',
+    `content_type`       VARCHAR(128)             DEFAULT NULL COMMENT '文件类型',
+    `platform`           VARCHAR(16)              DEFAULT NULL COMMENT '存储平台',
     `upload_time`        DATETIME        NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '上传时间',
-    `md5`                VARCHAR(32)              DEFAULT NULL COMMENT '文件MD5值',
+    `md5`                VARCHAR(64)              DEFAULT NULL COMMENT '文件MD5值',
     PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB
   DEFAULT CHARSET = utf8mb4 COMMENT = '文件元数据表';
