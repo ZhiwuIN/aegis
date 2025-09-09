@@ -98,7 +98,8 @@ public class DictionaryServiceImpl implements DictionaryService {
             }
 
             LambdaQueryWrapper<Dictionary> queryUpdateWrapper = new LambdaQueryWrapper<>();
-            queryUpdateWrapper.eq(Dictionary::getDictType, dictionary.getDictType());
+            queryUpdateWrapper.eq(Dictionary::getDictType, dictionary.getDictType())
+                    .ne(Dictionary::getId, dictionary.getId());
 
             List<Dictionary> result = dictionaryMapper.selectList(queryUpdateWrapper);
 
