@@ -2,10 +2,11 @@ package com.aegis.common.file.service.impl;
 
 import com.aegis.common.constant.FileConstants;
 import com.aegis.common.exception.BusinessException;
-import com.aegis.common.file.config.FileUploadProperties;
-import com.aegis.common.domain.vo.FileUploadResultVO;
 import com.aegis.common.file.StoragePlatform;
+import com.aegis.common.file.config.FileUploadProperties;
 import com.aegis.common.file.service.AbstractFileStorageService;
+import com.aegis.modules.file.domain.entity.FileMetadata;
+import com.aegis.modules.file.mapper.FileMetadataMapper;
 import com.aliyun.oss.HttpMethod;
 import com.aliyun.oss.OSS;
 import com.aliyun.oss.model.GeneratePresignedUrlRequest;
@@ -34,14 +35,14 @@ public class AliyunOssFileStorageServiceImpl extends AbstractFileStorageService 
 
     private final FileUploadProperties.AliyunConfig config;
 
-    public AliyunOssFileStorageServiceImpl(FileUploadProperties properties, OSS ossClient) {
-        super(properties);
+    public AliyunOssFileStorageServiceImpl(FileUploadProperties properties, FileMetadataMapper fileMetadataMapper, OSS ossClient) {
+        super(properties, fileMetadataMapper);
         this.ossClient = ossClient;
         this.config = properties.getAliyun();
     }
 
     @Override
-    public FileUploadResultVO upload(MultipartFile file, String directory) {
+    public FileMetadata upload(MultipartFile file, String directory) {
         try {
             byte[] fileBytes = file.getBytes();
             validateFile(file, fileBytes);

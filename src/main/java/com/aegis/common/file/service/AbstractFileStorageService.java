@@ -7,11 +7,13 @@ import cn.hutool.crypto.digest.DigestUtil;
 import com.aegis.common.constant.FileConstants;
 import com.aegis.common.exception.BusinessException;
 import com.aegis.common.file.config.FileUploadProperties;
-import com.aegis.common.domain.vo.FileUploadResultVO;
+import com.aegis.modules.file.domain.entity.FileMetadata;
+import com.aegis.modules.file.mapper.FileMetadataMapper;
+import com.aegis.utils.SecurityUtils;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.time.LocalDateTime;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.Objects;
 
 /**
@@ -23,8 +25,11 @@ public abstract class AbstractFileStorageService implements FileStorageService {
 
     protected final FileUploadProperties properties;
 
-    protected AbstractFileStorageService(FileUploadProperties properties) {
+    protected final FileMetadataMapper fileMetadataMapper;
+
+    protected AbstractFileStorageService(FileUploadProperties properties, FileMetadataMapper fileMetadataMapper) {
         this.properties = properties;
+        this.fileMetadataMapper = fileMetadataMapper;
     }
 
     /**
@@ -131,21 +136,25 @@ public abstract class AbstractFileStorageService implements FileStorageService {
     }
 
     /**
-     * 构建文件上传结果
+     * 构建文件上传结果并入库
      */
-    protected FileUploadResultVO buildFileUploadResult(MultipartFile file, String fileName, String objectName, byte[] bytes, String platform) {
-        return FileUploadResultVO.builder()
-                .fileName(fileName) // 直接使用传入的fileName
-                .originalFileName(file.getOriginalFilename())
-                .suffix(FileUtil.extName(file.getOriginalFilename()))
-                .filePath(objectName)
-                .fileUrl(getFileUrl(objectName))
-                .fileSize((long) bytes.length)
-                .contentType(getContentType(file))
-                .platform(platform)
-                .uploadTime(LocalDateTime.now())
-                .md5(DigestUtil.md5Hex(bytes))
-                .build();
+    protected FileMetadata buildFileUploadResult(MultipartFile file, String fileName, String objectName, byte[] bytes, String platform) {
+        FileMetadata build = new FileMetadata()
+                .setCreateBy(SecurityUtils.getUsername())
+                .setFileName(fileName)
+                .setOriginalFileName(file.getOriginalFilename())
+                .setSuffix(FileUtil.extName(file.getOriginalFilename()))
+                .setFilePath(objectName)
+                .setFileUrl(getFileUrl(objectName))
+                .setFileSize((long) bytes.length)
+                .setContentType(getContentType(file))
+                .setPlatform(platform)
+                .setUploadTime(new Date())
+                .setMd5(DigestUtil.md5Hex(bytes));
+
+        fileMetadataMapper.insert(build);
+
+        return build;
     }
 
     /**

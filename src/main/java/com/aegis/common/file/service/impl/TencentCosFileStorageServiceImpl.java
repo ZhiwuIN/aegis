@@ -2,10 +2,11 @@ package com.aegis.common.file.service.impl;
 
 import com.aegis.common.constant.FileConstants;
 import com.aegis.common.exception.BusinessException;
-import com.aegis.common.file.config.FileUploadProperties;
-import com.aegis.common.domain.vo.FileUploadResultVO;
 import com.aegis.common.file.StoragePlatform;
+import com.aegis.common.file.config.FileUploadProperties;
 import com.aegis.common.file.service.AbstractFileStorageService;
+import com.aegis.modules.file.domain.entity.FileMetadata;
+import com.aegis.modules.file.mapper.FileMetadataMapper;
 import com.qcloud.cos.COSClient;
 import com.qcloud.cos.http.HttpMethodName;
 import com.qcloud.cos.model.*;
@@ -33,14 +34,14 @@ public class TencentCosFileStorageServiceImpl extends AbstractFileStorageService
 
     private final FileUploadProperties.TencentConfig config;
 
-    public TencentCosFileStorageServiceImpl(FileUploadProperties properties, COSClient cosClient) {
-        super(properties);
+    public TencentCosFileStorageServiceImpl(FileUploadProperties properties, FileMetadataMapper fileMetadataMapper, COSClient cosClient) {
+        super(properties, fileMetadataMapper);
         this.cosClient = cosClient;
         this.config = properties.getTencent();
     }
 
     @Override
-    public FileUploadResultVO upload(MultipartFile file, String directory) {
+    public FileMetadata upload(MultipartFile file, String directory) {
         try {
             String fileName = generateFileName(file.getOriginalFilename());
             String objectName = buildObjectName(directory, fileName);

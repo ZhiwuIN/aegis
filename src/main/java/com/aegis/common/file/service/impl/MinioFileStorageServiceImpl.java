@@ -2,10 +2,11 @@ package com.aegis.common.file.service.impl;
 
 import com.aegis.common.constant.FileConstants;
 import com.aegis.common.exception.BusinessException;
-import com.aegis.common.file.config.FileUploadProperties;
-import com.aegis.common.domain.vo.FileUploadResultVO;
 import com.aegis.common.file.StoragePlatform;
+import com.aegis.common.file.config.FileUploadProperties;
 import com.aegis.common.file.service.AbstractFileStorageService;
+import com.aegis.modules.file.domain.entity.FileMetadata;
+import com.aegis.modules.file.mapper.FileMetadataMapper;
 import io.minio.*;
 import io.minio.http.Method;
 import lombok.extern.slf4j.Slf4j;
@@ -31,14 +32,14 @@ public class MinioFileStorageServiceImpl extends AbstractFileStorageService {
 
     private final FileUploadProperties.MinioConfig config;
 
-    public MinioFileStorageServiceImpl(FileUploadProperties properties, MinioClient minioClient) {
-        super(properties);
+    public MinioFileStorageServiceImpl(FileUploadProperties properties, FileMetadataMapper fileMetadataMapper, MinioClient minioClient) {
+        super(properties, fileMetadataMapper);
         this.minioClient = minioClient;
         this.config = properties.getMinio();
     }
 
     @Override
-    public FileUploadResultVO upload(MultipartFile file, String directory) {
+    public FileMetadata upload(MultipartFile file, String directory) {
         try {
             String fileName = generateFileName(file.getOriginalFilename());
             String objectName = buildObjectName(directory, fileName);

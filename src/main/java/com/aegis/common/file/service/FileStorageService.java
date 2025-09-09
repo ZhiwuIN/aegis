@@ -1,6 +1,6 @@
 package com.aegis.common.file.service;
 
-import com.aegis.common.domain.vo.FileUploadResultVO;
+import com.aegis.modules.file.domain.entity.FileMetadata;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.InputStream;
@@ -16,7 +16,7 @@ public interface FileStorageService {
     /**
      * 上传文件
      */
-    FileUploadResultVO upload(MultipartFile file, String directory);
+    FileMetadata upload(MultipartFile file, String directory);
 
     /**
      * 下载文件

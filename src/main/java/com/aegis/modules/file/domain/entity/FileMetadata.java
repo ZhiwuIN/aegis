@@ -1,0 +1,167 @@
+package com.aegis.modules.file.domain.entity;
+
+
+import com.baomidou.mybatisplus.annotation.*;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.experimental.Accessors;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
+import org.springframework.format.annotation.DateTimeFormat;
+
+import java.io.Serializable;
+import java.util.Date;
+
+/**
+ * @Author: xuesong.lei
+ * @Date: 2025-09-09 15:53:06
+ * @Description: 文件元数据表
+ * @TableName t_file_metadata
+ */
+@Data
+@Accessors(chain = true)
+@EqualsAndHashCode(callSuper = false)
+@ApiModel("文件元数据表")
+@TableName(value = "t_file_metadata")
+public class FileMetadata implements Serializable {
+
+    @TableField(exist = false)
+    private static final long serialVersionUID = 1L;
+
+    /**
+     * 主键ID
+     */
+    @ApiModelProperty("主键ID")
+    @TableId(value = "id", type = IdType.ASSIGN_ID)
+    private Long id;
+
+    /**
+     * 创建人
+     */
+    @ApiModelProperty("创建人")
+    @TableField(value = "create_by")
+    private String createBy;
+
+    /**
+     * 更新人
+     */
+    @ApiModelProperty("更新人")
+    @TableField(value = "update_by")
+    private String updateBy;
+
+    /**
+     * 创建时间
+     */
+    @ApiModelProperty("创建时间")
+    @TableField(value = "create_time", fill = FieldFill.INSERT)
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    private Date createTime;
+
+    /**
+     * 更新时间
+     */
+    @ApiModelProperty("更新时间")
+    @TableField(value = "update_time", fill = FieldFill.INSERT_UPDATE)
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    private Date updateTime;
+
+    /**
+     * 逻辑删除标记(0=正常,1=删除)
+     */
+    @ApiModelProperty("逻辑删除标记(0=正常,1=删除)")
+    @TableLogic
+    @TableField(value = "deleted")
+    private Integer deleted;
+
+    /**
+     * 版本号,用于乐观锁
+     */
+    @ApiModelProperty("版本号,用于乐观锁")
+    @Version
+    @TableField(value = "version")
+    private Integer version;
+
+    /**
+     * 备注
+     */
+    @ApiModelProperty("备注")
+    @TableField(value = "remark")
+    private String remark;
+
+    /**
+     * 文件名称
+     */
+    @ApiModelProperty("文件名称")
+    @TableField(value = "file_name")
+    private String fileName;
+
+    /**
+     * 原始文件名称
+     */
+    @ApiModelProperty("原始文件名称")
+    @TableField(value = "original_file_name")
+    private String originalFileName;
+
+    /**
+     * 文件后缀
+     */
+    @ApiModelProperty("文件后缀")
+    @TableField(value = "suffix")
+    private String suffix;
+
+    /**
+     * 文件存储路径
+     */
+    @ApiModelProperty("文件存储路径")
+    @TableField(value = "file_path")
+    private String filePath;
+
+    /**
+     * 文件访问URL
+     */
+    @ApiModelProperty("文件访问URL")
+    @TableField(value = "file_url")
+    private String fileUrl;
+
+    /**
+     * 文件大小,单位字节
+     */
+    @ApiModelProperty("文件大小,单位字节")
+    @TableField(value = "file_size")
+    private Long fileSize;
+
+    /**
+     * 文件类型
+     */
+    @ApiModelProperty("文件类型")
+    @TableField(value = "content_type")
+    private String contentType;
+
+    /**
+     * 存储平台
+     */
+    @ApiModelProperty("存储平台")
+    @TableField(value = "platform")
+    private String platform;
+
+    /**
+     * 上传时间
+     */
+    @ApiModelProperty("上传时间")
+    @TableField(value = "upload_time")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    private Date uploadTime;
+
+    /**
+     * 文件MD5值
+     */
+    @ApiModelProperty("文件MD5值")
+    @TableField(value = "md5")
+    private String md5;
+
+}

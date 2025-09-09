@@ -257,3 +257,28 @@ CREATE TABLE `t_sys_login_log`
     PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB
   DEFAULT CHARSET = utf8mb4 COMMENT ='登录日志表';
+
+DROP TABLE IF EXISTS `t_file_metadata`;
+CREATE TABLE `t_file_metadata`
+(
+    `id`                 BIGINT UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '主键ID',
+    `create_by`          VARCHAR(64)              DEFAULT NULL COMMENT '创建人',
+    `update_by`          VARCHAR(64)              DEFAULT NULL COMMENT '更新人',
+    `create_time`        DATETIME        NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+    `update_time`        DATETIME        NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+    `deleted`            TINYINT         NOT NULL DEFAULT 0 COMMENT '逻辑删除标记(0=正常,1=删除)',
+    `version`            INT             NOT NULL DEFAULT 1 COMMENT '版本号,用于乐观锁',
+    `remark`             VARCHAR(100)             DEFAULT NULL COMMENT '备注',
+    `file_name`          VARCHAR(255)    NOT NULL COMMENT '文件名称',
+    `original_file_name` VARCHAR(255)    NOT NULL COMMENT '原始文件名称',
+    `suffix`             VARCHAR(20)              DEFAULT NULL COMMENT '文件后缀',
+    `file_path`          VARCHAR(500)    NOT NULL COMMENT '文件存储路径',
+    `file_url`           VARCHAR(500)    NOT NULL COMMENT '文件访问URL',
+    `file_size`          BIGINT          NOT NULL COMMENT '文件大小,单位字节',
+    `content_type`       VARCHAR(50)              DEFAULT NULL COMMENT '文件类型',
+    `platform`           VARCHAR(50)              DEFAULT NULL COMMENT '存储平台',
+    `upload_time`        DATETIME        NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '上传时间',
+    `md5`                VARCHAR(32)              DEFAULT NULL COMMENT '文件MD5值',
+    PRIMARY KEY (`id`) USING BTREE
+) ENGINE = InnoDB
+  DEFAULT CHARSET = utf8mb4 COMMENT = '文件元数据表';

@@ -6,9 +6,9 @@ import cn.hutool.core.util.StrUtil;
 import com.aegis.common.constant.FileConstants;
 import com.aegis.common.exception.BusinessException;
 import com.aegis.common.file.FileStorageServiceFactory;
-import com.aegis.common.domain.vo.FileUploadResultVO;
 import com.aegis.common.file.StoragePlatform;
 import com.aegis.common.file.service.FileStorageService;
+import com.aegis.modules.file.domain.entity.FileMetadata;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
@@ -45,18 +45,18 @@ public class FileServiceController {
 
     @ApiOperation("文件上传")
     @PostMapping("/upload")
-    public FileUploadResultVO uploadFile(@RequestParam("file") MultipartFile file, @RequestParam(value = "directory", required = false) String directory) {
+    public FileMetadata uploadFile(@RequestParam("file") MultipartFile file, @RequestParam(value = "directory", required = false) String directory) {
         FileStorageService storageService = fileStorageServiceFactory.getFileStorageService();
-        FileUploadResultVO result = storageService.upload(file, directory);
+        FileMetadata result = storageService.upload(file, directory);
         log.info("文件上传成功: {}", result.getFileName());
         return result;
     }
 
     @ApiOperation("批量文件上传")
     @PostMapping("/upload/batch")
-    public List<FileUploadResultVO> uploadFiles(@RequestParam("files") MultipartFile[] files, @RequestParam(value = "directory", required = false) String directory) {
+    public List<FileMetadata> uploadFiles(@RequestParam("files") MultipartFile[] files, @RequestParam(value = "directory", required = false) String directory) {
         FileStorageService storageService = fileStorageServiceFactory.getFileStorageService();
-        List<FileUploadResultVO> results = Arrays.stream(files)
+        List<FileMetadata> results = Arrays.stream(files)
                 .map(file -> storageService.upload(file, directory))
                 .collect(Collectors.toList());
         log.info("批量文件上传成功，共{}个文件", results.size());
@@ -96,9 +96,9 @@ public class FileServiceController {
 
     @ApiOperation("指定存储平台上传文件")
     @PostMapping("/upload/{platform}")
-    public FileUploadResultVO uploadFileWithPlatform(@PathVariable StoragePlatform platform, @RequestParam("file") MultipartFile file, @RequestParam(value = "directory", required = false) String directory) {
+    public FileMetadata uploadFileWithPlatform(@PathVariable StoragePlatform platform, @RequestParam("file") MultipartFile file, @RequestParam(value = "directory", required = false) String directory) {
         FileStorageService storageService = fileStorageServiceFactory.getFileStorageService(platform);
-        FileUploadResultVO result = storageService.upload(file, directory);
+        FileMetadata result = storageService.upload(file, directory);
         log.info("文件上传成功到{}: {}", platform.getDescription(), result.getFileName());
         return result;
     }
