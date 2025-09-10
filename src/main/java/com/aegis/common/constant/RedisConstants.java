@@ -10,7 +10,7 @@ public class RedisConstants {
     /**
      * redis中存储的菜单key
      */
-    public static final String MENUS = "menus:";
+    public static final String MENUS = "menus";
 
     /**
      * redis中存储的白名单key
