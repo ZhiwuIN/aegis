@@ -4,6 +4,7 @@ import cn.hutool.core.util.StrUtil;
 import com.aegis.common.constant.CommonConstants;
 import com.aegis.common.exception.BusinessException;
 import com.aegis.common.result.ResultCodeEnum;
+import com.aegis.modules.user.mapper.UserMapper;
 import com.aegis.modules.user.service.UserService;
 import com.aegis.utils.JwtTokenUtil;
 import lombok.RequiredArgsConstructor;
@@ -22,6 +23,8 @@ import java.util.Arrays;
 @Service
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
+
+    private final UserMapper userMapper;
 
     private final JwtTokenUtil jwtTokenUtil;
 
