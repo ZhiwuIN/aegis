@@ -3,6 +3,8 @@ package com.aegis.modules.dept.mapper;
 import com.aegis.modules.dept.domain.entity.Dept;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 
+import java.util.Set;
+
 /**
  * @Author: xuesong.lei
  * @Date: 2025-08-30 10:44:18
@@ -11,6 +13,7 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
  */
 public interface DeptMapper extends BaseMapper<Dept> {
 
+    Set<Long> getDeptAndChildrenIds(Long deptId);
 }
 
 

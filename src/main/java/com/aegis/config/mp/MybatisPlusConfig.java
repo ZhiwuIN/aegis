@@ -1,5 +1,6 @@
 package com.aegis.config.mp;
 
+import com.aegis.common.datascope.DataPermissionInterceptor;
 import com.baomidou.mybatisplus.annotation.DbType;
 import com.baomidou.mybatisplus.extension.plugins.MybatisPlusInterceptor;
 import com.baomidou.mybatisplus.extension.plugins.inner.BlockAttackInnerInterceptor;
@@ -22,6 +23,7 @@ public class MybatisPlusConfig {
     @Bean
     public MybatisPlusInterceptor mybatisPlusInterceptor() {
         MybatisPlusInterceptor interceptor = new MybatisPlusInterceptor();
+        interceptor.addInnerInterceptor(new DataPermissionInterceptor());// 数据权限
         interceptor.addInnerInterceptor(new PaginationInnerInterceptor(DbType.MYSQL));// 分页
         interceptor.addInnerInterceptor(new OptimisticLockerInnerInterceptor());// 乐观锁
         interceptor.addInnerInterceptor(new BlockAttackInnerInterceptor());// 防止全表更新与删除

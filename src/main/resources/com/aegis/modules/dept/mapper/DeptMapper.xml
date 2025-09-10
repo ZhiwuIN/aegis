@@ -28,4 +28,19 @@
         version,remark,ancestors,parent_id,dept_name,
         order_num,leader,phone,email,status
     </sql>
+
+    <select id="getDeptAndChildrenIds" resultType="java.lang.Long">
+        WITH RECURSIVE dept_tree AS (SELECT id, parent_id
+                                     FROM t_dept
+                                     WHERE id = #{deptId}
+                                       AND deleted = 0
+
+                                     UNION ALL
+                                     SELECT d.id, d.parent_id
+                                     FROM t_dept d
+                                              INNER JOIN dept_tree dt ON d.parent_id = dt.id
+                                     WHERE d.deleted = 0)
+        SELECT id
+        FROM dept_tree
+    </select>
 </mapper>

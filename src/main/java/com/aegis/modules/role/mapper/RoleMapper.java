@@ -3,6 +3,8 @@ package com.aegis.modules.role.mapper;
 import com.aegis.modules.role.domain.entity.Role;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 
+import java.util.Set;
+
 /**
  * @Author: xuesong.lei
  * @Date: 2025-08-30 10:48:14
@@ -11,6 +13,9 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
  */
 public interface RoleMapper extends BaseMapper<Role> {
 
+    Set<Long> getCustomDeptIds(Long id);
+
+    String getHighestDataScope(Long id);
 }
 
 
