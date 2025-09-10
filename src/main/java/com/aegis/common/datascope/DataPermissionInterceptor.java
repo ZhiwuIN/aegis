@@ -71,7 +71,11 @@ public class DataPermissionInterceptor implements InnerInterceptor {
             }
 
             Select select = (Select) statement;
-            PlainSelect plainSelect = (PlainSelect) select.getSelectBody();
+            if (select.getPlainSelect() == null) {
+                return;
+            }
+
+            PlainSelect plainSelect = select.getPlainSelect();
 
             Expression filterExpression = buildDataPermissionExpression(plainSelect, dataPermission);
             if (filterExpression == null) {
@@ -213,30 +217,64 @@ public class DataPermissionInterceptor implements InnerInterceptor {
         return new Column(field);
     }
 
-    /**
-     * 从 Mapper 方法解析 DataPermission 注解，支持缓存
-     */
     private DataPermission getDataPermissionAnnotation(MappedStatement ms) {
         String mapperId = ms.getId();
         return annotationCache.computeIfAbsent(mapperId, id -> {
             try {
-                int lastDot = id.lastIndexOf(".");
-                String className = id.substring(0, lastDot);
-                String methodName = id.substring(lastDot + 1);
-
-                Class<?> clazz = Class.forName(className);
-                Method[] methods = clazz.getDeclaredMethods();
-                for (Method method : methods) {
-                    if (method.getName().equals(methodName)
-                            && method.isAnnotationPresent(DataPermission.class)) {
-                        return method.getAnnotation(DataPermission.class);
-                    }
+                // 先检查 Mapper 方法注解
+                DataPermission mapperAnnotation = getMapperMethodAnnotation(id);
+                if (mapperAnnotation != null) {
+                    return mapperAnnotation;
                 }
-                return clazz.getAnnotation(DataPermission.class);
+
+                // 检查调用栈中的 Service 方法注解
+                return getServiceAnnotationFromCallStack();
             } catch (Exception e) {
                 log.debug("Failed to get DataPermission annotation for: {}", mapperId, e);
                 return null;
             }
         });
+    }
+
+    private DataPermission getMapperMethodAnnotation(String mapperId) {
+        try {
+            int lastDot = mapperId.lastIndexOf(".");
+            String className = mapperId.substring(0, lastDot);
+            String methodName = mapperId.substring(lastDot + 1);
+
+            Class<?> clazz = Class.forName(className);
+            Method[] methods = clazz.getDeclaredMethods();
+            for (Method method : methods) {
+                if (method.getName().equals(methodName) && method.isAnnotationPresent(DataPermission.class)) {
+                    return method.getAnnotation(DataPermission.class);
+                }
+            }
+            return clazz.getAnnotation(DataPermission.class);
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+    private DataPermission getServiceAnnotationFromCallStack() {
+        StackTraceElement[] stack = Thread.currentThread().getStackTrace();
+        for (StackTraceElement element : stack) {
+            String className = element.getClassName();
+            String methodName = element.getMethodName();
+
+            // 只检查 Service 层
+            if (className.contains(".service.impl.") || className.endsWith("ServiceImpl")) {
+                try {
+                    Class<?> clazz = Class.forName(className);
+                    for (Method method : clazz.getDeclaredMethods()) {
+                        if (method.getName().equals(methodName) &&
+                                method.isAnnotationPresent(DataPermission.class)) {
+                            return method.getAnnotation(DataPermission.class);
+                        }
+                    }
+                } catch (Exception ignored) {
+                }
+            }
+        }
+        return null;
     }
 }
