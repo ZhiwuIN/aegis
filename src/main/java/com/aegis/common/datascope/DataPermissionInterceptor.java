@@ -1,5 +1,6 @@
 package com.aegis.common.datascope;
 
+import com.aegis.common.constant.CommonConstants;
 import com.aegis.common.constant.DataScopeConstants;
 import com.aegis.utils.SpringContextUtil;
 import com.baomidou.mybatisplus.core.toolkit.PluginUtils;
@@ -15,13 +16,13 @@ import net.sf.jsqlparser.parser.CCJSqlParserUtil;
 import net.sf.jsqlparser.schema.Column;
 import net.sf.jsqlparser.schema.Table;
 import net.sf.jsqlparser.statement.select.PlainSelect;
-import net.sf.jsqlparser.statement.select.Select;
 import org.apache.ibatis.executor.Executor;
 import org.apache.ibatis.mapping.BoundSql;
 import org.apache.ibatis.mapping.MappedStatement;
 import org.apache.ibatis.mapping.SqlCommandType;
 import org.apache.ibatis.session.ResultHandler;
 import org.apache.ibatis.session.RowBounds;
+import org.springframework.util.StringUtils;
 
 import java.lang.reflect.Method;
 import java.sql.SQLException;
@@ -51,82 +52,109 @@ public class DataPermissionInterceptor implements InnerInterceptor {
         String originalSql = boundSql.getSql();
 
         try {
-            Select select = (Select) CCJSqlParserUtil.parse(originalSql);
+            PlainSelect plainSelect = (PlainSelect) CCJSqlParserUtil.parse(originalSql);
 
-            if (select instanceof PlainSelect) {
-                PlainSelect plainSelect = (PlainSelect) select;
-                Expression dataPermissionExpression = buildDataPermissionExpression(plainSelect);
+            Expression dataPermissionExpression = buildDataPermissionExpression(plainSelect, dataPermission);
 
-                if (dataPermissionExpression != null) {
-                    Expression where = plainSelect.getWhere();
-                    if (where == null) {
-                        plainSelect.setWhere(dataPermissionExpression);
-                    } else {
-                        plainSelect.setWhere(new AndExpression(where, dataPermissionExpression));
-                    }
-
-                    PluginUtils.mpBoundSql(boundSql).sql(select.toString());
+            if (dataPermissionExpression != null) {
+                Expression where = plainSelect.getWhere();
+                if (where == null) {
+                    plainSelect.setWhere(dataPermissionExpression);
+                } else {
+                    plainSelect.setWhere(new AndExpression(where, dataPermissionExpression));
                 }
+
+                PluginUtils.mpBoundSql(boundSql).sql(plainSelect.toString());
+                log.debug("Applied data permission filter: {}", plainSelect.toString());
             }
         } catch (Exception e) {
             log.error("Failed to apply data permission for SQL: {}", originalSql, e);
         }
     }
 
-    private Expression buildDataPermissionExpression(PlainSelect plainSelect) {
+    private Expression buildDataPermissionExpression(PlainSelect plainSelect, DataPermission dataPermission) {
         DataPermissionHandler dataPermissionHandler = SpringContextUtil.getBean(DataPermissionHandler.class);
         DataPermissionContext context = dataPermissionHandler.getCurrentUserDataPermission();
+
         if (context == null || context.getDataScope() == null) {
             return null;
         }
 
         String dataScope = context.getDataScope();
-        Long userId = context.getUserId();
-        Long deptId = context.getDeptId();
-        Set<Long> deptIds = context.getDeptIds();
 
-        Table table = (Table) plainSelect.getFromItem();
-        String tableName = table.getName();
+        // 全部数据权限，不添加任何过滤条件
+        if (DataScopeConstants.DATA_SCOPE_ALL.equals(dataScope)) {
+            return null;
+        }
+
+        String tablePrefix = getTablePrefix(plainSelect, dataPermission);
+        String deptField = getDeptField(dataPermission);
+        String userField = getUserField(dataPermission);
 
         switch (dataScope) {
-
             case DataScopeConstants.DATA_SCOPE_CUSTOM:
+                Set<Long> deptIds = context.getDeptIds();
                 if (deptIds != null && !deptIds.isEmpty()) {
-                    return buildDeptInExpression(tableName, deptIds);
+                    return buildDeptInExpression(tablePrefix, deptField, deptIds);
                 }
                 return null;
 
             case DataScopeConstants.DATA_SCOPE_DEPT:
+                Long deptId = context.getDeptId();
                 if (deptId != null) {
-                    return buildDeptEqualsExpression(tableName, deptId);
+                    return buildDeptEqualsExpression(tablePrefix, deptField, deptId);
                 }
                 return null;
 
             case DataScopeConstants.DATA_SCOPE_DEPT_AND_CHILD:
-                Set<Long> allDeptIds = dataPermissionHandler.getDeptAndChildrenIds(deptId);
-                if (!allDeptIds.isEmpty()) {
-                    return buildDeptInExpression(tableName, allDeptIds);
+                Set<Long> allDeptIds = dataPermissionHandler.getDeptAndChildrenIds(context.getDeptId());
+                if (allDeptIds != null && !allDeptIds.isEmpty()) {
+                    return buildDeptInExpression(tablePrefix, deptField, allDeptIds);
                 }
                 return null;
 
             case DataScopeConstants.DATA_SCOPE_SELF:
-                return buildUserEqualsExpression(tableName, userId);
+                return buildUserEqualsExpression(tablePrefix, userField, context.getUserId());
 
             default:
                 return null;
         }
     }
 
-    private Expression buildDeptEqualsExpression(String tableName, Long deptId) {
+    private String getTablePrefix(PlainSelect plainSelect, DataPermission dataPermission) {
+        // 优先使用注解中指定的表别名
+        if (dataPermission != null && StringUtils.hasText(dataPermission.tableAlias())) {
+            return dataPermission.tableAlias();
+        }
+
+        // 获取主表信息
+        Table table = (Table) plainSelect.getFromItem();
+        String tableName = table.getName();
+
+        // 如果有别名，使用别名；否则使用表名
+        return table.getAlias() != null ? table.getAlias().getName() : tableName;
+    }
+
+    private String getDeptField(DataPermission dataPermission) {
+        return dataPermission != null && StringUtils.hasText(dataPermission.deptField())
+                ? dataPermission.deptField() : DataScopeConstants.DEFAULT_DEPT_FIELD;
+    }
+
+    private String getUserField(DataPermission dataPermission) {
+        return dataPermission != null && StringUtils.hasText(dataPermission.userField())
+                ? dataPermission.userField() : DataScopeConstants.DEFAULT_USER_FIELD;
+    }
+
+    private Expression buildDeptEqualsExpression(String tablePrefix, String deptField, Long deptId) {
         EqualsTo equalsTo = new EqualsTo();
-        equalsTo.setLeftExpression(new Column(tableName + ".dept_id"));
+        equalsTo.setLeftExpression(new Column(tablePrefix + CommonConstants.POINT + deptField));
         equalsTo.setRightExpression(new LongValue(deptId));
         return equalsTo;
     }
 
-    private Expression buildDeptInExpression(String tableName, Set<Long> deptIds) {
+    private Expression buildDeptInExpression(String tablePrefix, String deptField, Set<Long> deptIds) {
         InExpression inExpression = new InExpression();
-        inExpression.setLeftExpression(new Column(tableName + ".dept_id"));
+        inExpression.setLeftExpression(new Column(tablePrefix + CommonConstants.POINT + deptField));
 
         List<Expression> expressions = new ArrayList<>();
         for (Long deptId : deptIds) {
@@ -135,21 +163,20 @@ public class DataPermissionInterceptor implements InnerInterceptor {
 
         ExpressionList<Expression> expressionList = new ExpressionList<>(expressions);
         inExpression.setRightExpression(expressionList);
-
         return inExpression;
     }
 
-    private Expression buildUserEqualsExpression(String tableName, Long userId) {
+    private Expression buildUserEqualsExpression(String tablePrefix, String userField, Long userId) {
         EqualsTo equalsTo = new EqualsTo();
-        equalsTo.setLeftExpression(new Column(tableName + ".create_by"));
+        equalsTo.setLeftExpression(new Column(tablePrefix + CommonConstants.POINT + userField));
         equalsTo.setRightExpression(new LongValue(userId));
         return equalsTo;
     }
 
     private DataPermission getDataPermissionAnnotation(String mapperId) {
         try {
-            String className = mapperId.substring(0, mapperId.lastIndexOf("."));
-            String methodName = mapperId.substring(mapperId.lastIndexOf(".") + 1);
+            String className = mapperId.substring(0, mapperId.lastIndexOf(CommonConstants.POINT));
+            String methodName = mapperId.substring(mapperId.lastIndexOf(CommonConstants.POINT) + 1);
             Class<?> clazz = Class.forName(className);
 
             for (Method method : clazz.getDeclaredMethods()) {

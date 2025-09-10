@@ -31,4 +31,14 @@ public class DataScopeConstants {
      * 仅本人数据权限
      */
     public static final String DATA_SCOPE_SELF = "5";
+
+    /**
+     * 默认部门字段
+     */
+    public static final String DEFAULT_DEPT_FIELD = "dept_id";
+
+    /**
+     * 默认用户字段
+     */
+    public static final String DEFAULT_USER_FIELD = "create_by";
 }

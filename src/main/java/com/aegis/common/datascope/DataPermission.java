@@ -18,6 +18,16 @@ public @interface DataPermission {
     boolean enable() default true;
 
     /**
+     * 部门字段名，默认为 dept_id
+     */
+    String deptField() default "dept_id";
+
+    /**
+     * 用户字段名，默认为 create_by
+     */
+    String userField() default "create_by";
+
+    /**
      * 复杂查询的表别名
      */
     String tableAlias() default "";
