@@ -55,7 +55,7 @@ public class DictionaryServiceImpl implements DictionaryService {
         Dictionary dictionary = dictionaryMapper.selectById(id);
 
         if (dictionary != null) {
-            dictionary.setUpdateBy(SecurityUtils.getUsername());
+            dictionary.setUpdateBy(SecurityUtils.getUserId());
             dictionary.setStatus(CommonConstants.NORMAL_STATUS.equals(dictionary.getStatus()) ? CommonConstants.DISABLE_STATUS : CommonConstants.NORMAL_STATUS);
             dictionaryMapper.updateById(dictionary);
         }
@@ -111,7 +111,7 @@ public class DictionaryServiceImpl implements DictionaryService {
                 });
             }
 
-            dictionary.setUpdateBy(SecurityUtils.getUsername());
+            dictionary.setUpdateBy(SecurityUtils.getUserId());
             dictionaryMapper.updateById(dictionary);
         } else {
             LambdaQueryWrapper<Dictionary> queryWrapper = new LambdaQueryWrapper<>();
@@ -130,7 +130,7 @@ public class DictionaryServiceImpl implements DictionaryService {
                 });
             }
 
-            dictionary.setCreateBy(SecurityUtils.getUsername());
+            dictionary.setCreateBy(SecurityUtils.getUserId());
             dictionaryMapper.insert(dictionary);
         }
 

@@ -2,8 +2,8 @@ DROP TABLE IF EXISTS `t_user`;
 CREATE TABLE `t_user`
 (
     `id`              BIGINT UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '主键ID',
-    `create_by`       VARCHAR(64)              DEFAULT NULL COMMENT '创建人',
-    `update_by`       VARCHAR(64)              DEFAULT NULL COMMENT '更新人',
+    `create_by`       BIGINT              DEFAULT NULL COMMENT '创建人',
+    `update_by`       BIGINT              DEFAULT NULL COMMENT '更新人',
     `create_time`     DATETIME        NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
     `update_time`     DATETIME        NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
     `deleted`         TINYINT         NOT NULL DEFAULT 0 COMMENT '逻辑删除标记(0=正常,1=删除)',
@@ -30,8 +30,8 @@ DROP TABLE IF EXISTS `t_dept`;
 CREATE TABLE `t_dept`
 (
     `id`          BIGINT UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '主键ID',
-    `create_by`   VARCHAR(64)              DEFAULT NULL COMMENT '创建人',
-    `update_by`   VARCHAR(64)              DEFAULT NULL COMMENT '更新人',
+    `create_by`   BIGINT              DEFAULT NULL COMMENT '创建人',
+    `update_by`   BIGINT              DEFAULT NULL COMMENT '更新人',
     `create_time` DATETIME        NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
     `update_time` DATETIME        NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
     `deleted`     TINYINT         NOT NULL DEFAULT 0 COMMENT '逻辑删除标记(0=正常,1=删除)',
@@ -53,8 +53,8 @@ DROP TABLE IF EXISTS `t_role`;
 CREATE TABLE `t_role`
 (
     `id`                  BIGINT UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '主键ID',
-    `create_by`           VARCHAR(64)              DEFAULT NULL COMMENT '创建人',
-    `update_by`           VARCHAR(64)              DEFAULT NULL COMMENT '更新人',
+    `create_by`           BIGINT              DEFAULT NULL COMMENT '创建人',
+    `update_by`           BIGINT              DEFAULT NULL COMMENT '更新人',
     `create_time`         DATETIME        NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
     `update_time`         DATETIME        NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
     `deleted`             TINYINT         NOT NULL DEFAULT 0 COMMENT '逻辑删除标记(0=正常,1=删除)',
@@ -75,8 +75,8 @@ DROP TABLE IF EXISTS `t_menu`;
 CREATE TABLE `t_menu`
 (
     `id`             BIGINT UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '主键ID',
-    `create_by`      VARCHAR(64)              DEFAULT NULL COMMENT '创建人',
-    `update_by`      VARCHAR(64)              DEFAULT NULL COMMENT '更新人',
+    `create_by`      BIGINT              DEFAULT NULL COMMENT '创建人',
+    `update_by`      BIGINT              DEFAULT NULL COMMENT '更新人',
     `create_time`    DATETIME        NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
     `update_time`    DATETIME        NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
     `deleted`        TINYINT         NOT NULL DEFAULT 0 COMMENT '逻辑删除标记(0=正常,1=删除)',
@@ -143,8 +143,8 @@ DROP TABLE IF EXISTS `t_notice`;
 CREATE TABLE `t_notice`
 (
     `id`             BIGINT UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '主键ID',
-    `create_by`      VARCHAR(64)              DEFAULT NULL COMMENT '创建人',
-    `update_by`      VARCHAR(64)              DEFAULT NULL COMMENT '更新人',
+    `create_by`      BIGINT              DEFAULT NULL COMMENT '创建人',
+    `update_by`      BIGINT              DEFAULT NULL COMMENT '更新人',
     `create_time`    DATETIME        NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
     `update_time`    DATETIME        NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
     `deleted`        TINYINT         NOT NULL DEFAULT 0 COMMENT '逻辑删除标记(0=正常,1=删除)',
@@ -165,8 +165,8 @@ DROP TABLE IF EXISTS `t_notice_user`;
 CREATE TABLE `t_notice_user`
 (
     `id`          BIGINT UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '主键ID',
-    `create_by`   VARCHAR(64)              DEFAULT NULL COMMENT '创建人',
-    `update_by`   VARCHAR(64)              DEFAULT NULL COMMENT '更新人',
+    `create_by`   BIGINT              DEFAULT NULL COMMENT '创建人',
+    `update_by`   BIGINT              DEFAULT NULL COMMENT '更新人',
     `create_time` DATETIME        NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
     `update_time` DATETIME        NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
     `deleted`     TINYINT         NOT NULL DEFAULT 0 COMMENT '逻辑删除标记(0=正常,1=删除)',
@@ -184,8 +184,8 @@ DROP TABLE IF EXISTS `t_dictionary`;
 CREATE TABLE `t_dictionary`
 (
     `id`          BIGINT UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '主键ID',
-    `create_by`   VARCHAR(64)              DEFAULT NULL COMMENT '创建人',
-    `update_by`   VARCHAR(64)              DEFAULT NULL COMMENT '更新人',
+    `create_by`   BIGINT              DEFAULT NULL COMMENT '创建人',
+    `update_by`   BIGINT              DEFAULT NULL COMMENT '更新人',
     `create_time` DATETIME        NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
     `update_time` DATETIME        NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
     `deleted`     TINYINT         NOT NULL DEFAULT 0 COMMENT '逻辑删除标记(0=正常,1=删除)',
@@ -205,8 +205,8 @@ DROP TABLE IF EXISTS `t_whitelist`;
 CREATE TABLE `t_whitelist`
 (
     `id`             BIGINT UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '主键ID',
-    `create_by`      VARCHAR(64)              DEFAULT NULL COMMENT '创建人',
-    `update_by`      VARCHAR(64)              DEFAULT NULL COMMENT '更新人',
+    `create_by`      BIGINT              DEFAULT NULL COMMENT '创建人',
+    `update_by`      BIGINT              DEFAULT NULL COMMENT '更新人',
     `create_time`    DATETIME        NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
     `update_time`    DATETIME        NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
     `deleted`        TINYINT         NOT NULL DEFAULT 0 COMMENT '逻辑删除标记(0=正常,1=删除)',
@@ -262,8 +262,8 @@ DROP TABLE IF EXISTS `t_file_metadata`;
 CREATE TABLE `t_file_metadata`
 (
     `id`                 BIGINT UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '主键ID',
-    `create_by`          VARCHAR(64)              DEFAULT NULL COMMENT '创建人',
-    `update_by`          VARCHAR(64)              DEFAULT NULL COMMENT '更新人',
+    `create_by`          BIGINT              DEFAULT NULL COMMENT '创建人',
+    `update_by`          BIGINT              DEFAULT NULL COMMENT '更新人',
     `create_time`        DATETIME        NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
     `update_time`        DATETIME        NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
     `deleted`            TINYINT         NOT NULL DEFAULT 0 COMMENT '逻辑删除标记(0=正常,1=删除)',

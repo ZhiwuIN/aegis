@@ -140,7 +140,7 @@ public abstract class AbstractFileStorageService implements FileStorageService {
      */
     protected FileMetadata buildFileUploadResult(MultipartFile file, String fileName, String objectName, byte[] bytes, String platform) {
         FileMetadata build = new FileMetadata()
-                .setCreateBy(SecurityUtils.getUsername())
+                .setCreateBy(SecurityUtils.getUserId())
                 .setFileName(fileName)
                 .setOriginalFileName(file.getOriginalFilename())
                 .setSuffix(FileUtil.extName(file.getOriginalFilename()))

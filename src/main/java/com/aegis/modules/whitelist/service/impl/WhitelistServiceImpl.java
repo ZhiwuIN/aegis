@@ -60,7 +60,7 @@ public class WhitelistServiceImpl implements WhitelistService {
         Whitelist whitelist = whitelistMapper.selectById(id);
 
         if (whitelist != null) {
-            whitelist.setUpdateBy(SecurityUtils.getUsername());
+            whitelist.setUpdateBy(SecurityUtils.getUserId());
             whitelist.setStatus(CommonConstants.NORMAL_STATUS.equals(whitelist.getStatus()) ? CommonConstants.DISABLE_STATUS : CommonConstants.NORMAL_STATUS);
             whitelistMapper.updateById(whitelist);
 
@@ -105,10 +105,10 @@ public class WhitelistServiceImpl implements WhitelistService {
                 throw new BusinessException("白名单记录不存在");
             }
 
-            whitelist.setUpdateBy(SecurityUtils.getUsername());
+            whitelist.setUpdateBy(SecurityUtils.getUserId());
             whitelistMapper.updateById(whitelist);
         } else {
-            whitelist.setCreateBy(SecurityUtils.getUsername());
+            whitelist.setCreateBy(SecurityUtils.getUserId());
             whitelistMapper.insert(whitelist);
         }
 

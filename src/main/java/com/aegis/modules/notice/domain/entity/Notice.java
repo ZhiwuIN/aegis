@@ -41,14 +41,14 @@ public class Notice implements Serializable {
      */
     @ApiModelProperty("创建人")
     @TableField(value = "create_by")
-    private String createBy;
+    private Long createBy;
 
     /**
      * 更新人
      */
     @ApiModelProperty("更新人")
     @TableField(value = "update_by")
-    private String updateBy;
+    private Long updateBy;
 
     /**
      * 创建时间

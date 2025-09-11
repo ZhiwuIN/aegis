@@ -7,6 +7,7 @@ import com.baomidou.mybatisplus.extension.plugins.inner.InnerInterceptor;
 import lombok.extern.slf4j.Slf4j;
 import net.sf.jsqlparser.expression.Expression;
 import net.sf.jsqlparser.expression.LongValue;
+import net.sf.jsqlparser.expression.StringValue;
 import net.sf.jsqlparser.expression.operators.conditional.AndExpression;
 import net.sf.jsqlparser.expression.operators.relational.EqualsTo;
 import net.sf.jsqlparser.expression.operators.relational.ExpressionList;
@@ -188,10 +189,14 @@ public class DataPermissionInterceptor implements InnerInterceptor {
     /**
      * 构建等于条件
      */
-    private Expression buildEqualsExpression(String tablePrefix, String field, Long value) {
+    private Expression buildEqualsExpression(String tablePrefix, String field, Object value) {
         EqualsTo equalsTo = new EqualsTo();
         equalsTo.setLeftExpression(buildColumn(tablePrefix, field));
-        equalsTo.setRightExpression(new LongValue(value));
+        if (value instanceof Number) {
+            equalsTo.setRightExpression(new LongValue(value.toString()));
+        } else {
+            equalsTo.setRightExpression(new StringValue(value.toString()));
+        }
         return equalsTo;
     }
 
@@ -221,60 +226,23 @@ public class DataPermissionInterceptor implements InnerInterceptor {
         String mapperId = ms.getId();
         return annotationCache.computeIfAbsent(mapperId, id -> {
             try {
-                // 先检查 Mapper 方法注解
-                DataPermission mapperAnnotation = getMapperMethodAnnotation(id);
-                if (mapperAnnotation != null) {
-                    return mapperAnnotation;
-                }
+                int lastDot = id.lastIndexOf(".");
+                String className = id.substring(0, lastDot);
+                String methodName = id.substring(lastDot + 1);
 
-                // 检查调用栈中的 Service 方法注解
-                return getServiceAnnotationFromCallStack();
+                Class<?> clazz = Class.forName(className);
+                Method[] methods = clazz.getDeclaredMethods();
+                for (Method method : methods) {
+                    if (method.getName().equals(methodName)
+                            && method.isAnnotationPresent(DataPermission.class)) {
+                        return method.getAnnotation(DataPermission.class);
+                    }
+                }
+                return clazz.getAnnotation(DataPermission.class);
             } catch (Exception e) {
                 log.debug("Failed to get DataPermission annotation for: {}", mapperId, e);
                 return null;
             }
         });
-    }
-
-    private DataPermission getMapperMethodAnnotation(String mapperId) {
-        try {
-            int lastDot = mapperId.lastIndexOf(".");
-            String className = mapperId.substring(0, lastDot);
-            String methodName = mapperId.substring(lastDot + 1);
-
-            Class<?> clazz = Class.forName(className);
-            Method[] methods = clazz.getDeclaredMethods();
-            for (Method method : methods) {
-                if (method.getName().equals(methodName) && method.isAnnotationPresent(DataPermission.class)) {
-                    return method.getAnnotation(DataPermission.class);
-                }
-            }
-            return clazz.getAnnotation(DataPermission.class);
-        } catch (Exception e) {
-            return null;
-        }
-    }
-
-    private DataPermission getServiceAnnotationFromCallStack() {
-        StackTraceElement[] stack = Thread.currentThread().getStackTrace();
-        for (StackTraceElement element : stack) {
-            String className = element.getClassName();
-            String methodName = element.getMethodName();
-
-            // 只检查 Service 层
-            if (className.contains(".service.impl.") || className.endsWith("ServiceImpl")) {
-                try {
-                    Class<?> clazz = Class.forName(className);
-                    for (Method method : clazz.getDeclaredMethods()) {
-                        if (method.getName().equals(methodName) &&
-                                method.isAnnotationPresent(DataPermission.class)) {
-                            return method.getAnnotation(DataPermission.class);
-                        }
-                    }
-                } catch (Exception ignored) {
-                }
-            }
-        }
-        return null;
     }
 }
