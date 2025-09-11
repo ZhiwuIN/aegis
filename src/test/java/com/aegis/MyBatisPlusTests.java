@@ -3,6 +3,8 @@ package com.aegis;
 import com.aegis.common.domain.vo.PageVO;
 import com.aegis.config.mp.MPMetaObjectHandler;
 import com.aegis.config.mp.MybatisPlusConfig;
+import com.aegis.modules.dept.domain.entity.Dept;
+import com.aegis.modules.dept.mapper.DeptMapper;
 import com.aegis.modules.log.domain.entity.SysOperateLog;
 import com.aegis.modules.log.mapper.SysOperateLogMapper;
 import com.aegis.modules.user.domain.entity.User;
@@ -41,6 +43,9 @@ public class MyBatisPlusTests {
     @Autowired
     private WhitelistMapper whitelistMapper;
 
+    @Autowired
+    private DeptMapper deptMapper;
+
     @Test
     void testSysOperateLogMapper() {
         LambdaQueryWrapper<SysOperateLog> queryWrapper = new LambdaQueryWrapper<>();
@@ -67,5 +72,18 @@ public class MyBatisPlusTests {
         user.setEmail("228389787@qq.com");
         user.setPhone("18888888888");
         userMapper.insert(user);
+    }
+
+    @Test
+    void testDeptMapper() {
+        Dept dept = new Dept();
+        dept.setParentId(0L);
+        dept.setAncestors("0");
+        dept.setDeptName("总部");
+        dept.setOrderNum(1);
+        dept.setLeader("管理员");
+        dept.setPhone("18888888888");
+        dept.setEmail("aegis_system@163.com");
+        deptMapper.insert(dept);
     }
 }
