@@ -1,5 +1,6 @@
 package com.aegis.modules.dept.controller;
 
+import com.aegis.common.domain.vo.TreeVO;
 import com.aegis.common.duplicate.PreventDuplicateSubmit;
 import com.aegis.common.log.BusinessType;
 import com.aegis.common.log.OperationLog;
@@ -59,5 +60,11 @@ public class DeptController {
     @OperationLog(moduleTitle = "新增或修改部门", businessType = BusinessType.INSERT)
     public String addOrUpdate(@Validated({ValidGroup.Update.class, ValidGroup.Create.class,}) @RequestBody DeptDTO dto) {
         return deptService.addOrUpdate(dto);
+    }
+
+    @ApiOperation("获取树形结构部门")
+    @GetMapping("/tree")
+    public List<TreeVO> tree() {
+        return deptService.tree();
     }
 }

@@ -1,7 +1,7 @@
 package com.aegis.modules.dict.service;
 
 import com.aegis.common.domain.vo.PageVO;
-import com.aegis.modules.dict.domain.DictionaryDTO;
+import com.aegis.modules.dict.domain.dto.DictionaryDTO;
 import com.aegis.modules.dict.domain.entity.Dictionary;
 
 import java.util.List;

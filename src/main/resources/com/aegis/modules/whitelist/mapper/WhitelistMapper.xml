@@ -24,10 +24,4 @@
         version,remark,request_method,request_uri,`description`,
         status
     </sql>
-
-    <select id="getAllWhitelist" resultType="com.aegis.modules.whitelist.domain.entity.Whitelist">
-        select
-        <include refid="Base_Column_List"/>
-        from t_whitelist where deleted=0 and status=0
-    </select>
 </mapper>

@@ -4,6 +4,7 @@ import com.aegis.common.domain.dto.PageDTO;
 import com.aegis.common.validator.EnumString;
 import com.aegis.common.validator.ValidGroup;
 import com.baomidou.mybatisplus.annotation.TableField;
+import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -16,6 +17,7 @@ import javax.validation.constraints.NotNull;
  * @Description: 白名单DTO
  */
 @Data
+@ApiModel("白名单DTO")
 @EqualsAndHashCode(callSuper = true)
 public class WhitelistDTO extends PageDTO {
 

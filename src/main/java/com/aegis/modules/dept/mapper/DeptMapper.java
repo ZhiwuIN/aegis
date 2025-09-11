@@ -2,7 +2,9 @@ package com.aegis.modules.dept.mapper;
 
 import com.aegis.modules.dept.domain.entity.Dept;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import org.apache.ibatis.annotations.Param;
 
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -14,6 +16,8 @@ import java.util.Set;
 public interface DeptMapper extends BaseMapper<Dept> {
 
     Set<Long> getDeptAndChildrenIds(Long deptId);
+
+    void updateBatchAncestors(@Param("children")List<Dept> children);
 }
 
 

@@ -1,5 +1,6 @@
 package com.aegis.modules.dept.service;
 
+import com.aegis.common.domain.vo.TreeVO;
 import com.aegis.modules.dept.domain.dto.DeptDTO;
 import com.aegis.modules.dept.domain.entity.Dept;
 
@@ -51,4 +52,11 @@ public interface DeptService {
      * @return 响应消息
      */
     String addOrUpdate(DeptDTO dto);
+
+    /**
+     * 部门树形结构
+     *
+     * @return 树形结构列表
+     */
+    List<TreeVO> tree();
 }

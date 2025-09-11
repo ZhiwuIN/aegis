@@ -11,7 +11,6 @@ import lombok.experimental.Accessors;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -203,6 +202,6 @@ public class Menu implements Serializable {
      */
     @ApiModelProperty("子菜单")
     @TableField(exist = false)
-    private List<Menu> children = new ArrayList<>();
+    private List<Menu> children;
 
 }

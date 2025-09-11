@@ -1,0 +1,68 @@
+package com.aegis.common.domain.vo;
+
+import com.aegis.modules.dept.domain.entity.Dept;
+import com.aegis.modules.menu.domain.entity.Menu;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
+import lombok.Data;
+
+import java.io.Serializable;
+import java.util.Collections;
+import java.util.List;
+import java.util.stream.Collectors;
+
+/**
+ * @Author: xuesong.lei
+ * @Date: 2025/9/11 22:10
+ * @Description: 树形结构VO
+ */
+@Data
+@ApiModel("树形结构VO")
+public class TreeVO implements Serializable {
+
+    private static final long serialVersionUID = 1L;
+
+    /**
+     * 节点id
+     */
+    @ApiModelProperty("节点id")
+    private Long id;
+
+    /**
+     * 节点名称
+     */
+    @ApiModelProperty("节点名称")
+    private String label;
+
+    /**
+     * 子节点
+     */
+    @ApiModelProperty("子节点")
+    private List<TreeVO> children;
+
+
+    public TreeVO() {
+    }
+
+    public TreeVO(Dept sysDept) {
+        this.id = sysDept.getId();
+        this.label = sysDept.getDeptName();
+        List<Dept> children = sysDept.getChildren();
+        if (children != null && !children.isEmpty()) {
+            this.children = children.stream().map(TreeVO::new).collect(Collectors.toList());
+        } else {
+            this.children = Collections.emptyList();
+        }
+    }
+
+    public TreeVO(Menu sysMenu) {
+        this.id = sysMenu.getId();
+        this.label = sysMenu.getMenuName();
+        List<Menu> children = sysMenu.getChildren();
+        if (children != null && !children.isEmpty()) {
+            this.children = children.stream().map(TreeVO::new).collect(Collectors.toList());
+        } else {
+            this.children = Collections.emptyList();
+        }
+    }
+}

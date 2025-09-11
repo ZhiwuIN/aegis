@@ -1,6 +1,6 @@
 package com.aegis.modules.dict.service;
 
-import com.aegis.modules.dict.domain.DictionaryDTO;
+import com.aegis.modules.dict.domain.dto.DictionaryDTO;
 import com.aegis.modules.dict.domain.entity.Dictionary;
 import org.mapstruct.Mapper;
 
@@ -12,5 +12,5 @@ import org.mapstruct.Mapper;
 @Mapper(componentModel = "spring")
 public interface DictionaryConvert {
 
-    Dictionary toSysDictionary(DictionaryDTO dto);
+    Dictionary toDictionary(DictionaryDTO dto);
 }

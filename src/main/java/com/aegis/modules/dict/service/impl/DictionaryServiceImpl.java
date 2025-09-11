@@ -3,7 +3,7 @@ package com.aegis.modules.dict.service.impl;
 import com.aegis.common.constant.CommonConstants;
 import com.aegis.common.domain.vo.PageVO;
 import com.aegis.common.exception.BusinessException;
-import com.aegis.modules.dict.domain.DictionaryDTO;
+import com.aegis.modules.dict.domain.dto.DictionaryDTO;
 import com.aegis.modules.dict.domain.entity.Dictionary;
 import com.aegis.modules.dict.mapper.DictionaryMapper;
 import com.aegis.modules.dict.service.DictionaryConvert;
@@ -77,7 +77,7 @@ public class DictionaryServiceImpl implements DictionaryService {
             throw new BusinessException("字典类型必须为大写");
         }
 
-        Dictionary dictionary = dictionaryConvert.toSysDictionary(dto);
+        Dictionary dictionary = dictionaryConvert.toDictionary(dto);
 
         LambdaQueryWrapper<Dictionary> sameQueryWrapper = new LambdaQueryWrapper<>();
         sameQueryWrapper.eq(Dictionary::getDictName, dictionary.getDictName())
@@ -91,45 +91,27 @@ public class DictionaryServiceImpl implements DictionaryService {
             throw new BusinessException("存在相同的数据");
         }
 
+        LambdaQueryWrapper<Dictionary> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(Dictionary::getDictType, dictionary.getDictType())
+                .ne(ObjectUtils.isNotEmpty(dictionary.getId()), Dictionary::getId, dictionary.getId());
+
+        List<Dictionary> result = dictionaryMapper.selectList(queryWrapper);
+
+        if (result != null && !result.isEmpty()) {
+            result.forEach(item -> {
+                if (!item.getDictName().equals(dictionary.getDictName()) || !item.getDictType().equals(dictionary.getDictType())) {
+                    throw new BusinessException("字典名称或字典类型与现存的字典数据不匹配");
+                }
+                if (item.getDictLabel().equals(dictionary.getDictLabel()) && item.getDictValue().equals(dictionary.getDictValue())) {
+                    throw new BusinessException("存在相同的数据");
+                }
+            });
+        }
+
         if (dictionary.getId() != null) {
-            Dictionary oldData = dictionaryMapper.selectById(dictionary.getId());
-            if (!oldData.getDictName().equals(dictionary.getDictName()) || !oldData.getDictType().equals(dictionary.getDictType())) {
-                throw new BusinessException("不允许修改字典名称或字典类型");
-            }
-
-            LambdaQueryWrapper<Dictionary> queryUpdateWrapper = new LambdaQueryWrapper<>();
-            queryUpdateWrapper.eq(Dictionary::getDictType, dictionary.getDictType())
-                    .ne(Dictionary::getId, dictionary.getId());
-
-            List<Dictionary> result = dictionaryMapper.selectList(queryUpdateWrapper);
-
-            if (result != null && !result.isEmpty()) {
-                result.forEach(item -> {
-                    if (item.getDictLabel().equals(dictionary.getDictLabel()) && item.getDictValue().equals(dictionary.getDictValue())) {
-                        throw new BusinessException("存在相同的数据");
-                    }
-                });
-            }
-
             dictionary.setUpdateBy(SecurityUtils.getUserId());
             dictionaryMapper.updateById(dictionary);
         } else {
-            LambdaQueryWrapper<Dictionary> queryWrapper = new LambdaQueryWrapper<>();
-            queryWrapper.eq(Dictionary::getDictType, dictionary.getDictType());
-
-            List<Dictionary> result = dictionaryMapper.selectList(queryWrapper);
-
-            if (result != null && !result.isEmpty()) {
-                result.forEach(item -> {
-                    if (!item.getDictName().equals(dictionary.getDictName())) {
-                        throw new BusinessException("字典类型与现存的字典名称不匹配");
-                    }
-                    if (item.getDictLabel().equals(dictionary.getDictLabel()) && item.getDictValue().equals(dictionary.getDictValue())) {
-                        throw new BusinessException("存在相同的数据");
-                    }
-                });
-            }
-
             dictionary.setCreateBy(SecurityUtils.getUserId());
             dictionaryMapper.insert(dictionary);
         }

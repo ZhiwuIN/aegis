@@ -5,7 +5,7 @@ import com.aegis.common.duplicate.PreventDuplicateSubmit;
 import com.aegis.common.log.BusinessType;
 import com.aegis.common.log.OperationLog;
 import com.aegis.common.validator.ValidGroup;
-import com.aegis.modules.dict.domain.DictionaryDTO;
+import com.aegis.modules.dict.domain.dto.DictionaryDTO;
 import com.aegis.modules.dict.domain.entity.Dictionary;
 import com.aegis.modules.dict.service.DictionaryService;
 import io.swagger.annotations.Api;

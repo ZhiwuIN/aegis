@@ -11,6 +11,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 
 /**
  * @Author: xuesong.lei
@@ -146,4 +147,10 @@ public class Dept implements Serializable {
     @TableField(value = "status")
     private String status;
 
+    /**
+     * 子部门
+     */
+    @ApiModelProperty("子部门")
+    @TableField(exist = false)
+    private List<Dept> children;
 }

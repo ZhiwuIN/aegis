@@ -9,6 +9,7 @@ import com.aegis.modules.role.domain.entity.Role;
 import com.aegis.modules.whitelist.domain.entity.Whitelist;
 import com.aegis.modules.whitelist.mapper.WhitelistMapper;
 import com.aegis.utils.RedisUtils;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.access.ConfigAttribute;
@@ -72,7 +73,9 @@ public class MyFilterInvocationSecurityMetadataSource implements FilterInvocatio
         if (redisUtils.hasKey(RedisConstants.WHITELIST)) {
             return redisUtils.getList(RedisConstants.WHITELIST, Whitelist.class);
         } else {
-            List<Whitelist> rules = whitelistMapper.getAllWhitelist();
+            LambdaQueryWrapper<Whitelist> queryWrapper = new LambdaQueryWrapper<>();
+            queryWrapper.eq(Whitelist::getStatus, CommonConstants.NORMAL_STATUS);
+            List<Whitelist> rules = whitelistMapper.selectList(queryWrapper);
             redisUtils.set(RedisConstants.WHITELIST, rules, 1, TimeUnit.DAYS);
             return rules;
         }

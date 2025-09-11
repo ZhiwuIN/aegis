@@ -18,6 +18,11 @@ public class CommonConstants {
     public static final String POINT = ".";
 
     /**
+     * 逗号
+     */
+    public static final String COMMA = ",";
+
+    /**
      * token前缀
      */
     public static final String TOKEN_PREFIX = "Bearer ";

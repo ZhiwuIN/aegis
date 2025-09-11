@@ -1,7 +1,8 @@
-package com.aegis.modules.dict.domain;
+package com.aegis.modules.dict.domain.dto;
 
 import com.aegis.common.domain.dto.PageDTO;
 import com.aegis.common.validator.ValidGroup;
+import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -14,6 +15,7 @@ import javax.validation.constraints.NotBlank;
  * @Description: 字典DTO
  */
 @Data
+@ApiModel("字典DTO")
 @EqualsAndHashCode(callSuper = true)
 public class DictionaryDTO extends PageDTO {
 
