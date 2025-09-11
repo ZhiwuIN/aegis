@@ -1,0 +1,83 @@
+package com.aegis.common.datascope;
+
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.aspectj.lang.ProceedingJoinPoint;
+import org.aspectj.lang.annotation.Around;
+import org.aspectj.lang.annotation.Aspect;
+import org.springframework.core.annotation.Order;
+import org.springframework.stereotype.Component;
+
+/**
+ * @Author: xuesong.lei
+ * @Date: 2025/09/11 15:30
+ * @Description: 数据权限AOP切面
+ */
+@Aspect
+@Component
+@Order(1) // 确保在事务切面之前执行
+@Slf4j
+@RequiredArgsConstructor
+public class DataPermissionAspect {
+
+    private final DataPermissionHandler dataPermissionHandler;
+
+    /**
+     * 拦截带有 @DataPermission 注解的方法
+     */
+    @Around("@annotation(dataPermission)")
+    public Object applyDataPermission(ProceedingJoinPoint joinPoint, DataPermission dataPermission) throws Throwable {
+        // 检查注解是否启用
+        if (!dataPermission.enable()) {
+            if (log.isTraceEnabled()) {
+                log.trace("数据权限已禁用，方法: {}", joinPoint.getSignature().toShortString());
+            }
+            return joinPoint.proceed();
+        }
+
+        try {
+            // 获取当前用户的数据权限上下文
+            DataPermissionContext context = dataPermissionHandler.getCurrentUserDataPermission();
+            if (context == null) {
+                if (log.isTraceEnabled()) {
+                    log.trace("无法获取数据权限上下文，跳过权限控制，方法: {}", joinPoint.getSignature().toShortString());
+                }
+                return joinPoint.proceed();
+            }
+
+            // 将数据权限信息设置到线程本地变量
+            DataPermissionContextHolder.set(context, dataPermission);
+
+            if (log.isTraceEnabled()) {
+                log.trace("应用数据权限，方法: {}，数据范围: {}，部门字段: {}，用户字段: {}",
+                        joinPoint.getSignature().toShortString(),
+                        context.getDataScope(),
+                        dataPermission.deptField(),
+                        dataPermission.userField());
+            }
+
+            // 执行目标方法
+            return joinPoint.proceed();
+
+        } catch (Exception e) {
+            log.error("应用数据权限时发生错误，方法: {}", joinPoint.getSignature().toShortString(), e);
+            // 出错时也要执行原方法，避免业务中断
+            return joinPoint.proceed();
+        } finally {
+            // 清除线程本地变量，避免内存泄漏
+            DataPermissionContextHolder.clear();
+            if (log.isTraceEnabled()) {
+                log.trace("清除数据权限上下文，方法: {}", joinPoint.getSignature().toShortString());
+            }
+        }
+    }
+
+    /**
+     * 拦截类级别的 @DataPermission 注解
+     * 优先级低于方法级别的注解
+     */
+    @Around("@within(dataPermission) && !@annotation(com.aegis.common.datascope.DataPermission)")
+    public Object applyClassLevelDataPermission(ProceedingJoinPoint joinPoint, DataPermission dataPermission) throws Throwable {
+        return applyDataPermission(joinPoint, dataPermission);
+    }
+}

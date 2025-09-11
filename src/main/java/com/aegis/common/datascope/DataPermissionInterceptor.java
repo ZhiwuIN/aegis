@@ -56,8 +56,36 @@ public class DataPermissionInterceptor implements InnerInterceptor {
             return;
         }
 
-        DataPermission dataPermission = getDataPermissionAnnotation(ms);
-        // 没有注解或注解被禁用，则不处理
+        // 优先从线程本地变量获取数据权限信息（来自AOP切面）
+        DataPermissionContextHolder.DataPermissionInfo permissionInfo = DataPermissionContextHolder.get();
+        DataPermission dataPermission;
+        DataPermissionContext context;
+
+        if (permissionInfo != null) {
+            // 来自AOP切面的权限信息
+            dataPermission = permissionInfo.getAnnotation();
+            context = permissionInfo.getContext();
+
+            if (log.isTraceEnabled()) {
+                log.trace("使用AOP切面提供的数据权限信息，MapperId: {}", ms.getId());
+            }
+        } else {
+            // 回退到原有的注解检查方式（Mapper方法或类上的注解）
+            dataPermission = getDataPermissionAnnotation(ms);
+            if (dataPermission == null || !dataPermission.enable()) {
+                return;
+            }
+
+            // 获取数据权限上下文
+            DataPermissionHandler handler = SpringContextUtil.getBean(DataPermissionHandler.class);
+            context = handler.getCurrentUserDataPermission();
+
+            if (log.isTraceEnabled()) {
+                log.trace("使用Mapper注解的数据权限信息，MapperId: {}", ms.getId());
+            }
+        }
+
+        // 没有权限注解或注解被禁用，则不处理
         if (dataPermission == null || !dataPermission.enable()) {
             return;
         }
@@ -78,7 +106,7 @@ public class DataPermissionInterceptor implements InnerInterceptor {
 
             PlainSelect plainSelect = select.getPlainSelect();
 
-            Expression filterExpression = buildDataPermissionExpression(plainSelect, dataPermission);
+            Expression filterExpression = buildDataPermissionExpression(plainSelect, dataPermission, context);
             if (filterExpression == null) {
                 return;
             }
@@ -94,20 +122,20 @@ public class DataPermissionInterceptor implements InnerInterceptor {
             String newSql = plainSelect.toString();
             PluginUtils.mpBoundSql(boundSql).sql(newSql);
 
-            if (log.isTraceEnabled()) {
-                log.trace("Applied data permission filter, SQL before:\n{}\nSQL after:\n{}", originalSql, newSql);
+            if (log.isDebugEnabled()) {
+                log.debug("应用数据权限过滤器，原SQL:\n{}\n新SQL:\n{}", originalSql, newSql);
             }
         } catch (Exception e) {
-            log.error("Failed to apply data permission filter for SQL: {}", originalSql, e);
+            log.error("应用数据权限过滤器失败，SQL: {}", originalSql, e);
         }
     }
 
     /**
      * 构建数据权限 SQL 条件
      */
-    private Expression buildDataPermissionExpression(PlainSelect plainSelect, DataPermission dataPermission) {
-        DataPermissionHandler handler = SpringContextUtil.getBean(DataPermissionHandler.class);
-        DataPermissionContext context = handler.getCurrentUserDataPermission();
+    private Expression buildDataPermissionExpression(PlainSelect plainSelect,
+                                                   DataPermission dataPermission,
+                                                   DataPermissionContext context) {
 
         if (context == null || context.getDataScope() == null) {
             return null;
@@ -138,6 +166,7 @@ public class DataPermissionInterceptor implements InnerInterceptor {
                 return null;
 
             case DataScopeConstants.DATA_SCOPE_DEPT_AND_CHILD:
+                DataPermissionHandler handler = SpringContextUtil.getBean(DataPermissionHandler.class);
                 Set<Long> allDeptIds = handler.getDeptAndChildrenIds(context.getDeptId());
                 if (allDeptIds != null && !allDeptIds.isEmpty()) {
                     return buildInExpression(tablePrefix, deptField, allDeptIds);
@@ -170,7 +199,7 @@ public class DataPermissionInterceptor implements InnerInterceptor {
             return table.getAlias() != null ? table.getAlias().getName() : table.getName();
         }
 
-        log.warn("Unsupported SQL structure for data permission: {}", plainSelect);
+        log.warn("数据权限不支持的SQL结构: {}", plainSelect);
         return "";
     }
 
@@ -222,6 +251,9 @@ public class DataPermissionInterceptor implements InnerInterceptor {
         return new Column(field);
     }
 
+    /**
+     * 从Mapper方法或类上获取DataPermission注解
+     */
     private DataPermission getDataPermissionAnnotation(MappedStatement ms) {
         String mapperId = ms.getId();
         return annotationCache.computeIfAbsent(mapperId, id -> {
@@ -240,7 +272,7 @@ public class DataPermissionInterceptor implements InnerInterceptor {
                 }
                 return clazz.getAnnotation(DataPermission.class);
             } catch (Exception e) {
-                log.debug("Failed to get DataPermission annotation for: {}", mapperId, e);
+                log.debug("获取DataPermission注解失败: {}", mapperId, e);
                 return null;
             }
         });
