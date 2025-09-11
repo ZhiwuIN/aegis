@@ -57,7 +57,7 @@ public class MultiLoginAuthenticationFilter extends AbstractAuthenticationProces
         }
 
         // 校验滑块验证码
-        // checkSlideCaptcha(map);
+        checkSlideCaptcha(map);
 
         // 根据不同类型构建 Authentication
         Authentication authToken = buildAuthenticationToken(loginType, map);

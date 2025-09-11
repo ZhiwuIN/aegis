@@ -1,7 +1,6 @@
 package com.aegis.modules.dict.service.impl;
 
 import com.aegis.common.constant.CommonConstants;
-import com.aegis.common.datascope.DataPermission;
 import com.aegis.common.domain.vo.PageVO;
 import com.aegis.common.exception.BusinessException;
 import com.aegis.modules.dict.domain.DictionaryDTO;
@@ -34,7 +33,6 @@ public class DictionaryServiceImpl implements DictionaryService {
     private final DictionaryConvert dictionaryConvert;
 
     @Override
-    @DataPermission
     public PageVO<Dictionary> pageList(DictionaryDTO dto) {
         LambdaQueryWrapper<Dictionary> queryWrapper = new LambdaQueryWrapper<>();
 
