@@ -47,11 +47,7 @@ public class DataPermissionInterceptor implements InnerInterceptor {
 
         // 从线程本地变量获取数据权限信息
         DataPermissionContextHolder.DataPermissionInfo permissionInfo = DataPermissionContextHolder.get();
-        if (permissionInfo == null) {
-            // 没有权限信息，说明方法没有添加@DataPermission注解，直接放行
-            if (log.isTraceEnabled()) {
-                log.trace("未检测到数据权限信息，跳过权限控制，MapperId: {}", ms.getId());
-            }
+        if (permissionInfo == null) {// 没有权限信息，说明方法没有添加@DataPermission注解，直接放行
             return;
         }
 
@@ -60,9 +56,6 @@ public class DataPermissionInterceptor implements InnerInterceptor {
 
         // 检查注解是否启用
         if (!dataPermission.enable()) {
-            if (log.isTraceEnabled()) {
-                log.trace("数据权限已禁用，MapperId: {}", ms.getId());
-            }
             return;
         }
 

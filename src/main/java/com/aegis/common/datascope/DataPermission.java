@@ -1,5 +1,7 @@
 package com.aegis.common.datascope;
 
+import com.aegis.common.constant.DataScopeConstants;
+
 import java.lang.annotation.*;
 
 /**
@@ -20,12 +22,12 @@ public @interface DataPermission {
     /**
      * 部门字段名，默认为 dept_id
      */
-    String deptField() default "dept_id";
+    String deptField() default DataScopeConstants.DEFAULT_DEPT_FIELD;
 
     /**
      * 用户字段名，默认为 create_by
      */
-    String userField() default "create_by";
+    String userField() default DataScopeConstants.DEFAULT_USER_FIELD;
 
     /**
      * 复杂查询的表别名
