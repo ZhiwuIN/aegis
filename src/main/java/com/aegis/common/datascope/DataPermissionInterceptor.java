@@ -27,12 +27,8 @@ import org.apache.ibatis.session.ResultHandler;
 import org.apache.ibatis.session.RowBounds;
 import org.springframework.util.StringUtils;
 
-import java.lang.reflect.Method;
-import java.sql.SQLException;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
 /**
@@ -43,50 +39,30 @@ import java.util.stream.Collectors;
 @Slf4j
 public class DataPermissionInterceptor implements InnerInterceptor {
 
-    /**
-     * 缓存 MapperId -> DataPermission 注解，减少反射调用
-     */
-    private final Map<String, DataPermission> annotationCache = new ConcurrentHashMap<>();
-
     @Override
-    public void beforeQuery(Executor executor, MappedStatement ms, Object parameter,
-                            RowBounds rowBounds, ResultHandler resultHandler, BoundSql boundSql) throws SQLException {
-
+    public void beforeQuery(Executor executor, MappedStatement ms, Object parameter, RowBounds rowBounds, ResultHandler resultHandler, BoundSql boundSql) {
         if (!SqlCommandType.SELECT.equals(ms.getSqlCommandType())) {
             return;
         }
 
-        // 优先从线程本地变量获取数据权限信息（来自AOP切面）
+        // 从线程本地变量获取数据权限信息
         DataPermissionContextHolder.DataPermissionInfo permissionInfo = DataPermissionContextHolder.get();
-        DataPermission dataPermission;
-        DataPermissionContext context;
-
-        if (permissionInfo != null) {
-            // 来自AOP切面的权限信息
-            dataPermission = permissionInfo.getAnnotation();
-            context = permissionInfo.getContext();
-
+        if (permissionInfo == null) {
+            // 没有权限信息，说明方法没有添加@DataPermission注解，直接放行
             if (log.isTraceEnabled()) {
-                log.trace("使用AOP切面提供的数据权限信息，MapperId: {}", ms.getId());
+                log.trace("未检测到数据权限信息，跳过权限控制，MapperId: {}", ms.getId());
             }
-        } else {
-            // 回退到原有的注解检查方式（Mapper方法或类上的注解）
-            dataPermission = getDataPermissionAnnotation(ms);
-            if (dataPermission == null || !dataPermission.enable()) {
-                return;
-            }
-
-            // 获取数据权限上下文
-            DataPermissionHandler handler = SpringContextUtil.getBean(DataPermissionHandler.class);
-            context = handler.getCurrentUserDataPermission();
-
-            if (log.isTraceEnabled()) {
-                log.trace("使用Mapper注解的数据权限信息，MapperId: {}", ms.getId());
-            }
+            return;
         }
 
-        // 没有权限注解或注解被禁用，则不处理
-        if (dataPermission == null || !dataPermission.enable()) {
+        DataPermission dataPermission = permissionInfo.getAnnotation();
+        DataPermissionContext context = permissionInfo.getContext();
+
+        // 检查注解是否启用
+        if (!dataPermission.enable()) {
+            if (log.isTraceEnabled()) {
+                log.trace("数据权限已禁用，MapperId: {}", ms.getId());
+            }
             return;
         }
 
@@ -133,9 +109,7 @@ public class DataPermissionInterceptor implements InnerInterceptor {
     /**
      * 构建数据权限 SQL 条件
      */
-    private Expression buildDataPermissionExpression(PlainSelect plainSelect,
-                                                   DataPermission dataPermission,
-                                                   DataPermissionContext context) {
+    private Expression buildDataPermissionExpression(PlainSelect plainSelect, DataPermission dataPermission, DataPermissionContext context) {
 
         if (context == null || context.getDataScope() == null) {
             return null;
@@ -203,12 +177,18 @@ public class DataPermissionInterceptor implements InnerInterceptor {
         return "";
     }
 
+    /**
+     * 获取部门字段，优先使用注解指定的字段
+     */
     private String getDeptField(DataPermission dataPermission) {
         return (dataPermission != null && StringUtils.hasText(dataPermission.deptField()))
                 ? dataPermission.deptField()
                 : DataScopeConstants.DEFAULT_DEPT_FIELD;
     }
 
+    /**
+     * 获取用户字段，优先使用注解指定的字段
+     */
     private String getUserField(DataPermission dataPermission) {
         return (dataPermission != null && StringUtils.hasText(dataPermission.userField()))
                 ? dataPermission.userField()
@@ -249,32 +229,5 @@ public class DataPermissionInterceptor implements InnerInterceptor {
             return new Column(tablePrefix + "." + field);
         }
         return new Column(field);
-    }
-
-    /**
-     * 从Mapper方法或类上获取DataPermission注解
-     */
-    private DataPermission getDataPermissionAnnotation(MappedStatement ms) {
-        String mapperId = ms.getId();
-        return annotationCache.computeIfAbsent(mapperId, id -> {
-            try {
-                int lastDot = id.lastIndexOf(".");
-                String className = id.substring(0, lastDot);
-                String methodName = id.substring(lastDot + 1);
-
-                Class<?> clazz = Class.forName(className);
-                Method[] methods = clazz.getDeclaredMethods();
-                for (Method method : methods) {
-                    if (method.getName().equals(methodName)
-                            && method.isAnnotationPresent(DataPermission.class)) {
-                        return method.getAnnotation(DataPermission.class);
-                    }
-                }
-                return clazz.getAnnotation(DataPermission.class);
-            } catch (Exception e) {
-                log.debug("获取DataPermission注解失败: {}", mapperId, e);
-                return null;
-            }
-        });
     }
 }

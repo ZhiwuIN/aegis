@@ -36,13 +36,6 @@ public class DataPermissionContextHolder {
     }
 
     /**
-     * 判断当前线程是否有数据权限信息
-     */
-    public static boolean hasPermissionInfo() {
-        return holder.get() != null;
-    }
-
-    /**
      * 数据权限信息封装类
      */
     @Data

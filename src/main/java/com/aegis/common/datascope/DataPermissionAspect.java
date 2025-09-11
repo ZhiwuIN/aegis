@@ -5,7 +5,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
-import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
 /**
@@ -13,10 +12,9 @@ import org.springframework.stereotype.Component;
  * @Date: 2025/09/11 15:30
  * @Description: 数据权限AOP切面
  */
+@Slf4j
 @Aspect
 @Component
-@Order(1) // 确保在事务切面之前执行
-@Slf4j
 @RequiredArgsConstructor
 public class DataPermissionAspect {
 
@@ -29,9 +27,6 @@ public class DataPermissionAspect {
     public Object applyDataPermission(ProceedingJoinPoint joinPoint, DataPermission dataPermission) throws Throwable {
         // 检查注解是否启用
         if (!dataPermission.enable()) {
-            if (log.isTraceEnabled()) {
-                log.trace("数据权限已禁用，方法: {}", joinPoint.getSignature().toShortString());
-            }
             return joinPoint.proceed();
         }
 
@@ -39,22 +34,11 @@ public class DataPermissionAspect {
             // 获取当前用户的数据权限上下文
             DataPermissionContext context = dataPermissionHandler.getCurrentUserDataPermission();
             if (context == null) {
-                if (log.isTraceEnabled()) {
-                    log.trace("无法获取数据权限上下文，跳过权限控制，方法: {}", joinPoint.getSignature().toShortString());
-                }
                 return joinPoint.proceed();
             }
 
             // 将数据权限信息设置到线程本地变量
             DataPermissionContextHolder.set(context, dataPermission);
-
-            if (log.isTraceEnabled()) {
-                log.trace("应用数据权限，方法: {}，数据范围: {}，部门字段: {}，用户字段: {}",
-                        joinPoint.getSignature().toShortString(),
-                        context.getDataScope(),
-                        dataPermission.deptField(),
-                        dataPermission.userField());
-            }
 
             // 执行目标方法
             return joinPoint.proceed();
