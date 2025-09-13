@@ -40,6 +40,5 @@ public class WhitelistDTO extends PageDTO {
     private String description;
 
     @ApiModelProperty("状态(0-正常,1停用)")
-    @TableField(value = "status")
     private String status;
 }

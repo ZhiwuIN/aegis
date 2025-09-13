@@ -75,6 +75,7 @@ public class MenuDTO {
     private String visible;
 
     @ApiModelProperty("菜单状态(0-正常,1-停用)")
+    @EnumString(groups = {ValidGroup.Create.class, ValidGroup.Update.class}, value = {"0", "1"}, message = "状态只允许为0或1")
     private String status;
 
     @ApiModelProperty("权限标识")

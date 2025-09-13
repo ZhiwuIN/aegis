@@ -1,6 +1,7 @@
 package com.aegis.modules.dict.domain.dto;
 
 import com.aegis.common.domain.dto.PageDTO;
+import com.aegis.common.validator.EnumString;
 import com.aegis.common.validator.ValidGroup;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -49,5 +50,6 @@ public class DictionaryDTO extends PageDTO {
     private String dictValue;
 
     @ApiModelProperty("状态")
+    @EnumString(groups = {ValidGroup.Create.class, ValidGroup.Update.class}, value = {"0", "1"}, message = "状态只允许为0或1")
     private String status;
 }

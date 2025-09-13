@@ -13,11 +13,6 @@ public class CommonConstants {
     public static final String REFRESH_TOKEN_COOKIE = "refresh_token";
 
     /**
-     * 点
-     */
-    public static final String POINT = ".";
-
-    /**
      * 逗号
      */
     public static final String COMMA = ",";

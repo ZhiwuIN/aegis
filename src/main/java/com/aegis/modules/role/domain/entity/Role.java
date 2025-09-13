@@ -99,9 +99,9 @@ public class Role implements Serializable {
     private String roleName;
 
     /**
-     * 角色权限字符串
+     * 角色编码
      */
-    @ApiModelProperty("角色权限字符串")
+    @ApiModelProperty("角色编码")
     @TableField(value = "role_code")
     private String roleCode;
 
@@ -109,8 +109,8 @@ public class Role implements Serializable {
      * 显示顺序
      */
     @ApiModelProperty("显示顺序")
-    @TableField(value = "role_sort")
-    private Integer roleSort;
+    @TableField(value = "order_num")
+    private Integer orderNum;
 
     /**
      * 数据范围(1-全部数据权限,2-自定数据权限,3-本部门数据权限,4-本部门及以下数据权限)

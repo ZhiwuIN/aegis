@@ -15,7 +15,7 @@
         <result property="remark" column="remark"/>
         <result property="roleName" column="role_name"/>
         <result property="roleCode" column="role_code"/>
-        <result property="roleSort" column="role_sort"/>
+        <result property="orderNum" column="order_num"/>
         <result property="dataScope" column="data_scope"/>
         <result property="menuCheckStrictly" column="menu_check_strictly"/>
         <result property="deptCheckStrictly" column="dept_check_strictly"/>
@@ -24,7 +24,7 @@
 
     <sql id="Base_Column_List">
         id,create_by,update_by,create_time,update_time,deleted,
-        version,remark,role_name,role_code,role_sort,
+        version,remark,role_name,role_code,order_num,
         data_scope,menu_check_strictly,dept_check_strictly,status
     </sql>
 
@@ -46,4 +46,55 @@
           AND r.deleted = 0
           AND r.status = '0'
     </select>
+
+    <select id="allocatedList" resultType="com.aegis.modules.user.domain.vo.UserVO">
+        SELECT u.id              AS id,
+               u.create_time     AS createTime,
+               u.dept_id         AS deptId,
+               u.username        AS username,
+               u.nickname        AS nickname,
+               u.email           AS email,
+               u.sex             AS sex,
+               u.phone           AS phone,
+               u.STATUS          AS STATUS,
+               u.last_login_time AS lastLoginTime
+        FROM t_user u
+                 LEFT JOIN t_user_role ur ON u.id = ur.user_id
+                 LEFT JOIN t_role r ON r.id = ur.role_id
+        WHERE u.deleted = 0
+          AND r.id = #{dto.roleId}
+        <if test="dto.username != null and dto.username != ''">
+            and u.username like concat('%',#{dto.username},'%')
+        </if>
+        <if test="dto.phone != null and dto.phone != ''">
+            and u.phone like concat('%',#{dto.phone},'%')
+        </if>
+    </select>
+
+    <select id="unallocatedList" resultType="com.aegis.modules.user.domain.vo.UserVO">
+        SELECT DISTINCT u.id              AS id,
+                        u.create_time     AS createTime,
+                        u.dept_id         AS deptId,
+                        u.username        AS username,
+                        u.nickname        AS nickname,
+                        u.email           AS email,
+                        u.sex             AS sex,
+                        u.phone           AS phone,
+                        u.status          AS status,
+                        u.last_login_time AS lastLoginTime
+        FROM t_user u
+                 LEFT JOIN t_user_role ur ON u.id = ur.user_id
+                 LEFT JOIN t_role r ON r.id = ur.role_id
+                 LEFT JOIN t_user_role ur_target
+                           ON ur_target.user_id = u.id AND ur_target.role_id = #{dto.roleId}
+        WHERE u.deleted = 0
+          AND ur_target.user_id IS NULL
+        <if test="dto.username != null and dto.username != ''">
+            and u.username like concat('%',#{dto.username},'%')
+        </if>
+        <if test="dto.phone != null and dto.phone != ''">
+            and u.phone like concat('%',#{dto.phone},'%')
+        </if>
+    </select>
+
 </mapper>

@@ -2,6 +2,9 @@ package com.aegis.modules.role.mapper;
 
 import com.aegis.modules.role.domain.entity.RoleDept;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import org.apache.ibatis.annotations.Param;
+
+import java.util.List;
 
 /**
  * @Author: xuesong.lei
@@ -11,6 +14,9 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
  */
 public interface RoleDeptMapper extends BaseMapper<RoleDept> {
 
+    void batchRoleDept(List<RoleDept> roleDeptList);
+
+    List<Long> selectDeptListByRoleId(@Param("roleId") Long roleId, @Param("deptCheckStrictly") Integer deptCheckStrictly);
 }
 
 

@@ -13,4 +13,29 @@
     <sql id="Base_Column_List">
         id,role_id,dept_id
     </sql>
+
+    <insert id="batchRoleDept">
+        INSERT INTO t_role_dept ( role_id, dept_id )
+        VALUES
+        <foreach collection="list" item="item" index="index" separator=",">
+            (#{item.roleId},#{item.deptId})
+        </foreach>
+    </insert>
+
+    <select id="selectDeptListByRoleId" resultType="java.lang.Long">
+        SELECT d.id
+        FROM t_dept d
+        LEFT JOIN t_role_dept rd ON d.id = rd.dept_id
+        WHERE rd.role_id = #{roleId}
+        <if test="deptCheckStrictly != null and deptCheckStrictly == 1">
+            AND NOT EXISTS (
+            SELECT 1
+            FROM t_dept child
+            INNER JOIN t_role_dept rd_child ON child.id = rd_child.dept_id
+            WHERE child.parent_id = d.id
+            AND rd_child.role_id = #{roleId}
+            )
+        </if>
+        ORDER BY d.parent_id, d.order_num
+    </select>
 </mapper>

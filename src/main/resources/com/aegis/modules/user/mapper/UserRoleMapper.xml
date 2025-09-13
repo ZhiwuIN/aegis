@@ -13,4 +13,12 @@
     <sql id="Base_Column_List">
         id,user_id,role_id
     </sql>
+
+    <insert id="batchUserRole">
+        INSERT INTO t_user_role ( user_id, role_id )
+        VALUES
+        <foreach collection="list" item="item" index="index" separator=",">
+            (#{item.userId},#{item.roleId})
+        </foreach>
+    </insert>
 </mapper>

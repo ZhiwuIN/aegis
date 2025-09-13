@@ -3,6 +3,8 @@ package com.aegis.modules.user.mapper;
 import com.aegis.modules.user.domain.entity.UserRole;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 
+import java.util.List;
+
 /**
  * @Author: xuesong.lei
  * @Date: 2025-08-30 10:49:13
@@ -11,6 +13,7 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
  */
 public interface UserRoleMapper extends BaseMapper<UserRole> {
 
+    void batchUserRole(List<UserRole> userRoleList);
 }
 
 

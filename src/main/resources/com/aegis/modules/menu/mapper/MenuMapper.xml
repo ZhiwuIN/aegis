@@ -43,14 +43,15 @@
     </sql>
 
     <select id="getAllMenu" resultMap="MenuRole">
-        select distinct tm.*, tr.role_code as role_code
-        from t_menu tm
-                 left join t_role_menu trm on trm.menu_id = tm.id
-                 left join t_role tr on tr.id = trm.role_id
-        where tm.request_uri is not null
-          and tm.deleted = 0
-          and tm.status = '0'
-          and tr.deleted = 0
-          and tr.status = '0'
+        SELECT DISTINCT m.*,
+                        r.role_code AS role_code
+        FROM t_menu m
+                 LEFT JOIN t_role_menu rm ON rm.menu_id = m.id
+                 LEFT JOIN t_role r ON r.id = rm.role_id
+        WHERE m.request_uri IS NOT NULL
+          AND m.deleted = 0
+          AND m.status = '0'
+          AND r.deleted = 0
+          AND r.status = '0'
     </select>
 </mapper>

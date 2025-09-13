@@ -2,6 +2,9 @@ package com.aegis.modules.role.mapper;
 
 import com.aegis.modules.role.domain.entity.RoleMenu;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import org.apache.ibatis.annotations.Param;
+
+import java.util.List;
 
 /**
  * @Author: xuesong.lei
@@ -11,6 +14,9 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
  */
 public interface RoleMenuMapper extends BaseMapper<RoleMenu> {
 
+    void batchRoleMenu(List<RoleMenu> roleMenus);
+
+    List<Long> selectMenuListByRoleId(@Param("roleId") Long roleId, @Param("menuCheckStrictly") Integer menuCheckStrictly);
 }
 
 

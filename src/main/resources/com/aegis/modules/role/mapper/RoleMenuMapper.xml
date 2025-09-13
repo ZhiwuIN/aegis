@@ -13,4 +13,29 @@
     <sql id="Base_Column_List">
         id,role_id,menu_id
     </sql>
+
+    <insert id="batchRoleMenu">
+        INSERT INTO t_role_menu ( role_id, menu_id )
+        VALUES
+        <foreach collection="list" item="item" index="index" separator=",">
+            (#{item.roleId},#{item.menuId})
+        </foreach>
+    </insert>
+
+    <select id="selectMenuListByRoleId" resultType="java.lang.Long">
+        SELECT m.id
+        FROM t_menu m
+        LEFT JOIN t_role_menu rm ON m.id = rm.menu_id
+        WHERE rm.role_id = #{roleId}
+        <if test="menuCheckStrictly != null and menuCheckStrictly == 1">
+            AND NOT EXISTS (
+            SELECT 1
+            FROM t_menu child
+            INNER JOIN t_role_menu rm_child ON child.id = rm_child.menu_id
+            WHERE child.parent_id = m.id
+            AND rm_child.role_id = #{roleId}
+            )
+        </if>
+        ORDER BY m.parent_id, m.order_num
+    </select>
 </mapper>
