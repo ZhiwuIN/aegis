@@ -43,6 +43,7 @@ public class MenuController {
 
     @ApiOperation("删除")
     @GetMapping("/delete/{id}")
+    @PreventDuplicateSubmit
     @OperationLog(moduleTitle = "删除菜单", businessType = BusinessType.DELETE)
     public String delete(@PathVariable("id") Long id) {
         return menuService.delete(id);

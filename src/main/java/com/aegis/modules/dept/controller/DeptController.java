@@ -49,6 +49,7 @@ public class DeptController {
 
     @ApiOperation("删除")
     @GetMapping("/delete/{id}")
+    @PreventDuplicateSubmit
     @OperationLog(moduleTitle = "删除部门", businessType = BusinessType.DELETE)
     public String delete(@PathVariable("id") Long id) {
         return deptService.delete(id);

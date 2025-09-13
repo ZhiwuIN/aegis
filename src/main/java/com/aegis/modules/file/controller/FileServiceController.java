@@ -1,5 +1,6 @@
 package com.aegis.modules.file.controller;
 
+import com.aegis.common.duplicate.PreventDuplicateSubmit;
 import com.aegis.common.file.StoragePlatform;
 import com.aegis.common.log.BusinessType;
 import com.aegis.common.log.OperationLog;
@@ -33,6 +34,7 @@ public class FileServiceController {
 
     @ApiOperation("文件上传")
     @PostMapping("/upload")
+    @PreventDuplicateSubmit
     @OperationLog(moduleTitle = "文件上传", businessType = BusinessType.IMPORT)
     public FileMetadata uploadFile(@RequestParam("file") MultipartFile file, @RequestParam(value = "directory", required = false) String directory) {
         return fileService.uploadFile(file, directory);
@@ -40,6 +42,7 @@ public class FileServiceController {
 
     @ApiOperation("批量文件上传")
     @PostMapping("/upload/batch")
+    @PreventDuplicateSubmit
     @OperationLog(moduleTitle = "批量文件上传", businessType = BusinessType.IMPORT)
     public List<FileMetadata> uploadBatchFiles(@RequestParam("files") MultipartFile[] files, @RequestParam(value = "directory", required = false) String directory) {
         return fileService.uploadBatchFiles(files, directory);
@@ -47,6 +50,7 @@ public class FileServiceController {
 
     @ApiOperation("获取临时下载URL")
     @GetMapping("/temporary-download-url")
+    @PreventDuplicateSubmit
     @OperationLog(moduleTitle = "获取临时下载URL", businessType = BusinessType.EXPORT)
     public Map<String, String> getTemporaryDownloadUrl(@RequestParam String filePath, @RequestParam(required = false, defaultValue = "60") long expirationSeconds) {
         return fileService.getTemporaryDownloadUrl(filePath, expirationSeconds);
@@ -54,6 +58,7 @@ public class FileServiceController {
 
     @ApiOperation("文件下载")
     @GetMapping("/download")
+    @PreventDuplicateSubmit
     @OperationLog(moduleTitle = "文件下载", businessType = BusinessType.EXPORT)
     public void download(@RequestParam("filePath") String filePath, HttpServletResponse response) {
         fileService.download(filePath, response);
@@ -61,6 +66,7 @@ public class FileServiceController {
 
     @ApiOperation("本地文件临时下载")
     @GetMapping("/localDownload/**")
+    @PreventDuplicateSubmit
     @OperationLog(moduleTitle = "本地文件临时下载", businessType = BusinessType.EXPORT)
     public void localDownload(HttpServletRequest request, HttpServletResponse response) {
         fileService.localDownload(request, response);
@@ -68,6 +74,7 @@ public class FileServiceController {
 
     @ApiOperation("指定存储平台上传文件")
     @PostMapping("/upload/{platform}")
+    @PreventDuplicateSubmit
     @OperationLog(moduleTitle = "指定存储平台上传文件", businessType = BusinessType.IMPORT)
     public FileMetadata uploadFileWithPlatform(@PathVariable("platform") StoragePlatform platform, @RequestParam("file") MultipartFile file, @RequestParam(value = "directory", required = false) String directory) {
         return fileService.uploadFileWithPlatform(platform, file, directory);
@@ -75,6 +82,7 @@ public class FileServiceController {
 
     @ApiOperation("文件删除")
     @DeleteMapping("/delete")
+    @PreventDuplicateSubmit
     @OperationLog(moduleTitle = "文件删除", businessType = BusinessType.DELETE)
     public String deleteFile(@RequestParam("filePath") String filePath) {
         return fileService.deleteFile(filePath);
@@ -82,6 +90,7 @@ public class FileServiceController {
 
     @ApiOperation("获取预签名上传URL")
     @PostMapping("/presigned-upload-url")
+    @PreventDuplicateSubmit
     @OperationLog(moduleTitle = "获取预签名上传URL", businessType = BusinessType.EXPORT)
     public Map<String, String> getPresignedUploadUrl(@RequestParam String fileName, @RequestParam(required = false) String directory) {
         return fileService.getPresignedUploadUrl(fileName, directory);

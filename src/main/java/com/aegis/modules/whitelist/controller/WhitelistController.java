@@ -41,6 +41,7 @@ public class WhitelistController {
 
     @ApiOperation("删除白名单")
     @GetMapping("/delete/{id}")
+    @PreventDuplicateSubmit
     @OperationLog(moduleTitle = "删除白名单", businessType = BusinessType.DELETE)
     public String delete(@PathVariable("id") Long id) {
         return whitelistService.delete(id);

@@ -43,6 +43,7 @@ public class DictionaryController {
 
     @ApiOperation("删除字典")
     @PostMapping("/delete/{id}")
+    @PreventDuplicateSubmit
     @OperationLog(moduleTitle = "删除字典", businessType = BusinessType.DELETE)
     public String delete(@PathVariable("id") Long id) {
         return dictionaryService.delete(id);
