@@ -66,5 +66,5 @@ public interface DeptService {
      *
      * @return 树形结构列表
      */
-    List<TreeVO> tree();
+    List<TreeVO> tree(DeptDTO dto);
 }

@@ -150,10 +150,8 @@ public class DeptServiceImpl implements DeptService {
     }
 
     @Override
-    public List<TreeVO> tree() {
-        LambdaQueryWrapper<Dept> queryWrapper = new LambdaQueryWrapper<>();
-        queryWrapper.eq(Dept::getStatus, CommonConstants.NORMAL_STATUS);
-        List<Dept> deptList = deptMapper.selectList(queryWrapper);
+    public List<TreeVO> tree(DeptDTO dto) {
+        List<Dept> deptList = list(dto);
 
         List<Dept> deptTree = TreeUtil.makeTree(
                 deptList,

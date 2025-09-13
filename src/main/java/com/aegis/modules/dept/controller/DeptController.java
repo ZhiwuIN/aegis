@@ -72,7 +72,7 @@ public class DeptController {
 
     @ApiOperation("获取树形结构部门")
     @GetMapping("/tree")
-    public List<TreeVO> tree() {
-        return deptService.tree();
+    public List<TreeVO> tree(DeptDTO dto) {
+        return deptService.tree(dto);
     }
 }
