@@ -51,34 +51,57 @@ public class DictionaryServiceImpl implements DictionaryService {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public String updateStatus(Long id) {
-        Dictionary dictionary = dictionaryMapper.selectById(id);
-
-        if (dictionary != null) {
-            dictionary.setUpdateBy(SecurityUtils.getUserId());
-            dictionary.setStatus(CommonConstants.NORMAL_STATUS.equals(dictionary.getStatus()) ? CommonConstants.DISABLE_STATUS : CommonConstants.NORMAL_STATUS);
-            dictionaryMapper.updateById(dictionary);
-        }
-
-        return "操作成功";
-    }
-
-    @Override
-    @Transactional(rollbackFor = Exception.class)
     public String delete(Long id) {
         dictionaryMapper.deleteById(id);
-        return "操作成功";
+        return CommonConstants.SUCCESS_MESSAGE;
     }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public String addOrUpdate(DictionaryDTO dto) {
+    public String add(DictionaryDTO dto) {
         if (isContainUpperCase(dto.getDictType())) {
             throw new BusinessException("字典类型必须为大写");
         }
 
         Dictionary dictionary = dictionaryConvert.toDictionary(dto);
 
+        // 检查是否存在相同的数据
+        checkSameDictionary(dictionary);
+
+        dictionary.setCreateBy(SecurityUtils.getUserId());
+        dictionaryMapper.insert(dictionary);
+
+        return CommonConstants.SUCCESS_MESSAGE;
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public String update(DictionaryDTO dto) {
+        if (isContainUpperCase(dto.getDictType())) {
+            throw new BusinessException("字典类型必须为大写");
+        }
+
+        Dictionary dictionary = dictionaryConvert.toDictionary(dto);
+
+        // 检查是否存在相同的数据
+        checkSameDictionary(dictionary);
+
+        dictionary.setUpdateBy(SecurityUtils.getUserId());
+        dictionaryMapper.updateById(dictionary);
+
+        return CommonConstants.SUCCESS_MESSAGE;
+    }
+
+    @Override
+    public List<Dictionary> list(String dictType) {
+        LambdaQueryWrapper<Dictionary> queryWrapper = new LambdaQueryWrapper<>();
+
+        queryWrapper.eq(Dictionary::getDictType, dictType);
+
+        return dictionaryMapper.selectList(queryWrapper);
+    }
+
+    private void checkSameDictionary(Dictionary dictionary) {
         LambdaQueryWrapper<Dictionary> sameQueryWrapper = new LambdaQueryWrapper<>();
         sameQueryWrapper.eq(Dictionary::getDictName, dictionary.getDictName())
                 .eq(Dictionary::getDictType, dictionary.getDictType())
@@ -107,25 +130,6 @@ public class DictionaryServiceImpl implements DictionaryService {
                 }
             });
         }
-
-        if (dictionary.getId() != null) {
-            dictionary.setUpdateBy(SecurityUtils.getUserId());
-            dictionaryMapper.updateById(dictionary);
-        } else {
-            dictionary.setCreateBy(SecurityUtils.getUserId());
-            dictionaryMapper.insert(dictionary);
-        }
-
-        return "操作成功";
-    }
-
-    @Override
-    public List<Dictionary> list(String dictType) {
-        LambdaQueryWrapper<Dictionary> queryWrapper = new LambdaQueryWrapper<>();
-
-        queryWrapper.eq(Dictionary::getDictType, dictType);
-
-        return dictionaryMapper.selectList(queryWrapper);
     }
 
     /**

@@ -46,12 +46,20 @@ public interface DeptService {
     String delete(Long id);
 
     /**
-     * 新增或修改部门
+     * 新增部门
      *
      * @param dto 部门DTO
      * @return 响应消息
      */
-    String addOrUpdate(DeptDTO dto);
+    String add(DeptDTO dto);
+
+    /**
+     * 修改部门
+     *
+     * @param dto 部门DTO
+     * @return 响应消息
+     */
+    String update(DeptDTO dto);
 
     /**
      * 部门树形结构

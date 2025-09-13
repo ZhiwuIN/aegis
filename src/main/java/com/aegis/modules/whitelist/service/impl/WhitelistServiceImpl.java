@@ -56,22 +56,6 @@ public class WhitelistServiceImpl implements WhitelistService {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public String updateStatus(Long id) {
-        Whitelist whitelist = whitelistMapper.selectById(id);
-
-        if (whitelist != null) {
-            whitelist.setUpdateBy(SecurityUtils.getUserId());
-            whitelist.setStatus(CommonConstants.NORMAL_STATUS.equals(whitelist.getStatus()) ? CommonConstants.DISABLE_STATUS : CommonConstants.NORMAL_STATUS);
-            whitelistMapper.updateById(whitelist);
-
-            // 发布白名单变更事件
-            dataChangePublisher.publishWhitelistChange("更新白名单状态,ID: " + id);
-        }
-        return "操作成功";
-    }
-
-    @Override
-    @Transactional(rollbackFor = Exception.class)
     public String delete(Long id) {
         // 删除白名单
         whitelistMapper.deleteById(id);
@@ -79,17 +63,44 @@ public class WhitelistServiceImpl implements WhitelistService {
         // 发布白名单变更事件
         dataChangePublisher.publishWhitelistChange("删除白名单,ID: " + id);
 
-        return "操作成功";
+        return CommonConstants.SUCCESS_MESSAGE;
     }
 
     @Override
-    @Transactional(rollbackFor = Exception.class)
-    public String addOrUpdate(WhitelistDTO dto) {
+    public String add(WhitelistDTO dto) {
         Whitelist whitelist = whitelistConvert.toWhitelist(dto);
 
         final String url = validateAndNormalize(whitelist.getRequestUri());
 
-        // 检查是否有重复的路径和方法（排除自身）
+        // 检查是否有重复的路径和方法
+        checkSameWhitelist(whitelist, url);
+
+        whitelist.setCreateBy(SecurityUtils.getUserId());
+        whitelistMapper.insert(whitelist);
+
+        dataChangePublisher.publishWhitelistChange("新增白名单");
+
+        return CommonConstants.SUCCESS_MESSAGE;
+    }
+
+    @Override
+    public String update(WhitelistDTO dto) {
+        Whitelist whitelist = whitelistConvert.toWhitelist(dto);
+
+        final String url = validateAndNormalize(whitelist.getRequestUri());
+
+        // 检查是否有重复的路径和方法
+        checkSameWhitelist(whitelist, url);
+
+        whitelist.setUpdateBy(SecurityUtils.getUserId());
+        whitelistMapper.updateById(whitelist);
+
+        dataChangePublisher.publishWhitelistChange("更新白名单,ID: " + whitelist.getId());
+
+        return CommonConstants.SUCCESS_MESSAGE;
+    }
+
+    private void checkSameWhitelist(Whitelist whitelist, String url) {
         LambdaQueryWrapper<Whitelist> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.eq(Whitelist::getRequestUri, url)
                 .eq(Whitelist::getRequestMethod, whitelist.getRequestMethod().toUpperCase())
@@ -98,24 +109,6 @@ public class WhitelistServiceImpl implements WhitelistService {
         if (whitelistMapper.selectCount(queryWrapper) > 0) {
             throw new BusinessException("相同请求路径和方法的白名单已存在");
         }
-
-        if (whitelist.getId() != null) {
-            Whitelist existing = whitelistMapper.selectById(whitelist.getId());
-            if (existing == null) {
-                throw new BusinessException("白名单记录不存在");
-            }
-
-            whitelist.setUpdateBy(SecurityUtils.getUserId());
-            whitelistMapper.updateById(whitelist);
-        } else {
-            whitelist.setCreateBy(SecurityUtils.getUserId());
-            whitelistMapper.insert(whitelist);
-        }
-
-        // 发布白名单变更事件
-        dataChangePublisher.publishWhitelistChange("新增或更新白名单,ID: " + (whitelist.getId() != null ? whitelist.getId() : "新建"));
-
-        return "操作成功";
     }
 
     /**

@@ -54,12 +54,20 @@ public class DeptController {
         return deptService.delete(id);
     }
 
-    @ApiOperation("新增或修改部门")
-    @PostMapping("/addOrUpdate")
+    @ApiOperation("新增部门")
+    @PostMapping("/add")
     @PreventDuplicateSubmit
-    @OperationLog(moduleTitle = "新增或修改部门", businessType = BusinessType.INSERT)
-    public String addOrUpdate(@Validated({ValidGroup.Update.class, ValidGroup.Create.class,}) @RequestBody DeptDTO dto) {
-        return deptService.addOrUpdate(dto);
+    @OperationLog(moduleTitle = "新增部门", businessType = BusinessType.INSERT)
+    public String add(@Validated(ValidGroup.Create.class) @RequestBody DeptDTO dto) {
+        return deptService.add(dto);
+    }
+
+    @ApiOperation("修改部门")
+    @PostMapping("/update")
+    @PreventDuplicateSubmit
+    @OperationLog(moduleTitle = "修改部门", businessType = BusinessType.UPDATE)
+    public String update(@Validated(ValidGroup.Update.class) @RequestBody DeptDTO dto) {
+        return deptService.update(dto);
     }
 
     @ApiOperation("获取树形结构部门")

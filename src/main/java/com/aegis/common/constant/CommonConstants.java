@@ -81,4 +81,9 @@ public class CommonConstants {
      * 匿名用户标识
      */
     public static final String ANONYMOUS = "anonymous";
+
+    /**
+     * 操作成功消息
+     */
+    public static final String SUCCESS_MESSAGE = "操作成功";
 }

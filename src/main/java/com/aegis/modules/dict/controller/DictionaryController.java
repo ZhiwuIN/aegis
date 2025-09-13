@@ -41,13 +41,6 @@ public class DictionaryController {
         return dictionaryService.detail(id);
     }
 
-    @ApiOperation("更新字典状态")
-    @PostMapping("/updateStatus/{id}")
-    @OperationLog(moduleTitle = "更新字典状态", businessType = BusinessType.UPDATE)
-    public String updateStatus(@PathVariable("id") Long id) {
-        return dictionaryService.updateStatus(id);
-    }
-
     @ApiOperation("删除字典")
     @PostMapping("/delete/{id}")
     @OperationLog(moduleTitle = "删除字典", businessType = BusinessType.DELETE)
@@ -55,12 +48,20 @@ public class DictionaryController {
         return dictionaryService.delete(id);
     }
 
-    @ApiOperation("新增或修改字典")
-    @PostMapping("/addOrUpdate")
+    @ApiOperation("新增字典")
+    @PostMapping("/add")
     @PreventDuplicateSubmit
-    @OperationLog(moduleTitle = "新增或修改字典", businessType = BusinessType.INSERT)
-    public String addOrUpdate(@Validated({ValidGroup.Update.class, ValidGroup.Create.class,}) @RequestBody DictionaryDTO dto) {
-        return dictionaryService.addOrUpdate(dto);
+    @OperationLog(moduleTitle = "新增字典", businessType = BusinessType.INSERT)
+    public String add(@Validated(ValidGroup.Create.class) @RequestBody DictionaryDTO dto) {
+        return dictionaryService.add(dto);
+    }
+
+    @ApiOperation("修改字典")
+    @PostMapping("/update")
+    @PreventDuplicateSubmit
+    @OperationLog(moduleTitle = "修改字典", businessType = BusinessType.UPDATE)
+    public String update(@Validated(ValidGroup.Update.class) @RequestBody DictionaryDTO dto) {
+        return dictionaryService.update(dto);
     }
 
     @ApiOperation("根据类型获取字典列表")

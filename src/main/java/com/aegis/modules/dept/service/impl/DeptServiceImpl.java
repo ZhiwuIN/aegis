@@ -85,64 +85,68 @@ public class DeptServiceImpl implements DeptService {
 
         deptMapper.deleteById(id);
 
-        return "操作成功";
+        return CommonConstants.SUCCESS_MESSAGE;
     }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public String addOrUpdate(DeptDTO dto) {
+    public String add(DeptDTO dto) {
         Dept dept = deptConvert.toDept(dto);
 
-        LambdaQueryWrapper<Dept> queryWrapper = new LambdaQueryWrapper<>();
-        queryWrapper.eq(Dept::getDeptName, dept.getDeptName())
-                .eq(Dept::getParentId, dept.getParentId())
-                .ne(ObjectUtils.isNotEmpty(dept.getId()), Dept::getId, dept.getId());
-        if (deptMapper.selectCount(queryWrapper) > 0) {
-            throw new BusinessException("同一层级下存在相同名称的部门");
+        // 只能同一层级下存在相同名称的部门
+        checkSameDept(dept);
+
+        Dept parentDept = deptMapper.selectById(dept.getParentId());
+        if (CommonConstants.DISABLE_STATUS.equals(parentDept.getStatus())) {
+            throw new BusinessException("部门停用，不允许新增");
         }
 
-        if (dept.getId() == null) {
-            Dept parentDept = deptMapper.selectById(dept.getParentId());
-            if (CommonConstants.DISABLE_STATUS.equals(parentDept.getStatus())) {
-                throw new BusinessException("部门停用，不允许新增");
-            }
+        dept.setCreateBy(SecurityUtils.getUserId());
+        dept.setAncestors(parentDept.getAncestors() + CommonConstants.COMMA + dept.getParentId());
+        deptMapper.insert(dept);
 
-            dept.setCreateBy(SecurityUtils.getUserId());
-            dept.setAncestors(parentDept.getAncestors() + CommonConstants.COMMA + dept.getParentId());
-            deptMapper.insert(dept);
-        } else {
-            if (dept.getParentId().equals(dept.getId())) {
-                throw new BusinessException("修改部门'" + dept.getDeptName() + "'失败,上级部门不能是自己");
-            }
+        return CommonConstants.SUCCESS_MESSAGE;
+    }
 
-            if (CommonConstants.DISABLE_STATUS.equals(dept.getStatus())
-                    && deptMapper.selectCount(new LambdaQueryWrapper<Dept>()
-                    .apply("FIND_IN_SET({0}, ancestors)", dept.getId())
-                    .eq(Dept::getStatus, CommonConstants.NORMAL_STATUS)) > 0) {
-                throw new BusinessException("该部门包含未停用的子部门");
-            }
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public String update(DeptDTO dto) {
+        Dept dept = deptConvert.toDept(dto);
 
-            Dept newParent = deptMapper.selectById(dept.getParentId());
-            Dept oldDept = deptMapper.selectById(dept.getId());
-            if (ObjectUtils.isNotEmpty(newParent) && ObjectUtils.isNotEmpty(oldDept)) {
-                String newAncestors = newParent.getAncestors() + CommonConstants.COMMA + newParent.getId();
-                String oldAncestors = oldDept.getAncestors();
-                dept.setAncestors(newAncestors);
-                // 更新下属部门的所有Ancestors
-                updateDeptChildren(dept.getId(), newAncestors, oldAncestors);
-            }
+        // 只能同一层级下存在相同名称的部门
+        checkSameDept(dept);
 
-            dept.setUpdateBy(SecurityUtils.getUserId());
-
-            deptMapper.updateById(dept);
-
-            if (CommonConstants.NORMAL_STATUS.equals(dept.getStatus()) && StrUtil.isNotEmpty(dept.getAncestors()) && !CommonConstants.DEPT_ANCESTOR_ID.equals(dept.getAncestors())) {
-                // 如果该部门是启动状态，则启动该部门的所有上级部门
-                updateParentDeptStatusNormal(dept);
-            }
+        if (dept.getParentId().equals(dept.getId())) {
+            throw new BusinessException("修改部门'" + dept.getDeptName() + "'失败,上级部门不能是自己");
         }
 
-        return "操作成功";
+        if (CommonConstants.DISABLE_STATUS.equals(dept.getStatus())
+                && deptMapper.selectCount(new LambdaQueryWrapper<Dept>()
+                .apply("FIND_IN_SET({0}, ancestors)", dept.getId())
+                .eq(Dept::getStatus, CommonConstants.NORMAL_STATUS)) > 0) {
+            throw new BusinessException("该部门包含未停用的子部门");
+        }
+
+        Dept newParent = deptMapper.selectById(dept.getParentId());
+        Dept oldDept = deptMapper.selectById(dept.getId());
+        if (ObjectUtils.isNotEmpty(newParent) && ObjectUtils.isNotEmpty(oldDept)) {
+            String newAncestors = newParent.getAncestors() + CommonConstants.COMMA + newParent.getId();
+            String oldAncestors = oldDept.getAncestors();
+            dept.setAncestors(newAncestors);
+            // 更新下属部门的所有Ancestors
+            updateDeptChildren(dept.getId(), newAncestors, oldAncestors);
+        }
+
+        dept.setUpdateBy(SecurityUtils.getUserId());
+
+        deptMapper.updateById(dept);
+
+        if (CommonConstants.NORMAL_STATUS.equals(dept.getStatus()) && StrUtil.isNotEmpty(dept.getAncestors()) && !CommonConstants.DEPT_ANCESTOR_ID.equals(dept.getAncestors())) {
+            // 如果该部门是启动状态，则启动该部门的所有上级部门
+            updateParentDeptStatusNormal(dept);
+        }
+
+        return CommonConstants.SUCCESS_MESSAGE;
     }
 
     @Override
@@ -159,6 +163,16 @@ public class DeptServiceImpl implements DeptService {
                 Dept::setChildren);
 
         return deptTree.stream().map(TreeVO::new).collect(Collectors.toList());
+    }
+
+    private void checkSameDept(Dept dept) {
+        LambdaQueryWrapper<Dept> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(Dept::getDeptName, dept.getDeptName())
+                .eq(Dept::getParentId, dept.getParentId())
+                .ne(ObjectUtils.isNotEmpty(dept.getId()), Dept::getId, dept.getId());
+        if (deptMapper.selectCount(queryWrapper) > 0) {
+            throw new BusinessException("同一层级下存在相同名称的部门");
+        }
     }
 
     private void updateDeptChildren(Long id, String newAncestors, String oldAncestors) {

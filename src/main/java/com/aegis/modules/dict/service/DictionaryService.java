@@ -30,14 +30,6 @@ public interface DictionaryService {
     Dictionary detail(Long id);
 
     /**
-     * 更新字典状态
-     *
-     * @param id 字典ID
-     * @return 响应消息
-     */
-    String updateStatus(Long id);
-
-    /**
      * 删除字典
      *
      * @param id 字典ID
@@ -46,12 +38,20 @@ public interface DictionaryService {
     String delete(Long id);
 
     /**
-     * 新增或修改字典
+     * 新增字典
      *
      * @param dto 字典DTO
      * @return 响应消息
      */
-    String addOrUpdate(DictionaryDTO dto);
+    String add(DictionaryDTO dto);
+
+    /**
+     * 修改字典
+     *
+     * @param dto 字典DTO
+     * @return 响应消息
+     */
+    String update(DictionaryDTO dto);
 
     /**
      * 根据字典类型获取字典列表

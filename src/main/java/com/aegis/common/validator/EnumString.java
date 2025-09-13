@@ -22,7 +22,7 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 @Constraint(validatedBy = EnumStringValidator.class)
 public @interface EnumString {
 
-    String message() default "value not in enum values.";
+    String message() default "请求参数错误";
 
     Class<?>[] groups() default {};
 

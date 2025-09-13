@@ -28,14 +28,6 @@ public interface WhitelistService {
     Whitelist detail(Long id);
 
     /**
-     * 更新白名单状态
-     *
-     * @param id 白名单ID
-     * @return 响应消息
-     */
-    String updateStatus(Long id);
-
-    /**
      * 删除白名单
      *
      * @param id 白名单ID
@@ -44,10 +36,18 @@ public interface WhitelistService {
     String delete(Long id);
 
     /**
-     * 新增或修改白名单
+     * 新增白名单
      *
      * @param dto 白名单DTO
      * @return 响应消息
      */
-    String addOrUpdate(WhitelistDTO dto);
+    String add(WhitelistDTO dto);
+
+    /**
+     * 修改白名单
+     *
+     * @param dto 白名单DTO
+     * @return 响应消息
+     */
+    String update(WhitelistDTO dto);
 }

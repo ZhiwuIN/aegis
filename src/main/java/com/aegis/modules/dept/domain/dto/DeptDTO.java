@@ -7,6 +7,7 @@ import lombok.Data;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Null;
 
 /**
  * @Author: xuesong.lei
@@ -18,6 +19,8 @@ import javax.validation.constraints.NotNull;
 public class DeptDTO {
 
     @ApiModelProperty("主键")
+    @Null(groups = ValidGroup.Create.class, message = "应用ID必须为空")
+    @NotNull(groups = ValidGroup.Update.class, message = "应用ID不能为空")
     private Long id;
 
     @ApiModelProperty("父部门ID")

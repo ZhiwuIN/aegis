@@ -10,6 +10,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Null;
 
 /**
  * @Author: xuesong.lei
@@ -22,6 +23,8 @@ import javax.validation.constraints.NotNull;
 public class WhitelistDTO extends PageDTO {
 
     @ApiModelProperty("主键ID")
+    @Null(groups = ValidGroup.Create.class, message = "应用ID必须为空")
+    @NotNull(groups = ValidGroup.Update.class, message = "应用ID不能为空")
     private Long id;
 
     @ApiModelProperty("请求方法,GET,POST,PUT,DELETE,ALL=不限制")

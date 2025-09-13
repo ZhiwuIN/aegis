@@ -39,13 +39,6 @@ public class WhitelistController {
         return whitelistService.detail(id);
     }
 
-    @ApiOperation("更新白名单状态")
-    @GetMapping("/updateStatus/{id}")
-    @OperationLog(moduleTitle = "更新白名单状态", businessType = BusinessType.UPDATE)
-    public String updateStatus(@PathVariable("id") Long id) {
-        return whitelistService.updateStatus(id);
-    }
-
     @ApiOperation("删除白名单")
     @GetMapping("/delete/{id}")
     @OperationLog(moduleTitle = "删除白名单", businessType = BusinessType.DELETE)
@@ -53,11 +46,19 @@ public class WhitelistController {
         return whitelistService.delete(id);
     }
 
-    @ApiOperation("新增或修改白名单")
-    @PostMapping("/addOrUpdate")
+    @ApiOperation("新增白名单")
+    @PostMapping("/add")
     @PreventDuplicateSubmit
-    @OperationLog(moduleTitle = "新增或修改白名单", businessType = BusinessType.INSERT)
-    public String addOrUpdate(@Validated({ValidGroup.Create.class, ValidGroup.Update.class}) @RequestBody WhitelistDTO dto) {
-        return whitelistService.addOrUpdate(dto);
+    @OperationLog(moduleTitle = "新增白名单", businessType = BusinessType.INSERT)
+    public String add(@Validated(ValidGroup.Create.class) @RequestBody WhitelistDTO dto) {
+        return whitelistService.add(dto);
+    }
+
+    @ApiOperation("修改白名单")
+    @PostMapping("/update")
+    @PreventDuplicateSubmit
+    @OperationLog(moduleTitle = "修改白名单", businessType = BusinessType.UPDATE)
+    public String update(@Validated(ValidGroup.Update.class) @RequestBody WhitelistDTO dto) {
+        return whitelistService.update(dto);
     }
 }

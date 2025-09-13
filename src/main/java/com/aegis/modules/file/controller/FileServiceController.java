@@ -69,7 +69,7 @@ public class FileServiceController {
     @ApiOperation("指定存储平台上传文件")
     @PostMapping("/upload/{platform}")
     @OperationLog(moduleTitle = "指定存储平台上传文件", businessType = BusinessType.IMPORT)
-    public FileMetadata uploadFileWithPlatform(@PathVariable StoragePlatform platform, @RequestParam("file") MultipartFile file, @RequestParam(value = "directory", required = false) String directory) {
+    public FileMetadata uploadFileWithPlatform(@PathVariable("platform") StoragePlatform platform, @RequestParam("file") MultipartFile file, @RequestParam(value = "directory", required = false) String directory) {
         return fileService.uploadFileWithPlatform(platform, file, directory);
     }
 
