@@ -32,8 +32,8 @@ public class SysOperateLogController {
         return sysOperateLogService.pageList(dto);
     }
 
-    @GetMapping("/export")
     @ApiOperation("导出操作日志")
+    @GetMapping("/export")
     @OperationLog(moduleTitle = "导出操作日志", businessType = BusinessType.EXPORT)
     public void export(SysOperateLogDTO dto, HttpServletResponse response) {
         sysOperateLogService.export(dto, response);

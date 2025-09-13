@@ -32,7 +32,7 @@ public class UserController {
      * 刷新token
      */
     @ApiOperation("刷新token")
-    @PostMapping("/refreshToken")
+    @GetMapping("/refreshToken")
     public String refreshToken(HttpServletRequest request, HttpServletResponse response) {
         return userService.refreshToken(request, response);
     }

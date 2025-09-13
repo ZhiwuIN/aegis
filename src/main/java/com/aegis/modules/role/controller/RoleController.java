@@ -33,27 +33,27 @@ public class RoleController {
     private final RoleService roleService;
 
     @ApiOperation("分页列表")
-    @PostMapping("/pageList")
-    public PageVO<Role> pageList(@RequestBody RoleDTO dto) {
+    @GetMapping("/pageList")
+    public PageVO<Role> pageList(RoleDTO dto) {
         return roleService.pageList(dto);
     }
 
     @ApiOperation("详情")
-    @PostMapping("/detail/{id}")
+    @GetMapping("/detail/{id}")
     public Role detail(@PathVariable("id") Long id) {
         return roleService.detail(id);
     }
 
     @ApiOperation("修改角色状态")
-    @GetMapping("/updateStatus/{id}")
+    @PutMapping("/updateStatus/{id}")
     @PreventDuplicateSubmit
     @OperationLog(moduleTitle = "修改角色状态", businessType = BusinessType.UPDATE)
     public String updateStatus(@PathVariable("id") Long id) {
         return roleService.updateStatus(id);
     }
 
-    @GetMapping("/delete/{id}")
     @ApiOperation("删除角色")
+    @DeleteMapping("/delete/{id}")
     @PreventDuplicateSubmit
     @OperationLog(moduleTitle = "删除角色", businessType = BusinessType.DELETE)
     public String delete(@PathVariable("id") Long id) {
@@ -69,7 +69,7 @@ public class RoleController {
     }
 
     @ApiOperation("修改角色")
-    @PostMapping("/update")
+    @PutMapping("/update")
     @PreventDuplicateSubmit
     @OperationLog(moduleTitle = "修改角色", businessType = BusinessType.UPDATE)
     public String update(@Validated(ValidGroup.Update.class) @RequestBody RoleDTO dto) {
@@ -77,7 +77,7 @@ public class RoleController {
     }
 
     @ApiOperation("修改角色数据权限")
-    @PostMapping("/updateRoleDataScope")
+    @PutMapping("/updateRoleDataScope")
     @PreventDuplicateSubmit
     @OperationLog(moduleTitle = "修改角色数据权限", businessType = BusinessType.UPDATE)
     public String updateRoleDataScope(@Validated(ValidGroup.Update.class) @RequestBody RoleDTO dto) {
@@ -97,7 +97,7 @@ public class RoleController {
     }
 
     @ApiOperation("取消授权用户")
-    @PostMapping("/cancel")
+    @PutMapping("/cancel")
     @PreventDuplicateSubmit
     @OperationLog(moduleTitle = "取消授权用户", businessType = BusinessType.DELETE)
     public String cancel(@Validated @RequestBody CancelDTO dto) {
@@ -105,7 +105,7 @@ public class RoleController {
     }
 
     @ApiOperation("批量取消授权用户")
-    @PostMapping("/cancelAll")
+    @PutMapping("/cancelAll")
     @PreventDuplicateSubmit
     @OperationLog(moduleTitle = "批量取消授权用户", businessType = BusinessType.DELETE)
     public String cancelAll(@Validated @RequestBody CancelAllDTO dto) {

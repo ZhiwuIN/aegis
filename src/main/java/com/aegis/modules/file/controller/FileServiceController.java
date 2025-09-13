@@ -81,7 +81,7 @@ public class FileServiceController {
     }
 
     @ApiOperation("文件删除")
-    @GetMapping("/delete")
+    @DeleteMapping("/delete")
     @PreventDuplicateSubmit
     @OperationLog(moduleTitle = "文件删除", businessType = BusinessType.DELETE)
     public String deleteFile(@RequestParam("filePath") String filePath) {
@@ -89,7 +89,7 @@ public class FileServiceController {
     }
 
     @ApiOperation("获取预签名上传URL")
-    @PostMapping("/presigned-upload-url")
+    @GetMapping("/presigned-upload-url")
     @PreventDuplicateSubmit
     @OperationLog(moduleTitle = "获取预签名上传URL", businessType = BusinessType.EXPORT)
     public Map<String, String> getPresignedUploadUrl(@RequestParam String fileName, @RequestParam(required = false) String directory) {

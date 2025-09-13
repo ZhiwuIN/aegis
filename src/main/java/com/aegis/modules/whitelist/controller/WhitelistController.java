@@ -28,8 +28,8 @@ public class WhitelistController {
     private final WhitelistService whitelistService;
 
     @ApiOperation("分页列表")
-    @PostMapping("/pageList")
-    public PageVO<Whitelist> pageList(@RequestBody WhitelistDTO dto) {
+    @GetMapping("/pageList")
+    public PageVO<Whitelist> pageList(WhitelistDTO dto) {
         return whitelistService.pageList(dto);
     }
 
@@ -40,7 +40,7 @@ public class WhitelistController {
     }
 
     @ApiOperation("删除白名单")
-    @GetMapping("/delete/{id}")
+    @DeleteMapping("/delete/{id}")
     @PreventDuplicateSubmit
     @OperationLog(moduleTitle = "删除白名单", businessType = BusinessType.DELETE)
     public String delete(@PathVariable("id") Long id) {
@@ -56,7 +56,7 @@ public class WhitelistController {
     }
 
     @ApiOperation("修改白名单")
-    @PostMapping("/update")
+    @PutMapping("/update")
     @PreventDuplicateSubmit
     @OperationLog(moduleTitle = "修改白名单", businessType = BusinessType.UPDATE)
     public String update(@Validated(ValidGroup.Update.class) @RequestBody WhitelistDTO dto) {

@@ -22,8 +22,8 @@ public class EmailController {
 
     private final EmailService emailService;
 
-    @GetMapping("/sendRegisterCode")
     @ApiOperation("发送注册验证码")
+    @GetMapping("/sendRegisterCode")
     public String sendRegisterCode(@RequestParam("email") String email) {
         return emailService.sendRegisterCode(email);
     }

@@ -30,19 +30,19 @@ public class DictionaryController {
     private final DictionaryService dictionaryService;
 
     @ApiOperation("分页列表")
-    @PostMapping("/pageList")
-    public PageVO<Dictionary> pageList(@RequestBody DictionaryDTO dto) {
+    @GetMapping("/pageList")
+    public PageVO<Dictionary> pageList(DictionaryDTO dto) {
         return dictionaryService.pageList(dto);
     }
 
     @ApiOperation("详情")
-    @PostMapping("/detail/{id}")
+    @GetMapping("/detail/{id}")
     public Dictionary detail(@PathVariable("id") Long id) {
         return dictionaryService.detail(id);
     }
 
     @ApiOperation("删除字典")
-    @PostMapping("/delete/{id}")
+    @DeleteMapping("/delete/{id}")
     @PreventDuplicateSubmit
     @OperationLog(moduleTitle = "删除字典", businessType = BusinessType.DELETE)
     public String delete(@PathVariable("id") Long id) {
@@ -58,7 +58,7 @@ public class DictionaryController {
     }
 
     @ApiOperation("修改字典")
-    @PostMapping("/update")
+    @PutMapping("/update")
     @PreventDuplicateSubmit
     @OperationLog(moduleTitle = "修改字典", businessType = BusinessType.UPDATE)
     public String update(@Validated(ValidGroup.Update.class) @RequestBody DictionaryDTO dto) {

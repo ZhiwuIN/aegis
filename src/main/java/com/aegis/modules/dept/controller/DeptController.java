@@ -48,7 +48,7 @@ public class DeptController {
     }
 
     @ApiOperation("删除")
-    @GetMapping("/delete/{id}")
+    @DeleteMapping("/delete/{id}")
     @PreventDuplicateSubmit
     @OperationLog(moduleTitle = "删除部门", businessType = BusinessType.DELETE)
     public String delete(@PathVariable("id") Long id) {
@@ -64,7 +64,7 @@ public class DeptController {
     }
 
     @ApiOperation("修改部门")
-    @PostMapping("/update")
+    @PutMapping("/update")
     @PreventDuplicateSubmit
     @OperationLog(moduleTitle = "修改部门", businessType = BusinessType.UPDATE)
     public String update(@Validated(ValidGroup.Update.class) @RequestBody DeptDTO dto) {

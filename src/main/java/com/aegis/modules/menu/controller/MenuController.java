@@ -42,7 +42,7 @@ public class MenuController {
     }
 
     @ApiOperation("删除")
-    @GetMapping("/delete/{id}")
+    @DeleteMapping("/delete/{id}")
     @PreventDuplicateSubmit
     @OperationLog(moduleTitle = "删除菜单", businessType = BusinessType.DELETE)
     public String delete(@PathVariable("id") Long id) {
@@ -58,7 +58,7 @@ public class MenuController {
     }
 
     @ApiOperation("修改")
-    @PostMapping("/update")
+    @PutMapping("/update")
     @PreventDuplicateSubmit
     @OperationLog(moduleTitle = "修改菜单", businessType = BusinessType.UPDATE)
     public String update(@Validated(ValidGroup.Update.class) @RequestBody MenuDTO dto) {
