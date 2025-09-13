@@ -2,6 +2,7 @@ package com.aegis.common.domain.vo;
 
 import com.aegis.modules.dept.domain.entity.Dept;
 import com.aegis.modules.menu.domain.entity.Menu;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -38,6 +39,7 @@ public class TreeVO implements Serializable {
      * 子节点
      */
     @ApiModelProperty("子节点")
+    @JsonInclude(JsonInclude.Include.NON_EMPTY)
     private List<TreeVO> children;
 
 

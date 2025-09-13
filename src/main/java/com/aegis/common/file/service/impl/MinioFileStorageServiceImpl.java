@@ -79,16 +79,15 @@ public class MinioFileStorageServiceImpl extends AbstractFileStorageService {
     }
 
     @Override
-    public boolean delete(String filePath) {
+    public void delete(String filePath) {
         try {
             minioClient.removeObject(RemoveObjectArgs.builder()
                     .bucket(config.getBucketName())
                     .object(filePath)
                     .build());
-            return true;
         } catch (Exception e) {
             log.error("删除MinIO文件失败: {}", filePath, e);
-            return false;
+            throw new BusinessException("删除失败,请联系系统管理员");
         }
     }
 

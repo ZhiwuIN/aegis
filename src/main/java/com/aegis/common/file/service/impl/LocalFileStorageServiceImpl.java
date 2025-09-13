@@ -32,9 +32,12 @@ public class LocalFileStorageServiceImpl extends AbstractFileStorageService {
 
     private final String basePath;
 
+    private final String secretKey;
+
     public LocalFileStorageServiceImpl(FileUploadProperties properties, FileMetadataMapper fileMetadataMapper) {
         super(properties, fileMetadataMapper);
         this.basePath = properties.getLocal().getPath();
+        this.secretKey = properties.getLocal().getSecretKey();
     }
 
     @Override
@@ -77,12 +80,12 @@ public class LocalFileStorageServiceImpl extends AbstractFileStorageService {
     }
 
     @Override
-    public boolean delete(String filePath) {
+    public void delete(String filePath) {
         try {
-            return FileUtil.del(filePath);
+            FileUtil.del(filePath);
         } catch (Exception e) {
             log.error("删除本地文件失败: {}", filePath, e);
-            return false;
+            throw new BusinessException("删除失败,请联系系统管理员");
         }
     }
 
@@ -107,9 +110,9 @@ public class LocalFileStorageServiceImpl extends AbstractFileStorageService {
 
             // 生成带时间戳的临时下载链接
             long timestamp = System.currentTimeMillis() + expiration.toMillis();
-            String token = DigestUtil.md5Hex(filePath + timestamp + "secret_key"); // 使用配置的密钥
+            String token = DigestUtil.sha256Hex(filePath + timestamp + secretKey); // 使用配置的密钥
 
-            String relativePath = filePath.replace(basePath, "/files");
+            String relativePath = filePath.replace(basePath, "/file/localDownload");
             return relativePath + "?token=" + token + "&expires=" + timestamp;
         } catch (Exception e) {
             log.error("生成本地存储临时下载URL失败: {}", filePath, e);

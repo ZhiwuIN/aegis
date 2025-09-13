@@ -3,10 +3,13 @@ package com.aegis.utils;
 import cn.hutool.json.JSONUtil;
 import com.aegis.common.result.Result;
 import com.aegis.common.result.ResultCodeEnum;
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 
 @Slf4j
 public final class ResponseUtils {
@@ -24,8 +27,16 @@ public final class ResponseUtils {
      */
     public static void setExcelResponse(HttpServletResponse response) {
         response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
-        response.setCharacterEncoding("utf-8");
+        response.setCharacterEncoding(StandardCharsets.UTF_8.name());
         response.setHeader("Content-disposition", "attachment;filename*=utf-8''" + System.currentTimeMillis() + ".xlsx");
+    }
+
+    @SneakyThrows
+    public static void setFileDownloadHeader(HttpServletResponse response, String fileName) {
+        response.setContentType("application/octet-stream");
+        response.setCharacterEncoding(StandardCharsets.UTF_8.name());
+        response.setHeader("Content-Disposition",
+                "attachment; filename=\"" + URLEncoder.encode(fileName, String.valueOf(StandardCharsets.UTF_8)) + "\"");
     }
 
     /**

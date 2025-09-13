@@ -26,7 +26,7 @@ public interface FileStorageService {
     /**
      * 删除文件
      */
-    boolean delete(String filePath);
+    void delete(String filePath);
 
     /**
      * 检查文件是否存在

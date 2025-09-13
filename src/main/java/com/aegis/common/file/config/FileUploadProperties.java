@@ -23,7 +23,8 @@ public class FileUploadProperties {
 
     @Data
     public static class LocalConfig {
-        private String path = "/tmp/uploads/";
+        private String secretKey;
+        private String path;
     }
 
     @Data

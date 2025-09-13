@@ -20,7 +20,7 @@ public class WebMvcConfig implements WebMvcConfigurer {
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
         // 配置本地文件访问路径
-        registry.addResourceHandler("/files/**")
+        registry.addResourceHandler("/file/localDownload/**")
                 .addResourceLocations("file:" + properties.getLocal().getPath() + "/");
     }
 }

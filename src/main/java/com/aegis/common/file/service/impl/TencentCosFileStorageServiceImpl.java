@@ -83,13 +83,12 @@ public class TencentCosFileStorageServiceImpl extends AbstractFileStorageService
     }
 
     @Override
-    public boolean delete(String filePath) {
+    public void delete(String filePath) {
         try {
             cosClient.deleteObject(new DeleteObjectRequest(config.getBucketName(), filePath));
-            return true;
         } catch (Exception e) {
             log.error("删除腾讯云COS文件失败: {}", filePath, e);
-            return false;
+            throw new BusinessException("删除失败,请联系系统管理员");
         }
     }
 
