@@ -84,6 +84,8 @@ public class MenuServiceImpl implements MenuService {
         menu.setCreateBy(SecurityUtils.getUserId());
         menuMapper.insert(menu);
 
+        dataChangePublisher.publishMenuChange("新增菜单");
+
         return CommonConstants.SUCCESS_MESSAGE;
     }
 
@@ -100,6 +102,8 @@ public class MenuServiceImpl implements MenuService {
         menu.setUpdateBy(SecurityUtils.getUserId());
 
         menuMapper.updateById(menu);
+
+        dataChangePublisher.publishMenuChange("修改菜单,ID: " + dto.getId());
 
         return CommonConstants.SUCCESS_MESSAGE;
     }

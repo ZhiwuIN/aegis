@@ -52,8 +52,11 @@
         from t_user tu
                  left join t_user_role tur on tur.user_id = tu.id
                  left join t_role tr on tur.role_id = tr.id
-        where username = #{username}
-           or email = #{username}
-           or phone = #{username}
+        where tu.deleted = 0
+          and tr.deleted = 0
+          and tr.status = 0
+          and (username = #{username}
+            or email = #{username}
+            or phone = #{username})
     </select>
 </mapper>

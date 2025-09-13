@@ -53,7 +53,7 @@ public class MyFilterInvocationSecurityMetadataSource implements FilterInvocatio
 
     /**
      * 加载所有的URL存入Redis中
-     * 在新增、修改、删除角色关联菜单时,发布事件监听器{@link DataChangeListener},重新加载
+     * 在新增、修改、删除 【菜单、角色、角色关联菜单】时,发布事件监听器{@link DataChangeListener},重新加载
      */
     public List<Menu> loadDataSourceAllUrl() {
         if (redisUtils.hasKey(RedisConstants.MENUS)) {

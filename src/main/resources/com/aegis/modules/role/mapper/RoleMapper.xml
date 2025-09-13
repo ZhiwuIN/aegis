@@ -36,7 +36,6 @@
         WHERE ur.user_id = #{userId}
           AND r.data_scope = '2'
           AND r.deleted = 0
-          AND r.status = '0'
     </select>
 
     <select id="getHighestDataScope" resultType="java.lang.String">
