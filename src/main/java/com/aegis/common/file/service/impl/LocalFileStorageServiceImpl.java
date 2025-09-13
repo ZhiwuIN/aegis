@@ -2,7 +2,7 @@ package com.aegis.common.file.service.impl;
 
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.util.StrUtil;
-import cn.hutool.crypto.digest.DigestUtil;
+import cn.hutool.crypto.SecureUtil;
 import com.aegis.common.constant.FileConstants;
 import com.aegis.common.exception.BusinessException;
 import com.aegis.common.file.StoragePlatform;
@@ -110,7 +110,8 @@ public class LocalFileStorageServiceImpl extends AbstractFileStorageService {
 
             // 生成带时间戳的临时下载链接
             long timestamp = System.currentTimeMillis() + expiration.toMillis();
-            String token = DigestUtil.sha256Hex(filePath + timestamp + secretKey); // 使用配置的密钥
+
+            String token = SecureUtil.hmacSha256(secretKey).digestHex(filePath + timestamp);
 
             String relativePath = filePath.replace(basePath, "/file/localDownload");
             return relativePath + "?token=" + token + "&expires=" + timestamp;

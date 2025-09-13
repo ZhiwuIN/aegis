@@ -3,15 +3,18 @@ package com.aegis.modules.file.service.impl;
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.util.IdUtil;
 import cn.hutool.core.util.StrUtil;
-import cn.hutool.crypto.digest.DigestUtil;
+import cn.hutool.crypto.SecureUtil;
 import com.aegis.common.constant.FileConstants;
 import com.aegis.common.exception.BusinessException;
 import com.aegis.common.file.FileStorageServiceFactory;
 import com.aegis.common.file.StoragePlatform;
 import com.aegis.common.file.service.FileStorageService;
 import com.aegis.modules.file.domain.entity.FileMetadata;
+import com.aegis.modules.file.mapper.FileMetadataMapper;
 import com.aegis.modules.file.service.FileService;
 import com.aegis.utils.ResponseUtils;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.toolkit.ObjectUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -22,7 +25,6 @@ import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.InputStream;
-import java.nio.file.Paths;
 import java.time.Duration;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -41,6 +43,8 @@ import java.util.stream.Collectors;
 public class FileServiceImpl implements FileService {
 
     private final FileStorageServiceFactory fileStorageServiceFactory;
+
+    private final FileMetadataMapper fileMetadataMapper;
 
     @Value("${file.upload.local.path}")
     private String basePath;
@@ -70,8 +74,7 @@ public class FileServiceImpl implements FileService {
     public void download(String filePath, HttpServletResponse response) {
         FileStorageService storageService = fileStorageServiceFactory.getFileStorageService();
 
-        // 从 filePath 解析文件名
-        String fileName = Paths.get(filePath).getFileName().toString();
+        final String fileName = getFileNameByFilePatch(filePath);
 
         ResponseUtils.setFileDownloadHeader(response, fileName);
 
@@ -105,14 +108,16 @@ public class FileServiceImpl implements FileService {
 
         // 检查签名
         String filePath = basePath + uri.replace("/file/localDownload", "");
-        String expectedToken = DigestUtil.sha256Hex(filePath + expires, secretKey);
+        String expectedToken = SecureUtil.hmacSha256(secretKey).digestHex(filePath + expires);
         if (!expectedToken.equals(token)) {
             throw new BusinessException("无效链接");
         }
 
         FileStorageService storageService = fileStorageServiceFactory.getFileStorageService();
 
-        ResponseUtils.setFileDownloadHeader(response, filePath);
+        final String fileName = getFileNameByFilePatch(filePath);
+
+        ResponseUtils.setFileDownloadHeader(response, fileName);
 
         try (InputStream inputStream = storageService.download(filePath);
              ServletOutputStream outputStream = response.getOutputStream()) {
@@ -187,5 +192,15 @@ public class FileServiceImpl implements FileService {
         String uniqueFileName = IdUtil.simpleUUID() + FileConstants.POINT + FileUtil.extName(fileName);
         return (StrUtil.isNotBlank(directory) ? directory + FileConstants.SEPARATOR : "")
                 + FileConstants.FILE_FOLDER + FileConstants.SEPARATOR + uniqueFileName;
+    }
+
+    private String getFileNameByFilePatch(String filePath){
+        LambdaQueryWrapper<FileMetadata> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(FileMetadata::getFilePath, filePath);
+        FileMetadata fileMetadata = fileMetadataMapper.selectOne(queryWrapper);
+        if (ObjectUtils.isNull(fileMetadata)){
+            throw new BusinessException("文件不存在");
+        }
+        return fileMetadata.getOriginalFileName();
     }
 }
