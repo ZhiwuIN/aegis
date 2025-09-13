@@ -25,7 +25,7 @@ import org.springframework.web.bind.annotation.*;
  * @Description: 角色接口
  */
 @RestController
-@Api(tags = "用户接口")
+@Api(tags = "角色接口")
 @RequestMapping("/role")
 @RequiredArgsConstructor
 public class RoleController {
@@ -97,7 +97,7 @@ public class RoleController {
     }
 
     @ApiOperation("取消授权用户")
-    @PutMapping("/cancel")
+    @PostMapping("/cancel")
     @PreventDuplicateSubmit
     @OperationLog(moduleTitle = "取消授权用户", businessType = BusinessType.DELETE)
     public String cancel(@Validated @RequestBody CancelDTO dto) {
@@ -105,7 +105,7 @@ public class RoleController {
     }
 
     @ApiOperation("批量取消授权用户")
-    @PutMapping("/cancelAll")
+    @PostMapping("/cancelAll")
     @PreventDuplicateSubmit
     @OperationLog(moduleTitle = "批量取消授权用户", businessType = BusinessType.DELETE)
     public String cancelAll(@Validated @RequestBody CancelAllDTO dto) {
@@ -113,7 +113,7 @@ public class RoleController {
     }
 
     @ApiOperation("批量选择用户授权")
-    @PutMapping("/selectAll")
+    @PostMapping("/selectAll")
     @PreventDuplicateSubmit
     @OperationLog(moduleTitle = "批量选择用户授权", businessType = BusinessType.INSERT)
     public String selectAll(@Validated @RequestBody CancelAllDTO dto) {

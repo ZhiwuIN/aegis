@@ -58,7 +58,7 @@ public class MenuController {
     }
 
     @ApiOperation("修改")
-    @PutMapping("/update")
+    @PostMapping("/update")
     @PreventDuplicateSubmit
     @OperationLog(moduleTitle = "修改菜单", businessType = BusinessType.UPDATE)
     public String update(@Validated(ValidGroup.Update.class) @RequestBody MenuDTO dto) {

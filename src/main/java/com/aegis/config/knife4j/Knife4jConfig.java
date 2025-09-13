@@ -24,7 +24,7 @@ public class Knife4jConfig {
                         // 网站标题
                         .title("aegis")
                         // 描述 可以穿插md语法
-                        .description("# aegis 系统 是一款基于角色的访问控制（RBAC）权限管理系统，采用 Spring Boot + Vue 前后端分离架构")
+                        .description("aegis 系统 是一款基于角色的访问控制（RBAC）权限管理系统，采用 Spring Boot + Vue 前后端分离架构")
                         // 设置作者 服务器url 邮箱
                         .contact(new Contact("xuesong.lei", "http://127.0.0.1:8080", "aegis_system@163.com"))
                         // 版本

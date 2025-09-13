@@ -81,7 +81,7 @@ public class FileServiceController {
     }
 
     @ApiOperation("文件删除")
-    @DeleteMapping("/delete")
+    @GetMapping("/delete")
     @PreventDuplicateSubmit
     @OperationLog(moduleTitle = "文件删除", businessType = BusinessType.DELETE)
     public String deleteFile(@RequestParam("filePath") String filePath) {
