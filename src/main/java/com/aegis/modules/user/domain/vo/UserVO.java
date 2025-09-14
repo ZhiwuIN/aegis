@@ -1,5 +1,6 @@
 package com.aegis.modules.user.domain.vo;
 
+import com.aegis.modules.dept.domain.entity.Dept;
 import com.aegis.modules.role.domain.entity.Role;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModel;
@@ -52,9 +53,15 @@ public class UserVO {
     @ApiModelProperty("状态")
     private String status;
 
+    @ApiModelProperty("最后登录IP")
+    private String lastLoginIp;
+
     @ApiModelProperty("最后登录时间")
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     private Date lastLoginTime;
+
+    @ApiModelProperty("部门信息")
+    private Dept dept;
 
     @ApiModelProperty("角色列表")
     private List<Role> roleList;

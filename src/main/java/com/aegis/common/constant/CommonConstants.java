@@ -108,6 +108,16 @@ public class CommonConstants {
     public static final String ANONYMOUS = "anonymous";
 
     /**
+     * 默认密码
+     */
+    public static final String DEFAULT_PASSWORD = "123456";
+
+    /**
+     * 超级管理员ID
+     */
+    public static final Long SUPER_ADMIN_ID = 1L;
+
+    /**
      * 操作成功消息
      */
     public static final String SUCCESS_MESSAGE = "操作成功";

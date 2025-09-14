@@ -1,5 +1,6 @@
 package com.aegis.modules.user.service;
 
+import com.aegis.modules.user.domain.dto.UserDTO;
 import com.aegis.modules.user.domain.entity.User;
 import com.aegis.modules.user.domain.vo.UserVO;
 import org.mapstruct.Mapper;
@@ -13,4 +14,6 @@ import org.mapstruct.Mapper;
 public interface UserConvert {
 
     UserVO toUserVo(User user);
+
+    User toUser(UserDTO dto);
 }
