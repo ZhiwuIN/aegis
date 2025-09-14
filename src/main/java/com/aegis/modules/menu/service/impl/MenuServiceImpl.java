@@ -116,7 +116,7 @@ public class MenuServiceImpl implements MenuService {
                 menuList,
                 Menu::getParentId,
                 Menu::getId,
-                dept -> dept.getParentId() == null || dept.getParentId() == 0L,
+                menu -> menu.getParentId() == null || menu.getParentId() == 0L,
                 Menu::setChildren);
 
         return menuTree.stream().map(TreeVO::new).collect(Collectors.toList());

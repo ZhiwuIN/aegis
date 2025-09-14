@@ -23,7 +23,7 @@ import javax.validation.constraints.Size;
         @ConditionalRequiredFields(groups = {ValidGroup.Create.class, ValidGroup.Update.class},
                 field = "menuType", value = "D", requiredFields = {"icon", "orderNum", "menuName", "path"}),// 当菜单类型为目录时，图标、显示顺序、菜单名称、路由地址必填
         @ConditionalRequiredFields(groups = {ValidGroup.Create.class, ValidGroup.Update.class},
-                field = "menuType", value = "M", requiredFields = {"icon", "orderNum", "menuName", "path", "component", "requestMethod", "requestUri"}),// 当菜单类型为菜单时，图标、显示顺序、菜单名称、路由地址、组件路径、请求方法、请求地址必填
+                field = "menuType", value = "M", requiredFields = {"icon", "orderNum", "menuName", "path"}),// 当菜单类型为菜单时，图标、显示顺序、菜单名称、路由地址必填
         @ConditionalRequiredFields(groups = {ValidGroup.Create.class, ValidGroup.Update.class},
                 field = "menuType", value = "B", requiredFields = {"orderNum", "menuName", "requestMethod", "requestUri", "perms"})// 当菜单类型为按钮时，显示顺序、菜单名称、请求方法、请求地址、权限标识必填
 })
@@ -54,17 +54,20 @@ public class MenuDTO {
     @ApiModelProperty("URL匹配模式,支持Ant风格,比如/api/user/**")
     private String requestUri;
 
+    @ApiModelProperty("路由名称")
+    private String name;
+
     @ApiModelProperty("路由地址")
     private String path;
 
     @ApiModelProperty("组件路径")
     private String component;
 
-    @ApiModelProperty("是否为外链(0-是,1-否)")
-    private Integer isFrame;
+    @ApiModelProperty("是否为外链(0-否,1-是)")
+    private Boolean isFrame;
 
     @ApiModelProperty("是否缓存(0-缓存,1-不缓存)")
-    private Integer isCache;
+    private Boolean keepAlive;
 
     @ApiModelProperty("菜单类型(D-目录,M-菜单,B-按钮)")
     @NotBlank(groups = {ValidGroup.Create.class, ValidGroup.Update.class}, message = "菜单类型不能为空")
@@ -72,7 +75,7 @@ public class MenuDTO {
     private String menuType;
 
     @ApiModelProperty("菜单状态(0-显示,1-隐藏)")
-    private String visible;
+    private Boolean hidden;
 
     @ApiModelProperty("菜单状态(0-正常,1-停用)")
     @EnumString(groups = {ValidGroup.Create.class, ValidGroup.Update.class}, value = {"0", "1"}, message = "状态只允许为0或1")

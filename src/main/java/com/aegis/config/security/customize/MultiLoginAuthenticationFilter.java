@@ -10,6 +10,7 @@ import com.aegis.config.security.email.EmailAuthenticationToken;
 import com.aegis.config.security.sms.SmsAuthenticationToken;
 import com.aegis.utils.CaptchaUtils;
 import com.aegis.utils.RequestUtils;
+import com.aegis.utils.RsaUtils;
 import com.aegis.utils.SpringContextUtil;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -72,7 +73,7 @@ public class MultiLoginAuthenticationFilter extends AbstractAuthenticationProces
             case LoginRequestConstants.PASSWORD:
                 PasswordLoginRequestDTO passwordDTO = objectMapper.convertValue(map, PasswordLoginRequestDTO.class);
                 checkRequestParam(passwordDTO.getUsername(), passwordDTO.getPassword());
-                return new UsernamePasswordAuthenticationToken(passwordDTO.getUsername(), passwordDTO.getPassword());
+                return new UsernamePasswordAuthenticationToken(passwordDTO.getUsername(), RsaUtils.decryptByPrivateKey(passwordDTO.getPassword()));
             case LoginRequestConstants.EMAIL:
                 EmailLoginRequestDTO emailDTO = objectMapper.convertValue(map, EmailLoginRequestDTO.class);
                 checkRequestParam(emailDTO.getEmail(), emailDTO.getCode());

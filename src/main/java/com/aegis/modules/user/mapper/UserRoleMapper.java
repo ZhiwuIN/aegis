@@ -1,5 +1,6 @@
 package com.aegis.modules.user.mapper;
 
+import com.aegis.modules.role.domain.entity.Role;
 import com.aegis.modules.user.domain.entity.UserRole;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 
@@ -14,6 +15,8 @@ import java.util.List;
 public interface UserRoleMapper extends BaseMapper<UserRole> {
 
     void batchUserRole(List<UserRole> userRoleList);
+
+    List<Role> selectRoleByUserId(Long userId);
 }
 
 

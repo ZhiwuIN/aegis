@@ -58,4 +58,7 @@ public class UserVO {
 
     @ApiModelProperty("角色列表")
     private List<Role> roleList;
+
+    @ApiModelProperty("权限列表")
+    private List<String> permissions;
 }

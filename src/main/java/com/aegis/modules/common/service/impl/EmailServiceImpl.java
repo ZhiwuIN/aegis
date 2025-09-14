@@ -1,8 +1,10 @@
 package com.aegis.modules.common.service.impl;
 
 import cn.hutool.core.util.StrUtil;
+import com.aegis.common.constant.CommonConstants;
 import com.aegis.common.constant.RedisConstants;
 import com.aegis.common.exception.BusinessException;
+import com.aegis.common.exception.LoginException;
 import com.aegis.modules.common.service.EmailService;
 import com.aegis.utils.EmailUtils;
 import com.aegis.utils.RedisUtils;
@@ -32,7 +34,7 @@ public class EmailServiceImpl implements EmailService {
     public static final Integer EXPIRE_MINUTES = 5;
 
     @Override
-    public String sendRegisterCode(String email) {
+    public String sendEmailCode(String email) {
         if (!emailUtils.isValidEmail(email)) {
             throw new BusinessException("邮箱格式不正确");
         }
@@ -65,7 +67,42 @@ public class EmailServiceImpl implements EmailService {
                 .atStartOfDay(ZoneId.systemDefault())
                 .toInstant()));
 
-        return "发送成功";
+        return CommonConstants.SUCCESS_MESSAGE;
+    }
+
+    /**
+     * 校验邮箱和验证码
+     *
+     * @param email 用户邮箱
+     * @param code  用户输入的验证码
+     */
+    @Override
+    public void validateEmailCode(String email, String code) {
+        // 检查验证码错误次数（防暴力破解）
+        String errorKey = RedisConstants.EMAIL_LOGIN_ERROR + email;
+        String errorCount = redisUtils.get(errorKey);
+        if (StrUtil.isNotEmpty(errorCount) && Integer.parseInt(errorCount) >= 5) {
+            throw new LoginException("验证码错误次数过多，请30分钟后再试");
+        }
+
+        // 获取缓存中的验证码
+        String emailLogin = RedisConstants.EMAIL_LOGIN + email;
+        String emailCode = redisUtils.get(emailLogin);
+        if (StrUtil.isEmpty(emailCode)) {
+            throw new LoginException("验证码已过期");
+        }
+
+        // 验证码校验
+        if (!code.equals(emailCode)) {
+            // 错误次数+1
+            redisUtils.increment(errorKey, 1);
+            redisUtils.expire(errorKey, 30, TimeUnit.MINUTES);
+            throw new LoginException("验证码不正确");
+        }
+
+        // 验证成功，清除验证码和错误计数
+        redisUtils.delete(emailLogin);
+        redisUtils.delete(errorKey);
     }
 
     private String getCode() {

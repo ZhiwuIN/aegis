@@ -194,11 +194,11 @@ public class FileServiceImpl implements FileService {
                 + FileConstants.FILE_FOLDER + FileConstants.SEPARATOR + uniqueFileName;
     }
 
-    private String getFileNameByFilePatch(String filePath){
+    private String getFileNameByFilePatch(String filePath) {
         LambdaQueryWrapper<FileMetadata> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.eq(FileMetadata::getFilePath, filePath);
         FileMetadata fileMetadata = fileMetadataMapper.selectOne(queryWrapper);
-        if (ObjectUtils.isNull(fileMetadata)){
+        if (ObjectUtils.isNull(fileMetadata)) {
             throw new BusinessException("文件不存在");
         }
         return fileMetadata.getOriginalFileName();

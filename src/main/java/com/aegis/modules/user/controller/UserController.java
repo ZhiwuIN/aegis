@@ -1,17 +1,10 @@
 package com.aegis.modules.user.controller;
 
-import com.aegis.common.domain.dto.CaptchaDTO;
-import com.aegis.common.domain.vo.CaptchaVO;
-import com.aegis.common.exception.BusinessException;
 import com.aegis.modules.user.service.UserService;
-import com.aegis.utils.CaptchaUtils;
 import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.*;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 /**
  * @Author: xuesong.lei
@@ -24,40 +17,6 @@ import javax.servlet.http.HttpServletResponse;
 @RequiredArgsConstructor
 public class UserController {
 
-    private final CaptchaUtils captchaUtils;
-
     private final UserService userService;
 
-    /**
-     * 刷新token
-     */
-    @ApiOperation("刷新token")
-    @GetMapping("/refreshToken")
-    public String refreshToken(HttpServletRequest request, HttpServletResponse response) {
-        return userService.refreshToken(request, response);
-    }
-
-    /**
-     * 生成验证码
-     */
-    @ApiOperation("生成验证码")
-    @GetMapping("/captcha/generate")
-    public CaptchaVO generateCaptcha() {
-        return captchaUtils.generateCaptcha();
-    }
-
-    /**
-     * 验证滑动位置
-     * //TODO 后期删除的
-     */
-    @ApiOperation("验证滑动位置")
-    @PostMapping("/captcha/verify")
-    public String verifyCaptcha(@RequestBody CaptchaDTO captchaDTO) {
-        boolean isValid = captchaUtils.verifyCaptcha(captchaDTO.getCaptchaKey(), captchaDTO.getSlideX());
-        if (isValid) {
-            return "验证成功";
-        } else {
-            throw new BusinessException("验证失败");
-        }
-    }
 }

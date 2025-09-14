@@ -117,6 +117,9 @@ public final class CaptchaUtils {
      * 验证验证码
      */
     public boolean verifyCaptcha(String captchaKey, Integer userX) {
+        if (captchaKey == null || userX == null) {
+            return false;
+        }
         String correctXStr = redisUtils.get(RedisConstants.SLIDER_CAPTCHA_KEY + captchaKey);
         if (correctXStr == null) {
             return false;

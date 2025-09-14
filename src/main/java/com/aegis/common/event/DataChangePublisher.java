@@ -1,6 +1,7 @@
 package com.aegis.common.event;
 
 import com.aegis.modules.log.domain.entity.SysOperateLog;
+import com.aegis.modules.common.domain.dto.UserRegisterDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
@@ -26,5 +27,9 @@ public class DataChangePublisher {
 
     public void publishLog(SysOperateLog log) {
         applicationContext.publishEvent(new DataChangeEvent(DataChangeEvent.Type.LOG, log, "记录操作日志"));
+    }
+
+    public void publishSendRegisterSuccess(UserRegisterDTO registerDTO) {
+        applicationContext.publishEvent(new DataChangeEvent(DataChangeEvent.Type.EMAIL, registerDTO, "注册成功发送邮件"));
     }
 }

@@ -4,6 +4,8 @@ import com.aegis.common.constant.RedisConstants;
 import com.aegis.config.security.handler.MyFilterInvocationSecurityMetadataSource;
 import com.aegis.modules.log.domain.entity.SysOperateLog;
 import com.aegis.modules.log.mapper.SysOperateLogMapper;
+import com.aegis.modules.common.domain.dto.UserRegisterDTO;
+import com.aegis.utils.EmailUtils;
 import com.aegis.utils.RedisUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -23,6 +25,8 @@ public class DataChangeListener {
 
     private final RedisUtils redisUtils;
 
+    private final EmailUtils emailUtils;
+
     private final MyFilterInvocationSecurityMetadataSource securityMetadataSource;
 
     private final SysOperateLogMapper sysOperateLogMapper;
@@ -40,9 +44,21 @@ public class DataChangeListener {
             case LOG:
                 handleLog(event);
                 break;
+            case EMAIL:
+                handleEmail(event);
+                break;
             default:
                 log.warn("未知事件类型: {}", event.getType());
         }
+    }
+
+    /**
+     * 处理发送注册成功邮件
+     */
+    private void handleEmail(DataChangeEvent event) {
+        UserRegisterDTO logData = (UserRegisterDTO) event.getPayload();
+        emailUtils.sendWelcomeEmail(logData.getEmail(), logData.getUsername(), "aegis");
+        log.info("注册成功邮件发送完成，描述: {}", event.getDescription());
     }
 
     /**

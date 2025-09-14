@@ -1,10 +1,9 @@
 package com.aegis.config.security.email;
 
 import cn.hutool.core.util.StrUtil;
-import com.aegis.common.constant.RedisConstants;
 import com.aegis.common.exception.LoginException;
 import com.aegis.config.security.customize.UserDetailsServiceImpl;
-import com.aegis.utils.RedisUtils;
+import com.aegis.modules.common.service.EmailService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.support.MessageSourceAccessor;
 import org.springframework.security.authentication.AuthenticationProvider;
@@ -17,8 +16,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 import org.springframework.util.Assert;
 
-import java.util.concurrent.TimeUnit;
-
 /**
  * @Author: xuesong.lei
  * @Date: 2025/9/3 11:16
@@ -30,7 +27,7 @@ public class EmailAuthenticationProvider implements AuthenticationProvider {
 
     private final UserDetailsServiceImpl userDetailsService;
 
-    private final RedisUtils redisUtils;
+    private final EmailService emailService;
 
     protected MessageSourceAccessor messages = SpringSecurityMessageSource.getAccessor();
 
@@ -49,7 +46,7 @@ public class EmailAuthenticationProvider implements AuthenticationProvider {
         }
 
         // 校验验证码
-        validateEmailCode(email, code);
+        emailService.validateEmailCode(email, code);
 
         UserDetails userDetails = userDetailsService.loadUserByUsername(email);
 
@@ -57,34 +54,6 @@ public class EmailAuthenticationProvider implements AuthenticationProvider {
         check(userDetails);
 
         return new EmailAuthenticationToken(userDetails, null, userDetails.getAuthorities());
-    }
-
-    private void validateEmailCode(String email, String code) {
-        // 检查验证码错误次数（防暴力破解）
-        String errorKey = RedisConstants.EMAIL_LOGIN_ERROR + email;
-        String errorCount = redisUtils.get(errorKey);
-        if (StrUtil.isNotEmpty(errorCount) && Integer.parseInt(errorCount) >= 5) {
-            throw new LoginException("验证码错误次数过多，请30分钟后再试");
-        }
-
-        // 获取缓存中的验证码
-        String emailLogin = RedisConstants.EMAIL_LOGIN + email;
-        String emailCode = redisUtils.get(emailLogin);
-        if (StrUtil.isEmpty(emailCode)) {
-            throw new LoginException("验证码已过期");
-        }
-
-        // 验证码校验
-        if (!code.equals(emailCode)) {
-            // 错误次数+1
-            redisUtils.increment(errorKey, 1);
-            redisUtils.expire(errorKey, 30, TimeUnit.MINUTES);
-            throw new LoginException("验证码不正确");
-        }
-
-        // 验证成功，清除验证码和错误计数
-        redisUtils.delete(emailLogin);
-        redisUtils.delete(errorKey);
     }
 
     @Override

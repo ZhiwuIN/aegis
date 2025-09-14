@@ -128,6 +128,13 @@ public class Menu implements Serializable {
     private String requestUri;
 
     /**
+     * 路由名称
+     */
+    @ApiModelProperty("路由名称")
+    @TableField(value = "name")
+    private String name;
+
+    /**
      * 路由地址
      */
     @ApiModelProperty("路由地址")
@@ -142,18 +149,18 @@ public class Menu implements Serializable {
     private String component;
 
     /**
-     * 是否为外链(0-是,1-否)
+     * 是否为外链(0-否,1-是)
      */
-    @ApiModelProperty("是否为外链(0-是,1-否)")
+    @ApiModelProperty("是否为外链(0-否,1-是)")
     @TableField(value = "is_frame")
-    private Integer isFrame;
+    private Boolean isFrame;
 
     /**
      * 是否缓存(0-缓存,1-不缓存)
      */
     @ApiModelProperty("是否缓存(0-缓存,1-不缓存)")
-    @TableField(value = "is_cache")
-    private Integer isCache;
+    @TableField(value = "keep_alive")
+    private Boolean keepAlive;
 
     /**
      * 菜单类型(D-目录,M-菜单,B-按钮)
@@ -166,8 +173,8 @@ public class Menu implements Serializable {
      * 菜单状态(0-显示,1-隐藏)
      */
     @ApiModelProperty("菜单状态(0-显示,1-隐藏)")
-    @TableField(value = "visible")
-    private String visible;
+    @TableField(value = "hidden")
+    private Boolean hidden;
 
     /**
      * 菜单状态(0-正常,1-停用)

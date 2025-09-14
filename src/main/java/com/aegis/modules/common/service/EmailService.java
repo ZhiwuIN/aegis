@@ -8,10 +8,18 @@ package com.aegis.modules.common.service;
 public interface EmailService {
 
     /**
-     * 发送注册验证码
+     * 发送邮箱验证码
      *
      * @param email 邮箱
      * @return 响应消息
      */
-    String sendRegisterCode(String email);
+    String sendEmailCode(String email);
+
+    /**
+     * 校验邮箱验证码
+     *
+     * @param email 邮箱
+     * @param code  验证码
+     */
+    void validateEmailCode(String email, String code);
 }

@@ -58,6 +58,36 @@ public class CommonConstants {
     public static final String MENUS_BUTTON = "B";
 
     /**
+     * 内链域名特殊字符替换
+     */
+    public static final String HTTP = "http://";
+
+    /**
+     * 内链域名特殊字符替换
+     */
+    public static final String HTTPS = "https://";
+
+    /**
+     * 内链域名特殊字符替换
+     */
+    public static final String WWW = "www.";
+
+    /**
+     * Layout组件标识
+     */
+    public final static String LAYOUT = "Layout";
+
+    /**
+     * ParentView组件标识
+     */
+    public final static String PARENT_VIEW = "ParentView";
+
+    /**
+     * InnerLink组件标识
+     */
+    public final static String INNER_LINK = "InnerLink";
+
+    /**
      * 部门顶级id
      */
     public static final String DEPT_ANCESTOR_ID = "0";

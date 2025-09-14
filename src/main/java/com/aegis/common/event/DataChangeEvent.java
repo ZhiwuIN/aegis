@@ -15,7 +15,8 @@ public class DataChangeEvent {
     public enum Type {
         MENU,       // 菜单变更
         WHITELIST,  // 白名单变更
-        LOG         // 系统操作日志
+        LOG,         // 系统操作日志
+        EMAIL,       // 邮件
     }
 
     /**

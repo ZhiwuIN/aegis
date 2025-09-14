@@ -21,4 +21,13 @@
             (#{item.userId},#{item.roleId})
         </foreach>
     </insert>
+
+    <select id="selectRoleByUserId" resultType="com.aegis.modules.role.domain.entity.Role">
+        SELECT r.*
+        FROM t_role r
+                 LEFT JOIN t_user_role ur ON r.id = ur.role_id
+        WHERE ur.user_id = #{userId}
+          AND r.deleted = 0
+          AND r.status = '0'
+    </select>
 </mapper>

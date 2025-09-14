@@ -14,6 +14,10 @@ import java.util.List;
 public interface MenuMapper extends BaseMapper<Menu> {
 
     List<Menu> getAllMenu();
+
+    List<String> selectPermsByUserId(Long userId);
+
+    List<Menu> selectMenuByUserId(Long userId);
 }
 
 
