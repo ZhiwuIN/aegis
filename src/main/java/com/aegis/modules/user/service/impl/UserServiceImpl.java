@@ -21,6 +21,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 /**
  * @Author: xuesong.lei
  * @Date: 2025/9/4 22:50
@@ -123,14 +125,7 @@ public class UserServiceImpl implements UserService {
         user.setCreateBy(SecurityUtils.getUserId());
         userMapper.insert(user);
 
-        if (ObjectUtils.isNotEmpty(dto.getRoleIds())) {
-            for (Long roleId : dto.getRoleIds()) {
-                UserRole userRole = new UserRole();
-                userRole.setUserId(user.getId());
-                userRole.setRoleId(roleId);
-                userRoleMapper.insert(userRole);
-            }
-        }
+        insertUserRole(user.getId(), dto.getRoleIds());
 
         return CommonConstants.SUCCESS_MESSAGE;
     }
@@ -160,14 +155,7 @@ public class UserServiceImpl implements UserService {
 
         userRoleMapper.delete(new LambdaQueryWrapper<UserRole>().eq(UserRole::getUserId, dto.getId()));
 
-        if (ObjectUtils.isNotEmpty(dto.getRoleIds())) {
-            for (Long roleId : dto.getRoleIds()) {
-                UserRole userRole = new UserRole();
-                userRole.setUserId(dto.getId());
-                userRole.setRoleId(roleId);
-                userRoleMapper.insert(userRole);
-            }
-        }
+        insertUserRole(dto.getId(), dto.getRoleIds());
 
         return CommonConstants.SUCCESS_MESSAGE;
     }
@@ -186,6 +174,17 @@ public class UserServiceImpl implements UserService {
         userMapper.updateById(user);
 
         return CommonConstants.SUCCESS_MESSAGE;
+    }
+
+    private void insertUserRole(Long userId, List<Long> roleIds) {
+        if (ObjectUtils.isNotEmpty(roleIds)) {
+            for (Long roleId : roleIds) {
+                UserRole userRole = new UserRole();
+                userRole.setUserId(userId);
+                userRole.setRoleId(roleId);
+                userRoleMapper.insert(userRole);
+            }
+        }
     }
 
     private void checkCurrentUserAllowed(Long id) {
