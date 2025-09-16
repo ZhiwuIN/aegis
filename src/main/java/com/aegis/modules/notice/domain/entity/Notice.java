@@ -127,9 +127,9 @@ public class Notice implements Serializable {
     private String targetIds;
 
     /**
-     * 公告状态(0-正常,1-关闭)
+     * 通知状态(0=待发布,1=已发布,2=已撤回)
      */
-    @ApiModelProperty("公告状态(0-正常,1-关闭)")
+    @ApiModelProperty("通知状态(0=待发布,1=已发布,2=已撤回)")
     @TableField(value = "status")
     private String status;
 
@@ -141,14 +141,5 @@ public class Notice implements Serializable {
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Date publishTime;
-
-    /**
-     * 过期时间,为空则永久有效
-     */
-    @ApiModelProperty("过期时间,为空则永久有效")
-    @TableField(value = "expire_time")
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
-    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    private Date expireTime;
 
 }

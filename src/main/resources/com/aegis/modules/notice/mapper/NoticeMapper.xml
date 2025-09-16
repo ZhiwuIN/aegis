@@ -20,12 +20,11 @@
         <result property="targetIds" column="target_ids"/>
         <result property="status" column="status"/>
         <result property="publishTime" column="publish_time"/>
-        <result property="expireTime" column="expire_time"/>
     </resultMap>
 
     <sql id="Base_Column_List">
         id,create_by,update_by,create_time,update_time,deleted,
         version,remark,notice_title,notice_type,notice_content,
-        target_type,target_ids,status,publish_time,expire_time
+        target_type,target_ids,status,publish_time
     </sql>
 </mapper>

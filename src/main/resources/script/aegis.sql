@@ -156,9 +156,8 @@ CREATE TABLE `t_notice`
     `notice_content` LONGTEXT        NOT NULL COMMENT '通知内容',
     `target_type`    TINYINT         NOT NULL DEFAULT 1 COMMENT '目标类型(1=全部用户,2=指定用户,3=指定角色,4=指定部门))',
     `target_ids`     LONGTEXT                 DEFAULT NULL COMMENT '目标对象ID列表,逗号分隔(根据target_type解释含义)',
-    `status`         CHAR(1)         NOT NULL DEFAULT '0' COMMENT '公告状态(0-正常,1-关闭)',
+    `status`         CHAR(1)         NOT NULL DEFAULT '0' COMMENT '通知状态(0=待发布,1=已发布,2=已撤回)',
     `publish_time`   DATETIME                 DEFAULT NULL COMMENT '计划发布时间,为空则立即发布',
-    `expire_time`    DATETIME                 DEFAULT NULL COMMENT '过期时间,为空则永久有效',
     PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB
   DEFAULT CHARSET = utf8mb4 COMMENT = '通知公告表';

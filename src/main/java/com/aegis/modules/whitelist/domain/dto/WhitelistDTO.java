@@ -3,12 +3,12 @@ package com.aegis.modules.whitelist.domain.dto;
 import com.aegis.common.domain.dto.PageDTO;
 import com.aegis.common.validator.EnumString;
 import com.aegis.common.validator.ValidGroup;
-import com.baomidou.mybatisplus.annotation.TableField;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Null;
 
@@ -28,12 +28,12 @@ public class WhitelistDTO extends PageDTO {
     private Long id;
 
     @ApiModelProperty("请求方法,GET,POST,PUT,DELETE,ALL=不限制")
-    @NotNull(groups = {ValidGroup.Create.class, ValidGroup.Update.class}, message = "请求方法参数不能为空")
+    @NotBlank(groups = {ValidGroup.Create.class, ValidGroup.Update.class}, message = "请求方法参数不能为空")
     @EnumString(groups = {ValidGroup.Create.class, ValidGroup.Update.class}, value = {"GET", "POST", "PUT", "DELETE", "ALL"}, message = "请求方法参数错误")
     private String requestMethod;
 
     @ApiModelProperty("URL匹配模式")
-    @NotNull(groups = {ValidGroup.Create.class, ValidGroup.Update.class}, message = "请求地址参数不能为空")
+    @NotBlank(groups = {ValidGroup.Create.class, ValidGroup.Update.class}, message = "请求地址参数不能为空")
     private String requestUri;
 
     @ApiModelProperty("描述")

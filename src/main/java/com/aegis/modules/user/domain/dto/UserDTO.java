@@ -9,6 +9,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.springframework.format.annotation.DateTimeFormat;
 
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Null;
 import java.util.Date;
@@ -37,11 +38,11 @@ public class UserDTO extends PageDTO {
     private Long deptId;
 
     @ApiModelProperty("用户名")
-    @NotNull(groups = ValidGroup.Create.class, message = "用户名不能为空")
+    @NotBlank(groups = ValidGroup.Create.class, message = "用户名不能为空")
     private String username;
 
     @ApiModelProperty("呢称")
-    @NotNull(groups = ValidGroup.Update.class, message = "呢称不能为空")
+    @NotBlank(groups = ValidGroup.Update.class, message = "呢称不能为空")
     private String nickname;
 
     @ApiModelProperty("邮箱")
