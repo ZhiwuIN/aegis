@@ -30,7 +30,7 @@ public class GlobalExceptionHandler {
      * 处理业务异常
      */
     @ExceptionHandler(BusinessException.class)
-    @ResponseStatus(HttpStatus.OK)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
     public Result<?> handleBusinessException(HttpServletRequest request, BusinessException e) {
         logError(request, e);
         return Result.error(e.getCode(), e.getMessage());
@@ -40,7 +40,7 @@ public class GlobalExceptionHandler {
      * 处理参数校验异常
      */
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    @ResponseStatus(HttpStatus.OK)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
     public Result<?> handleMethodArgumentNotValidException(HttpServletRequest request, MethodArgumentNotValidException e) {
         String message = e.getBindingResult().getAllErrors().stream()
                 .map(ObjectError::getDefaultMessage)
@@ -53,7 +53,7 @@ public class GlobalExceptionHandler {
      * 处理约束违反异常
      */
     @ExceptionHandler(ConstraintViolationException.class)
-    @ResponseStatus(HttpStatus.OK)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
     public Result<?> handleConstraintViolationException(HttpServletRequest request, ConstraintViolationException e) {
         String message = e.getConstraintViolations().stream()
                 .map(ConstraintViolation::getMessage)
@@ -66,7 +66,7 @@ public class GlobalExceptionHandler {
      * 处理绑定异常
      */
     @ExceptionHandler(BindException.class)
-    @ResponseStatus(HttpStatus.OK)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
     public Result<?> handleBindException(HttpServletRequest request, BindException e) {
         String message = e.getAllErrors().stream()
                 .map(ObjectError::getDefaultMessage)
@@ -79,7 +79,7 @@ public class GlobalExceptionHandler {
      * 处理其他校验异常
      */
     @ExceptionHandler(ValidationException.class)
-    @ResponseStatus(HttpStatus.OK)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
     public Result<?> handleValidationException(HttpServletRequest request, ValidationException e) {
         logError(request, e);
         return Result.error(ResultCodeEnum.BAD_REQUEST.getCode(), e.getMessage());
