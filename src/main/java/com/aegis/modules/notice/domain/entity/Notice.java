@@ -1,11 +1,11 @@
 package com.aegis.modules.notice.domain.entity;
 
 import com.baomidou.mybatisplus.annotation.*;
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -15,7 +15,7 @@ import java.util.Date;
 
 /**
  * @Author: xuesong.lei
- * @Date: 2025-08-30 10:47:49
+ * @Date: 2025-09-16 21:39:03
  * @Description: 通知公告表
  * @TableName t_notice
  */
@@ -92,32 +92,39 @@ public class Notice implements Serializable {
     private String remark;
 
     /**
-     * 公告标题
+     * 通知标题
      */
-    @ApiModelProperty("公告标题")
+    @ApiModelProperty("通知标题")
     @TableField(value = "notice_title")
     private String noticeTitle;
 
     /**
-     * 公告类型(1-通知,2-公告)
+     * 通知类型(1=系统通知,2=公告,3=提醒)
      */
-    @ApiModelProperty("公告类型(1-通知,2-公告)")
+    @ApiModelProperty("通知类型(1=系统通知,2=公告,3=提醒)")
     @TableField(value = "notice_type")
     private String noticeType;
 
     /**
-     * 公告内容
+     * 通知内容
      */
-    @ApiModelProperty("公告内容")
+    @ApiModelProperty("通知内容")
     @TableField(value = "notice_content")
     private String noticeContent;
 
     /**
-     * 目标类型(1=全部用户,2=指定用户)
+     * 目标类型(1=全部用户,2=指定用户,3=指定角色,4=指定部门))
      */
-    @ApiModelProperty("目标类型(1=全部用户,2=指定用户)")
+    @ApiModelProperty("目标类型(1=全部用户,2=指定用户,3=指定角色,4=指定部门))")
     @TableField(value = "target_type")
     private Integer targetType;
+
+    /**
+     * 目标对象ID列表,逗号分隔(根据target_type解释含义)
+     */
+    @ApiModelProperty("目标对象ID列表,逗号分隔(根据target_type解释含义)")
+    @TableField(value = "target_ids")
+    private String targetIds;
 
     /**
      * 公告状态(0-正常,1-关闭)
@@ -127,18 +134,18 @@ public class Notice implements Serializable {
     private String status;
 
     /**
-     * 发布时间
+     * 计划发布时间,为空则立即发布
      */
-    @ApiModelProperty("发布时间")
+    @ApiModelProperty("计划发布时间,为空则立即发布")
     @TableField(value = "publish_time")
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Date publishTime;
 
     /**
-     * 过期时间,可为空
+     * 过期时间,为空则永久有效
      */
-    @ApiModelProperty("过期时间,可为空")
+    @ApiModelProperty("过期时间,为空则永久有效")
     @TableField(value = "expire_time")
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")

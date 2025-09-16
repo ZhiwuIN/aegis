@@ -5,7 +5,7 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 
 /**
  * @Author: xuesong.lei
- * @Date: 2025-08-30 10:47:54
+ * @Date: 2025-09-16 21:39:42
  * @Description: 针对表【t_notice_user(通知接收记录表)】的数据库操作Mapper
  * @Entity: com.aegis.modules.notice.domain.entity.NoticeUser
  */

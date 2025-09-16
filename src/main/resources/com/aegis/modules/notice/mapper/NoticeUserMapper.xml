@@ -6,12 +6,6 @@
 
     <resultMap id="BaseResultMap" type="com.aegis.modules.notice.domain.entity.NoticeUser">
         <id property="id" column="id"/>
-        <result property="createBy" column="create_by"/>
-        <result property="updateBy" column="update_by"/>
-        <result property="createTime" column="create_time"/>
-        <result property="updateTime" column="update_time"/>
-        <result property="deleted" column="deleted"/>
-        <result property="version" column="version"/>
         <result property="noticeId" column="notice_id"/>
         <result property="userId" column="user_id"/>
         <result property="readFlag" column="read_flag"/>
@@ -19,7 +13,6 @@
     </resultMap>
 
     <sql id="Base_Column_List">
-        id,create_by,update_by,create_time,update_time,deleted,
-        version,notice_id,user_id,read_flag,read_time
+        id,notice_id,user_id,read_flag,read_time
     </sql>
 </mapper>

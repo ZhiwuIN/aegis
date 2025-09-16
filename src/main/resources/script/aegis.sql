@@ -151,13 +151,14 @@ CREATE TABLE `t_notice`
     `deleted`        TINYINT         NOT NULL DEFAULT 0 COMMENT '逻辑删除标记(0=正常,1=删除)',
     `version`        INT             NOT NULL DEFAULT 1 COMMENT '版本号,用于乐观锁',
     `remark`         VARCHAR(100)             DEFAULT NULL COMMENT '备注',
-    `notice_title`   VARCHAR(64)     NOT NULL COMMENT '公告标题',
-    `notice_type`    CHAR(1)         NOT NULL COMMENT '公告类型(1-通知,2-公告)',
-    `notice_content` LONGTEXT        NOT NULL COMMENT '公告内容',
-    `target_type`    TINYINT         NOT NULL DEFAULT 1 COMMENT '目标类型(1=全部用户,2=指定用户)',
+    `notice_title`   VARCHAR(64)     NOT NULL COMMENT '通知标题',
+    `notice_type`    CHAR(1)         NOT NULL COMMENT '通知类型(1=系统通知,2=公告,3=提醒)',
+    `notice_content` LONGTEXT        NOT NULL COMMENT '通知内容',
+    `target_type`    TINYINT         NOT NULL DEFAULT 1 COMMENT '目标类型(1=全部用户,2=指定用户,3=指定角色,4=指定部门))',
+    `target_ids`     LONGTEXT                 DEFAULT NULL COMMENT '目标对象ID列表,逗号分隔(根据target_type解释含义)',
     `status`         CHAR(1)         NOT NULL DEFAULT '0' COMMENT '公告状态(0-正常,1-关闭)',
-    `publish_time`   DATETIME                 DEFAULT NULL COMMENT '发布时间',
-    `expire_time`    DATETIME                 DEFAULT NULL COMMENT '过期时间,可为空',
+    `publish_time`   DATETIME                 DEFAULT NULL COMMENT '计划发布时间,为空则立即发布',
+    `expire_time`    DATETIME                 DEFAULT NULL COMMENT '过期时间,为空则永久有效',
     PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB
   DEFAULT CHARSET = utf8mb4 COMMENT = '通知公告表';
@@ -165,17 +166,11 @@ CREATE TABLE `t_notice`
 DROP TABLE IF EXISTS `t_notice_user`;
 CREATE TABLE `t_notice_user`
 (
-    `id`          BIGINT UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '主键ID',
-    `create_by`   BIGINT                   DEFAULT NULL COMMENT '创建人',
-    `update_by`   BIGINT                   DEFAULT NULL COMMENT '更新人',
-    `create_time` DATETIME        NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
-    `update_time` DATETIME        NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
-    `deleted`     TINYINT         NOT NULL DEFAULT 0 COMMENT '逻辑删除标记(0=正常,1=删除)',
-    `version`     INT             NOT NULL DEFAULT 1 COMMENT '版本号,用于乐观锁',
-    `notice_id`   BIGINT          NOT NULL COMMENT '通知ID',
-    `user_id`     BIGINT          NOT NULL COMMENT '用户ID',
-    `read_flag`   TINYINT         NOT NULL DEFAULT 0 COMMENT '是否已读(0=未读,1=已读)',
-    `read_time`   DATETIME                 DEFAULT NULL COMMENT '阅读时间',
+    `id`        BIGINT UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '主键ID',
+    `notice_id` BIGINT          NOT NULL COMMENT '通知ID',
+    `user_id`   BIGINT          NOT NULL COMMENT '用户ID',
+    `read_flag` TINYINT         NOT NULL DEFAULT 0 COMMENT '是否已读(0=未读,1=已读)',
+    `read_time` DATETIME                 DEFAULT NULL COMMENT '阅读时间',
     PRIMARY KEY (`id`) USING BTREE,
     UNIQUE KEY uk_notice_user (notice_id, user_id)
 ) ENGINE = InnoDB
