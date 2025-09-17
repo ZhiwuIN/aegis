@@ -15,4 +15,62 @@
     <sql id="Base_Column_List">
         id,notice_id,user_id,read_flag,read_time
     </sql>
+
+    <insert id="batchInsert">
+        INSERT INTO t_notice_user (notice_id, user_id)
+        VALUES
+        <foreach collection="list" item="item" index="index" separator=",">
+            (#{item.noticeId}, #{item.userId})
+        </foreach>
+    </insert>
+
+    <select id="selectAllUserIds" resultType="java.lang.Long">
+        SELECT id
+        FROM t_user
+        WHERE deleted = 0
+    </select>
+
+    <select id="selectUserIdsByRoleIds" resultType="java.lang.Long">
+        SELECT DISTINCT user_id
+        FROM t_user_role
+        WHERE role_id IN
+        <foreach collection="list" item="roleId" open="(" separator="," close=")">
+            #{roleId}
+        </foreach>
+    </select>
+
+    <select id="selectUserIdsByDeptIds" resultType="java.lang.Long">
+        SELECT DISTINCT id
+        FROM t_user
+        WHERE dept_id IN
+        <foreach collection="list" item="deptId" open="(" separator="," close=")">
+            #{deptId}
+        </foreach>
+        AND deleted = 0
+    </select>
+
+    <select id="pageList" resultType="com.aegis.modules.notice.domain.vo.NoticeVO">
+        SELECT n.id             as id,
+               n.notice_title   as noticeTitle,
+               n.notice_type    as noticeType,
+               n.notice_content as noticeContent,
+               n.publish_time   as publishTime,
+               nu.read_flag     as readFlag,
+               nu.read_time     as readTime
+        FROM t_notice_user nu
+                 JOIN t_notice n ON nu.notice_id = n.id
+        WHERE nu.user_id = #{userId}
+          AND n.deleted = 0
+          AND n.status = '1'
+        <if test="dto.noticeTitle != null and dto.noticeTitle != ''">
+            AND n.notice_title LIKE CONCAT('%', #{dto.noticeTitle}, '%')
+        </if>
+        <if test="dto.noticeType != null and dto.noticeType != ''">
+            AND n.notice_type = #{dto.noticeType}
+        </if>
+        <if test="dto.readFlag != null">
+            AND nu.read_flag = #{dto.readFlag}
+        </if>
+        ORDER BY n.create_time DESC
+    </select>
 </mapper>

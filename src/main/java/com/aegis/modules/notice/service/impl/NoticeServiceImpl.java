@@ -5,6 +5,7 @@ import com.aegis.common.domain.vo.PageVO;
 import com.aegis.common.exception.BusinessException;
 import com.aegis.modules.notice.domain.dto.NoticeDTO;
 import com.aegis.modules.notice.domain.entity.Notice;
+import com.aegis.modules.notice.domain.entity.NoticeUser;
 import com.aegis.modules.notice.mapper.NoticeMapper;
 import com.aegis.modules.notice.mapper.NoticeUserMapper;
 import com.aegis.modules.notice.service.NoticeConvert;
@@ -15,10 +16,11 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.ObjectUtils;
 import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import java.util.Date;
-import java.util.List;
+import java.util.*;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 /**
@@ -26,6 +28,7 @@ import java.util.stream.Collectors;
  * @Date: 2025/9/10 14:10
  * @Description: 通知业务实现层
  */
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class NoticeServiceImpl implements NoticeService {
@@ -69,16 +72,13 @@ public class NoticeServiceImpl implements NoticeService {
         Notice notice = noticeConvert.toNotice(dto);
         notice.setCreateBy(SecurityUtils.getUserId());
 
-        if (ObjectUtils.isNull(dto.getPublishTime()) || !dto.getPublishTime().after(new Date())) {// 立即发布
-            notice.setStatus(CommonConstants.DISABLE_STATUS);
-            publishNotice(notice);
-        }
-
-        // 处理目标ID列表，转为字符串存储
-        String targetIdsString = buildTargetIdsString(notice.getTargetType(), dto.getTargetIds());
-        notice.setTargetIds(targetIdsString);
+        boolean shouldPublish = shouldPublish(dto, notice);
 
         noticeMapper.insert(notice);
+
+        if (shouldPublish) {
+            publishNotice(notice);
+        }
 
         return CommonConstants.SUCCESS_MESSAGE;
     }
@@ -88,23 +88,73 @@ public class NoticeServiceImpl implements NoticeService {
         Notice notice = noticeConvert.toNotice(dto);
         notice.setUpdateBy(SecurityUtils.getUserId());
 
+        boolean shouldPublish = shouldPublish(dto, notice);
+
+        noticeMapper.updateById(notice);
+
+        if (shouldPublish) {
+            publishNotice(notice);
+        }
+
         return CommonConstants.SUCCESS_MESSAGE;
     }
 
     @Override
     public String publish(Long id) {
+        Notice notice = noticeMapper.selectById(id);
+        if (!CommonConstants.NORMAL_STATUS.equals(notice.getStatus())) {
+            throw new BusinessException("只能发布未发布的通知");
+        }
+        notice.setStatus(CommonConstants.DISABLE_STATUS);
+        notice.setUpdateBy(SecurityUtils.getUserId());
+        notice.setPublishTime(new Date());
+        noticeMapper.updateById(notice);
+
+        publishNotice(notice);
 
         return CommonConstants.SUCCESS_MESSAGE;
     }
 
     @Override
     public String revoke(Long id) {
+        Notice notice = noticeMapper.selectById(id);
+        if (!CommonConstants.DISABLE_STATUS.equals(notice.getStatus())) {
+            throw new BusinessException("只能撤销已发布的通知");
+        }
+        notice.setStatus("2"); // 撤销状态
+        notice.setUpdateBy(SecurityUtils.getUserId());
+        noticeMapper.updateById(notice);
+
+        // 删除通知与用户的关联关系
+        LambdaQueryWrapper<NoticeUser> queryWrapper = new LambdaQueryWrapper<NoticeUser>()
+                .eq(NoticeUser::getNoticeId, id);
+        noticeUserMapper.delete(queryWrapper);
 
         return CommonConstants.SUCCESS_MESSAGE;
     }
 
-    private void publishNotice(Notice notice) {
+    /**
+     * 判断是否需要发布通知，并设置通知的状态和目标ID字符串
+     *
+     * @param dto    通知DTO
+     * @param notice 通知实体
+     * @return 是否需要发布通知
+     */
+    private boolean shouldPublish(NoticeDTO dto, Notice notice) {
+        boolean shouldPublish = false;
 
+        if (ObjectUtils.isNull(dto.getPublishTime()) || !dto.getPublishTime().after(new Date())) {// 立即发布
+            notice.setStatus(CommonConstants.DISABLE_STATUS);
+            if (ObjectUtils.isNull(dto.getPublishTime())) {
+                notice.setPublishTime(new Date());
+            }
+            shouldPublish = true;
+        }
+
+        String targetIdsString = buildTargetIdsString(notice.getTargetType(), dto.getTargetIds());
+        notice.setTargetIds(targetIdsString);
+
+        return shouldPublish;
     }
 
     /**
@@ -131,5 +181,80 @@ public class NoticeServiceImpl implements NoticeService {
                 .sorted()
                 .map(String::valueOf)
                 .collect(Collectors.joining(","));
+    }
+
+    /**
+     * 发布通知
+     *
+     * @param notice 通知实体
+     */
+    private void publishNotice(Notice notice) {
+        List<Long> targetUserIds = resolveTargetUsers(notice);
+
+        if (targetUserIds == null || targetUserIds.isEmpty()) {
+            log.warn("通知发布成功，但没有匹配到接收用户，noticeId={}", notice.getId());
+            return;
+        }
+
+        // 保存通知与用户的关联关系
+        saveUserNoticeRelation(notice.getId(), targetUserIds);
+    }
+
+    /**
+     * 解析通知的目标用户ID列表
+     *
+     * @param notice 通知实体
+     * @return 目标用户ID列表
+     */
+    private List<Long> resolveTargetUsers(Notice notice) {
+        final Integer targetType = notice.getTargetType();
+        final String targetIdsStr = notice.getTargetIds();
+
+        switch (targetType) {
+            case 1: // 全部用户
+                return noticeUserMapper.selectAllUserIds();
+
+            case 2: // 指定用户
+                return processIds(targetIdsStr, Function.identity());
+
+            case 3: // 指定角色，查询角色对应的用户ID
+                return processIds(targetIdsStr, noticeUserMapper::selectUserIdsByRoleIds);
+
+            case 4: // 指定部门，查询部门对应的用户ID
+                return processIds(targetIdsStr, noticeUserMapper::selectUserIdsByDeptIds);
+
+            default:
+                throw new BusinessException("未知的目标类型: " + targetType);
+        }
+    }
+
+    private List<Long> processIds(String idsStr, Function<List<Long>, List<Long>> processor) {
+        List<Long> result = Optional.ofNullable(idsStr)
+                .filter(StringUtils::isNotBlank)
+                .map(ids -> Arrays.stream(ids.split(","))
+                        .map(Long::valueOf)
+                        .collect(Collectors.toList()))
+                .orElse(Collections.emptyList());
+
+        return processor.apply(result);
+    }
+
+    /**
+     * 保存通知与用户的关联关系
+     *
+     * @param noticeId 通知ID
+     * @param userIds  用户ID列表
+     */
+    private void saveUserNoticeRelation(Long noticeId, List<Long> userIds) {
+        List<NoticeUser> relations = userIds.stream().map(userId -> {
+            NoticeUser relation = new NoticeUser();
+            relation.setNoticeId(noticeId);
+            relation.setUserId(userId);
+            return relation;
+        }).collect(Collectors.toList());
+
+        if (!relations.isEmpty()) {
+            noticeUserMapper.batchInsert(relations);
+        }
     }
 }
