@@ -40,7 +40,7 @@ public class NoticeController {
     }
 
     @ApiOperation("删除通知")
-    @GetMapping("/delete/{id}")
+    @DeleteMapping("/delete/{id}")
     @PreventDuplicateSubmit
     @OperationLog(moduleTitle = "删除通知", businessType = BusinessType.DELETE)
     public String delete(@PathVariable("id") Long id) {
