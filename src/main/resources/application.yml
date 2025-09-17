@@ -106,3 +106,4 @@ logging:
     path: ./logs # 日志路径
   level:
     com.aegis: DEBUG
+    springfox.documentation.spring.web.readers.operation: ERROR
