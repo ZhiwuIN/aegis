@@ -3,6 +3,7 @@ package com.aegis.modules.notice.service;
 import com.aegis.modules.notice.domain.dto.NoticeDTO;
 import com.aegis.modules.notice.domain.entity.Notice;
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 
 /**
  * @Author: xuesong.lei
@@ -12,5 +13,6 @@ import org.mapstruct.Mapper;
 @Mapper(componentModel = "spring")
 public interface NoticeConvert {
 
+    @Mapping(target = "targetIds", ignore = true)
     Notice toNotice(NoticeDTO dto);
 }
