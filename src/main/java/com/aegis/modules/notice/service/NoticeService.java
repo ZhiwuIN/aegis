@@ -66,4 +66,12 @@ public interface NoticeService {
      * @return 响应消息
      */
     String revoke(Long id);
+
+    /**
+     * 执行发布
+     *
+     * @param id     通知ID
+     * @param userId 发布人ID(手动发布时为当前用户ID，自动发布时可为null)
+     */
+    void doPublish(Long id, Long userId);
 }

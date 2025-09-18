@@ -27,4 +27,13 @@
         version,remark,notice_title,notice_type,notice_content,
         target_type,target_ids,status,publish_time
     </sql>
+
+    <select id="selectPendingNotices" resultType="com.aegis.modules.notice.domain.entity.Notice">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM t_notice
+        WHERE status = '0'
+          AND publish_time &lt;= NOW()
+          AND deleted = 0
+    </select>
 </mapper>

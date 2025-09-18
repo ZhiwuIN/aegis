@@ -219,6 +219,7 @@ public class RoleServiceImpl implements RoleService {
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public String cancel(CancelDTO dto) {
         userRoleMapper.delete(new LambdaQueryWrapper<UserRole>()
                 .eq(UserRole::getRoleId, dto.getRoleId())
@@ -228,6 +229,7 @@ public class RoleServiceImpl implements RoleService {
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public String cancelAll(CancelAllDTO dto) {
         userRoleMapper.delete(new LambdaQueryWrapper<UserRole>()
                 .eq(UserRole::getRoleId, dto.getRoleId())
@@ -237,6 +239,7 @@ public class RoleServiceImpl implements RoleService {
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public String selectAll(CancelAllDTO dto) {
         List<UserRole> userRoleList = new ArrayList<>();
         for (Long userId : dto.getUserIds()) {

@@ -67,6 +67,7 @@ public class WhitelistServiceImpl implements WhitelistService {
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public String add(WhitelistDTO dto) {
         Whitelist whitelist = whitelistConvert.toWhitelist(dto);
 
@@ -84,6 +85,7 @@ public class WhitelistServiceImpl implements WhitelistService {
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public String update(WhitelistDTO dto) {
         Whitelist whitelist = whitelistConvert.toWhitelist(dto);
 

@@ -3,6 +3,8 @@ package com.aegis.modules.notice.mapper;
 import com.aegis.modules.notice.domain.entity.Notice;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 
+import java.util.List;
+
 /**
  * @Author: xuesong.lei
  * @Date: 2025-09-16 21:39:03
@@ -11,6 +13,7 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
  */
 public interface NoticeMapper extends BaseMapper<Notice> {
 
+    List<Notice> selectPendingNotices();
 }
 
 

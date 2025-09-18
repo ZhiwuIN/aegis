@@ -18,6 +18,7 @@ import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 import java.util.function.Function;
@@ -56,6 +57,7 @@ public class NoticeServiceImpl implements NoticeService {
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public String delete(Long id) {
         Notice notice = noticeMapper.selectById(id);
         if (!CommonConstants.NORMAL_STATUS.equals(notice.getStatus())) {
@@ -68,6 +70,7 @@ public class NoticeServiceImpl implements NoticeService {
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public String add(NoticeDTO dto) {
         Notice notice = noticeConvert.toNotice(dto);
         notice.setCreateBy(SecurityUtils.getUserId());
@@ -84,6 +87,7 @@ public class NoticeServiceImpl implements NoticeService {
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public String update(NoticeDTO dto) {
         Notice notice = noticeConvert.toNotice(dto);
         notice.setUpdateBy(SecurityUtils.getUserId());
@@ -100,22 +104,17 @@ public class NoticeServiceImpl implements NoticeService {
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public String publish(Long id) {
-        Notice notice = noticeMapper.selectById(id);
-        if (!CommonConstants.NORMAL_STATUS.equals(notice.getStatus())) {
-            throw new BusinessException("只能发布未发布的通知");
-        }
-        notice.setStatus(CommonConstants.DISABLE_STATUS);
-        notice.setUpdateBy(SecurityUtils.getUserId());
-        notice.setPublishTime(new Date());
-        noticeMapper.updateById(notice);
+        Long currentUserId = SecurityUtils.getUserId();
 
-        publishNotice(notice);
+        doPublish(id, currentUserId);
 
         return CommonConstants.SUCCESS_MESSAGE;
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public String revoke(Long id) {
         Notice notice = noticeMapper.selectById(id);
         if (!CommonConstants.DISABLE_STATUS.equals(notice.getStatus())) {
@@ -131,6 +130,25 @@ public class NoticeServiceImpl implements NoticeService {
         noticeUserMapper.delete(queryWrapper);
 
         return CommonConstants.SUCCESS_MESSAGE;
+    }
+
+    @Override
+    public void doPublish(Long id, Long userId) {
+        Notice notice = noticeMapper.selectById(id);
+        if (!CommonConstants.NORMAL_STATUS.equals(notice.getStatus())) {
+            throw new BusinessException("只能发布未发布的通知");
+        }
+
+        if (userId == null) {
+            userId = CommonConstants.SUPER_ADMIN_ID;
+        }
+
+        notice.setStatus(CommonConstants.DISABLE_STATUS);
+        notice.setUpdateBy(userId);
+        notice.setPublishTime(new Date());
+        noticeMapper.updateById(notice);
+
+        publishNotice(notice);
     }
 
     /**

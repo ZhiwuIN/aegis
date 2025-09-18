@@ -19,6 +19,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.ServletOutputStream;
@@ -53,6 +54,7 @@ public class FileServiceImpl implements FileService {
     private String secretKey;
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public FileMetadata uploadFile(MultipartFile file, String directory) {
         FileStorageService storageService = fileStorageServiceFactory.getFileStorageService();
         FileMetadata result = storageService.upload(file, directory);
@@ -61,6 +63,7 @@ public class FileServiceImpl implements FileService {
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public List<FileMetadata> uploadBatchFiles(MultipartFile[] files, String directory) {
         FileStorageService storageService = fileStorageServiceFactory.getFileStorageService();
         List<FileMetadata> results = Arrays.stream(files)

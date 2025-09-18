@@ -18,6 +18,7 @@ import com.baomidou.mybatisplus.core.toolkit.ObjectUtils;
 import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -54,6 +55,7 @@ public class MenuServiceImpl implements MenuService {
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public String delete(Long id) {
         LambdaQueryWrapper<Menu> childMenu = new LambdaQueryWrapper<Menu>()
                 .eq(Menu::getParentId, id);
@@ -76,6 +78,7 @@ public class MenuServiceImpl implements MenuService {
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public String add(MenuDTO dto) {
         Menu menu = menuConvert.toMenu(dto);
 
@@ -90,6 +93,7 @@ public class MenuServiceImpl implements MenuService {
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public String update(MenuDTO dto) {
         Menu menu = menuConvert.toMenu(dto);
 
