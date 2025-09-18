@@ -6,8 +6,7 @@
 [![Redis](https://img.shields.io/badge/Redis-6.0+-red.svg)](https://redis.io/)
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://www.apache.org/licenses/LICENSE-2.0)
 
-一个基于Spring Boot + Vue的企业级RBAC权限管理系统，提供通用后台系统基座解决方案
-
+## 🍟 如果您觉得有帮助，请点右上角 "Star" 支持一下谢谢
 
 
 </div>
@@ -262,7 +261,7 @@ com.aegis/
 
 ```java
 // 数据权限控制
-@DataPermission(deptAlias = "d", userAlias = "u")
+@DataPermission(deptField = "dept_id", userField = "create_by", tableAlias="alias")
 public List<User> selectUserList(UserQuery query);
 
 // 操作日志记录
@@ -277,7 +276,7 @@ public String submitForm(FormDTO dto);
 ### 自定义验证器
 
 ```java
-@EnumString(enumClass = StatusEnum.class, message = "状态值不正确")
+@EnumString(value = {"0", "1"}, message = "状态只允许为0或1")
 private String status;
 ```
 
@@ -396,11 +395,17 @@ services:
 
 感谢以下开源项目：
 
-- [Spring Boot](https://spring.io/projects/spring-boot) - 基础框架
+- 🔥 [JetBrains](https://www.jetbrains.com/)- 世界最好的IDE
+- 🔥 [Spring Boot](https://spring.io/projects/spring-boot) - 基础框架
+- [Spring Security](https://spring.io/projects/spring-security)- 安全框架
 - [MyBatis-Plus](https://baomidou.com/) - ORM增强工具
+- [MySQL](https://www.mysql.com/) - 关系型数据库
+- [Redis](https://redis.io/) - 高性能缓存数据库
+- [Lombok](https://projectlombok.org/)- Java简化工具
+- [MapStruct](https://mapstruct.org/) - Java对象映射工具
+- [ip2region](https://github.com/lionsoul2014/ip2region) - IP地理位置库
 - [Knife4j](https://doc.xiaominfo.com/) - API文档工具
 - [Hutool](https://hutool.cn/) - Java工具类库
-- [Element UI](https://element.eleme.io/) - Vue UI组件库
 
 ## ❓ 常见问题
 
