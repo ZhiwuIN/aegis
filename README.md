@@ -4,8 +4,7 @@
 [![Java](https://img.shields.io/badge/Java-1.8+-orange.svg)](https://www.oracle.com/java/technologies/javase-jdk8-downloads.html)
 [![MySQL](https://img.shields.io/badge/MySQL-5.7+-blue.svg)](https://www.mysql.com/)
 [![Redis](https://img.shields.io/badge/Redis-6.0+-red.svg)](https://redis.io/)
-[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://www.apache.org/licenses/LICENSE-2.0)
-
+[![License](https://img.shields.io/badge/License-MIT-green.svg)](https://opensource.org/licenses/MIT)
 ## 🍟 如果您觉得有帮助，请点右上角 "Star" 支持一下谢谢
 
 
@@ -385,7 +384,7 @@ services:
 
 ## 📄 许可证
 
-本项目基于 [Apache License 2.0](LICENSE) 许可证开源。
+本项目基于 [MIT License](LICENSE.txt) 许可证开源。
 
 ## 👥 团队
 
@@ -396,7 +395,7 @@ services:
 感谢以下开源项目：
 
 - 🔥 [JetBrains](https://www.jetbrains.com/)- 世界最好的IDE
-- 🔥 [Spring Boot](https://spring.io/projects/spring-boot) - 基础框架
+- [Spring Boot](https://spring.io/projects/spring-boot) - 基础框架
 - [Spring Security](https://spring.io/projects/spring-security)- 安全框架
 - [MyBatis-Plus](https://baomidou.com/) - ORM增强工具
 - [MySQL](https://www.mysql.com/) - 关系型数据库
