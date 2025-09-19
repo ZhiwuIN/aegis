@@ -9,6 +9,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.script.DefaultRedisScript;
+import org.springframework.data.redis.core.script.RedisScript;
 import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 
@@ -38,4 +40,20 @@ public class RedisConfiguration {
         return redisTemplate;
     }
 
+    @Bean
+    public RedisScript<Long> limitScript() {
+        DefaultRedisScript<Long> redisScript = new DefaultRedisScript<>();
+        redisScript.setScriptText(
+                "local key = KEYS[1] " +
+                        "local count = tonumber(ARGV[1]) " +
+                        "local time = tonumber(ARGV[2]) " +
+                        "local current = redis.call('get', key) " +
+                        "if current and tonumber(current) >= count then return current end " +
+                        "current = redis.call('incr', key) " +
+                        "if tonumber(current) == 1 then redis.call('expire', key, time) end " +
+                        "return current"
+        );
+        redisScript.setResultType(Long.class);
+        return redisScript;
+    }
 }

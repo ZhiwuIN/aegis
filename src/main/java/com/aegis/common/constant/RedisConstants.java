@@ -8,6 +8,16 @@ package com.aegis.common.constant;
 public class RedisConstants {
 
     /**
+     * 防止重复提交 key 前缀
+     */
+    public static final String REPEAT_SUBMIT = "repeat_submit:";
+
+    /**
+     * 限流 key 前缀
+     */
+    public static final String RATE_LIMIT = "rate_limit:";
+
+    /**
      * redis中存储的菜单key
      */
     public static final String MENUS = "menus";

@@ -4,6 +4,7 @@ import cn.hutool.json.JSONUtil;
 import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.data.redis.core.script.RedisScript;
 import org.springframework.stereotype.Component;
 
 import java.util.*;
@@ -282,5 +283,18 @@ public final class RedisUtils {
         if (value.equals(currentValue)) {
             redisTemplate.delete(key);
         }
+    }
+
+    /**
+     * 执行限流 Lua 脚本
+     *
+     * @param limitScript 限流脚本
+     * @param keys        Redis key 列表
+     * @param count       允许的最大访问次数
+     * @param time        时间窗口（秒）
+     * @return 当前访问次数
+     */
+    public Long execute(RedisScript<Long> limitScript, List<String> keys, int count, int time) {
+        return redisTemplate.execute(limitScript, keys, String.valueOf(count), String.valueOf(time));
     }
 }

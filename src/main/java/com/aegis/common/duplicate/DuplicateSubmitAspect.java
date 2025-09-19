@@ -6,6 +6,7 @@ import com.aegis.common.exception.BusinessException;
 import com.aegis.common.result.ResultCodeEnum;
 import com.aegis.utils.IpUtils;
 import com.aegis.utils.RedisUtils;
+import com.aegis.utils.RequestUtils;
 import com.aegis.utils.SecurityUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -15,9 +16,6 @@ import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.stereotype.Component;
-import org.springframework.web.context.request.RequestAttributes;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
 
 import javax.servlet.http.HttpServletRequest;
 import java.lang.reflect.Method;
@@ -44,7 +42,7 @@ public class DuplicateSubmitAspect {
     @Around("pointcut()")
     public Object around(ProceedingJoinPoint joinPoint) throws Throwable {
         try {
-            HttpServletRequest request = getRequest();
+            HttpServletRequest request = RequestUtils.getRequest();
             if (request == null) {
                 log.warn("无法获取HTTP请求，跳过防重复检查");
                 return joinPoint.proceed();
@@ -179,27 +177,6 @@ public class DuplicateSubmitAspect {
             return JSONUtil.toJsonStr(arg);
         } catch (Exception e) {
             return arg.toString();
-        }
-    }
-
-    /**
-     * 获取请求属性
-     */
-    private ServletRequestAttributes getRequestAttributes() {
-        RequestAttributes attributes = RequestContextHolder.getRequestAttributes();
-        return (ServletRequestAttributes) attributes;
-    }
-
-    /**
-     * 获取HTTP请求
-     */
-    private HttpServletRequest getRequest() {
-        try {
-            ServletRequestAttributes attributes = getRequestAttributes();
-            return attributes != null ? attributes.getRequest() : null;
-        } catch (Exception e) {
-            log.debug("获取HTTP请求失败", e);
-            return null;
         }
     }
 }

@@ -2,6 +2,9 @@ package com.aegis.utils;
 
 import com.aegis.common.repeatable.RepeatableHttpServletRequestWrapper;
 import org.springframework.util.StreamUtils;
+import org.springframework.web.context.request.RequestAttributes;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
@@ -16,6 +19,26 @@ public final class RequestUtils {
 
     private RequestUtils() {
         throw new UnsupportedOperationException("Utility class cannot be instantiated");
+    }
+
+    /**
+     * 获取HTTP请求
+     */
+    public static HttpServletRequest getRequest() {
+        try {
+            ServletRequestAttributes attributes = getRequestAttributes();
+            return attributes != null ? attributes.getRequest() : null;
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+    /**
+     * 获取请求属性
+     */
+    public static ServletRequestAttributes getRequestAttributes() {
+        RequestAttributes attributes = RequestContextHolder.getRequestAttributes();
+        return (ServletRequestAttributes) attributes;
     }
 
     /**

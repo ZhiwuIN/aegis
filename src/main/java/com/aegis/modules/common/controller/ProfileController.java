@@ -2,6 +2,8 @@ package com.aegis.modules.common.controller;
 
 import com.aegis.common.domain.vo.CaptchaVO;
 import com.aegis.common.duplicate.PreventDuplicateSubmit;
+import com.aegis.common.limiter.LimitType;
+import com.aegis.common.limiter.RateLimiter;
 import com.aegis.common.log.BusinessType;
 import com.aegis.common.log.OperationLog;
 import com.aegis.modules.common.domain.dto.UserRegisterDTO;
@@ -34,6 +36,7 @@ public class ProfileController {
 
     private final ProfileService profileService;
 
+    @RateLimiter(limitType = LimitType.IP)
     @ApiOperation("生成验证码")
     @GetMapping("/generate/captcha")
     public CaptchaVO generateCaptcha() {

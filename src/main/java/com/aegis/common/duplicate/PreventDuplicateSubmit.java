@@ -1,5 +1,7 @@
 package com.aegis.common.duplicate;
 
+import com.aegis.common.constant.RedisConstants;
+
 import java.lang.annotation.Documented;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
@@ -18,6 +20,11 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 public @interface PreventDuplicateSubmit {
 
     /**
+     * 重复提交key前缀
+     */
+    String keyPrefix() default RedisConstants.REPEAT_SUBMIT;
+
+    /**
      * 防重复操作限时标记数值
      */
     String message() default "请勿重复提交";
@@ -31,9 +38,4 @@ public @interface PreventDuplicateSubmit {
      * 是否包含用户信息到key中
      */
     boolean includeUser() default true;
-
-    /**
-     * 自定义key前缀
-     */
-    String keyPrefix() default "repeat_submit";
 }
