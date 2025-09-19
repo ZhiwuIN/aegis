@@ -31,7 +31,7 @@ public class DataChangeListener {
 
     private final SysOperateLogMapper sysOperateLogMapper;
 
-    @Async
+    @Async("asyncExecutor")
     @EventListener(DataChangeEvent.class)
     public void onDataChange(DataChangeEvent event) {
         switch (event.getType()) {
