@@ -1,5 +1,7 @@
 package com.aegis.modules.user.domain.vo;
 
+import com.aegis.common.mask.DataMask;
+import com.aegis.common.mask.MaskTypeEnum;
 import com.aegis.modules.dept.domain.entity.Dept;
 import com.aegis.modules.role.domain.entity.Role;
 import com.fasterxml.jackson.annotation.JsonFormat;
@@ -39,12 +41,14 @@ public class UserVO {
     private String nickname;
 
     @ApiModelProperty("邮箱")
+    @DataMask(type = MaskTypeEnum.EMAIL)
     private String email;
 
     @ApiModelProperty("性别")
     private String sex;
 
     @ApiModelProperty("电话")
+    @DataMask(type = MaskTypeEnum.PHONE)
     private String phone;
 
     @ApiModelProperty("头像")

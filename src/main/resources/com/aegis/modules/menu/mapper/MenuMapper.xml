@@ -47,8 +47,8 @@
         SELECT DISTINCT m.*,
                         r.role_code AS role_code
         FROM t_menu m
-                 LEFT JOIN t_role_menu rm ON rm.menu_id = m.id
-                 LEFT JOIN t_role r ON r.id = rm.role_id
+                 INNER JOIN t_role_menu rm ON rm.menu_id = m.id
+                 INNER JOIN t_role r ON r.id = rm.role_id
         WHERE m.request_uri IS NOT NULL
           AND m.deleted = 0
           AND m.status = '0'
@@ -59,9 +59,9 @@
     <select id="selectPermsByUserId" resultType="java.lang.String">
         SELECT DISTINCT m.perms
         FROM t_menu m
-                 LEFT JOIN t_role_menu rm ON rm.menu_id = m.id
-                 LEFT JOIN t_user_role ur ON ur.role_id = rm.role_id
-                 LEFT JOIN t_role r ON r.id = ur.role_id
+                 INNER JOIN t_role_menu rm ON rm.menu_id = m.id
+                 INNER JOIN t_user_role ur ON ur.role_id = rm.role_id
+                 INNER JOIN t_role r ON r.id = ur.role_id
         WHERE ur.user_id = #{userId}
           AND m.perms IS NOT NULL
           AND m.deleted = 0
@@ -73,10 +73,10 @@
     <select id="selectMenuByUserId" resultType="com.aegis.modules.menu.domain.entity.Menu">
         SELECT DISTINCT m.*
         FROM t_menu m
-                 LEFT JOIN t_role_menu rm ON rm.menu_id = m.id
-                 LEFT JOIN t_user_role ur ON ur.role_id = rm.role_id
-                 LEFT JOIN t_role r ON r.id = ur.role_id
-                 LEFT JOIN t_user u ON u.id = ur.user_id
+                 INNER JOIN t_role_menu rm ON rm.menu_id = m.id
+                 INNER JOIN t_user_role ur ON ur.role_id = rm.role_id
+                 INNER JOIN t_role r ON r.id = ur.role_id
+                 INNER JOIN t_user u ON u.id = ur.user_id
         WHERE u.id = #{userId}
           AND m.menu_type IN ('D', 'M')
           AND m.deleted = 0

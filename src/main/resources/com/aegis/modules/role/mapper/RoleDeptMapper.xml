@@ -25,7 +25,7 @@
     <select id="selectDeptListByRoleId" resultType="java.lang.Long">
         SELECT d.id
         FROM t_dept d
-        LEFT JOIN t_role_dept rd ON d.id = rd.dept_id
+        INNER JOIN t_role_dept rd ON d.id = rd.dept_id
         WHERE rd.role_id = #{roleId}
         <if test="deptCheckStrictly != null and deptCheckStrictly == 1">
             AND NOT EXISTS (

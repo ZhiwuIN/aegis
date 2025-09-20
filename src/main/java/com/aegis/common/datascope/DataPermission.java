@@ -4,13 +4,17 @@ import com.aegis.common.constant.DataScopeConstants;
 
 import java.lang.annotation.*;
 
+import static java.lang.annotation.ElementType.METHOD;
+import static java.lang.annotation.ElementType.TYPE;
+import static java.lang.annotation.RetentionPolicy.RUNTIME;
+
 /**
  * @Author: xuesong.lei
  * @Date: 2025/09/10 14:08
  * @Description: 数据权限注解
  */
-@Target({ElementType.TYPE, ElementType.METHOD})
-@Retention(RetentionPolicy.RUNTIME)
+@Target({TYPE, METHOD})
+@Retention(RUNTIME)
 @Documented
 public @interface DataPermission {
 

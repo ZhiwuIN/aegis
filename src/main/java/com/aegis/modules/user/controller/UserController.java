@@ -4,6 +4,7 @@ import com.aegis.common.domain.vo.PageVO;
 import com.aegis.common.duplicate.PreventDuplicateSubmit;
 import com.aegis.common.log.BusinessType;
 import com.aegis.common.log.OperationLog;
+import com.aegis.common.mask.DataMask;
 import com.aegis.common.validator.ValidGroup;
 import com.aegis.modules.user.domain.dto.UserDTO;
 import com.aegis.modules.user.domain.vo.UserVO;
@@ -27,6 +28,7 @@ public class UserController {
 
     private final UserService userService;
 
+    @DataMask
     @ApiOperation("分页查询用户列表")
     @GetMapping("/pageList")
     public PageVO<UserVO> pageList(UserDTO dto) {
