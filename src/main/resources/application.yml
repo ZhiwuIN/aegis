@@ -101,6 +101,10 @@ knife4j:
     username: aegis # 用户名
     password: aegis # 密码
 
+task:
+  scheduling:
+    enabled: true # 是否启用定时任务
+
 logging:
   file:
     path: ./logs # 日志路径
