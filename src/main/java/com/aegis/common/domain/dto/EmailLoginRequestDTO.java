@@ -1,9 +1,9 @@
 package com.aegis.common.domain.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 
 /**
  * @Author: xuesong.lei
@@ -12,8 +12,8 @@ import lombok.EqualsAndHashCode;
  */
 @Data
 @ApiModel("邮箱验证码DTO")
-@EqualsAndHashCode(callSuper = true)
-public class EmailLoginRequestDTO extends LoginRequestDTO {
+@JsonIgnoreProperties(ignoreUnknown = true)
+public class EmailLoginRequestDTO {
 
     /**
      * 邮箱
