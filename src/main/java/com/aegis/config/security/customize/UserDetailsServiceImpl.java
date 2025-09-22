@@ -24,7 +24,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     public UserDetails loadUserByUsername(String username) {
         User user = userMapper.loadUserByUsername(username);
         if (ObjectUtils.isEmpty(user)) {
-            throw new LoginException("账户不存在,请注册");
+            throw new LoginException("登录失败,请检查您的账号或凭证信息");
         }
         return new SecurityUser(user);
     }
