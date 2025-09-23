@@ -1,8 +1,7 @@
 package com.aegis.modules.role.domain.entity;
 
 import com.baomidou.mybatisplus.annotation.*;
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
@@ -19,7 +18,7 @@ import java.io.Serializable;
 @Data
 @Accessors(chain = true)
 @EqualsAndHashCode(callSuper = false)
-@ApiModel("角色和部门关联表")
+@Schema(description = "角色和部门关联表")
 @TableName(value = "t_role_dept")
 public class RoleDept implements Serializable {
 
@@ -29,21 +28,21 @@ public class RoleDept implements Serializable {
     /**
      * 主键ID
      */
-    @ApiModelProperty("主键ID")
+    @Schema(description = "主键ID")
     @TableId(value = "id", type = IdType.ASSIGN_ID)
     private Long id;
 
     /**
      * 角色ID
      */
-    @ApiModelProperty("角色ID")
+    @Schema(description = "角色ID")
     @TableField(value = "role_id")
     private Long roleId;
 
     /**
      * 部门ID
      */
-    @ApiModelProperty("部门ID")
+    @Schema(description = "部门ID")
     @TableField(value = "dept_id")
     private Long deptId;
 

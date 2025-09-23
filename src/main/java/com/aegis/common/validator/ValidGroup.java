@@ -1,6 +1,6 @@
 package com.aegis.common.validator;
 
-import javax.validation.groups.Default;
+import jakarta.validation.groups.Default;
 
 /**
  * @Author: xuesong.lei

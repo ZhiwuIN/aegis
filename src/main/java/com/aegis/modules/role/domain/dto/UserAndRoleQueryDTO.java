@@ -1,8 +1,7 @@
 package com.aegis.modules.role.domain.dto;
 
 import com.aegis.common.domain.dto.PageDTO;
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -13,15 +12,15 @@ import lombok.EqualsAndHashCode;
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
-@ApiModel("用户和角色DTO")
+@Schema(description = "用户和角色DTO")
 public class UserAndRoleQueryDTO extends PageDTO {
 
-    @ApiModelProperty("角色ID")
+    @Schema(description = "角色ID")
     private Long roleId;
 
-    @ApiModelProperty("用户名")
+    @Schema(description = "用户名")
     private String username;
 
-    @ApiModelProperty("电话")
+    @Schema(description = "电话")
     private String phone;
 }

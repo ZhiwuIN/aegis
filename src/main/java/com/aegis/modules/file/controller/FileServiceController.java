@@ -6,15 +6,15 @@ import com.aegis.common.log.BusinessType;
 import com.aegis.common.log.OperationLog;
 import com.aegis.modules.file.domain.entity.FileMetadata;
 import com.aegis.modules.file.service.FileService;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import java.util.List;
 import java.util.Map;
 
@@ -25,14 +25,14 @@ import java.util.Map;
  */
 @Slf4j
 @RestController
-@Api(tags = "文件服务接口")
+@Tag(name = "文件服务接口")
 @RequiredArgsConstructor
 @RequestMapping("/file")
 public class FileServiceController {
 
     private final FileService fileService;
 
-    @ApiOperation("文件上传")
+    @Operation(summary = "文件上传")
     @PostMapping("/upload")
     @PreventDuplicateSubmit
     @OperationLog(moduleTitle = "文件上传", businessType = BusinessType.IMPORT)
@@ -40,7 +40,7 @@ public class FileServiceController {
         return fileService.uploadFile(file, directory);
     }
 
-    @ApiOperation("批量文件上传")
+    @Operation(summary = "批量文件上传")
     @PostMapping("/upload/batch")
     @PreventDuplicateSubmit
     @OperationLog(moduleTitle = "批量文件上传", businessType = BusinessType.IMPORT)
@@ -48,7 +48,7 @@ public class FileServiceController {
         return fileService.uploadBatchFiles(files, directory);
     }
 
-    @ApiOperation("获取临时下载URL")
+    @Operation(summary = "获取临时下载URL")
     @GetMapping("/temporary-download-url")
     @PreventDuplicateSubmit
     @OperationLog(moduleTitle = "获取临时下载URL", businessType = BusinessType.EXPORT)
@@ -56,7 +56,7 @@ public class FileServiceController {
         return fileService.getTemporaryDownloadUrl(filePath, expirationSeconds);
     }
 
-    @ApiOperation("文件下载")
+    @Operation(summary = "文件下载")
     @GetMapping("/download")
     @PreventDuplicateSubmit
     @OperationLog(moduleTitle = "文件下载", businessType = BusinessType.EXPORT)
@@ -64,7 +64,7 @@ public class FileServiceController {
         fileService.download(filePath, response);
     }
 
-    @ApiOperation("本地文件临时下载")
+    @Operation(summary = "本地文件临时下载")
     @GetMapping("/localDownload/**")
     @PreventDuplicateSubmit
     @OperationLog(moduleTitle = "本地文件临时下载", businessType = BusinessType.EXPORT)
@@ -72,7 +72,7 @@ public class FileServiceController {
         fileService.localDownload(request, response);
     }
 
-    @ApiOperation("指定存储平台上传文件")
+    @Operation(summary = "指定存储平台上传文件")
     @PostMapping("/upload/{platform}")
     @PreventDuplicateSubmit
     @OperationLog(moduleTitle = "指定存储平台上传文件", businessType = BusinessType.IMPORT)
@@ -80,7 +80,7 @@ public class FileServiceController {
         return fileService.uploadFileWithPlatform(platform, file, directory);
     }
 
-    @ApiOperation("文件删除")
+    @Operation(summary = "文件删除")
     @DeleteMapping("/delete")
     @PreventDuplicateSubmit
     @OperationLog(moduleTitle = "文件删除", businessType = BusinessType.DELETE)
@@ -88,7 +88,7 @@ public class FileServiceController {
         return fileService.deleteFile(filePath);
     }
 
-    @ApiOperation("获取预签名上传URL")
+    @Operation(summary = "获取预签名上传URL")
     @GetMapping("/presigned-upload-url")
     @PreventDuplicateSubmit
     @OperationLog(moduleTitle = "获取预签名上传URL", businessType = BusinessType.EXPORT)

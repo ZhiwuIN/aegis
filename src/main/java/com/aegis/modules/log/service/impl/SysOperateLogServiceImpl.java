@@ -15,7 +15,7 @@ import lombok.SneakyThrows;
 import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.stereotype.Service;
 
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletResponse;
 
 /**
  * @Author: xuesong.lei

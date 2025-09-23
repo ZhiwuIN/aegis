@@ -9,8 +9,8 @@ import com.aegis.common.validator.ValidGroup;
 import com.aegis.modules.user.domain.dto.UserDTO;
 import com.aegis.modules.user.domain.vo.UserVO;
 import com.aegis.modules.user.service.UserService;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -21,7 +21,7 @@ import org.springframework.web.bind.annotation.*;
  * @Description: 用户接口
  */
 @RestController
-@Api(tags = "用户接口")
+@Tag(name = "用户接口")
 @RequestMapping("/user")
 @RequiredArgsConstructor
 public class UserController {
@@ -29,19 +29,19 @@ public class UserController {
     private final UserService userService;
 
     @DataMask
-    @ApiOperation("分页查询用户列表")
+    @Operation(summary = "分页查询用户列表")
     @GetMapping("/pageList")
     public PageVO<UserVO> pageList(UserDTO dto) {
         return userService.pageList(dto);
     }
 
-    @ApiOperation("用户详情")
+    @Operation(summary = "用户详情")
     @GetMapping("/detail/{id}")
     public UserVO detail(@PathVariable("id") Long id) {
         return userService.detail(id);
     }
 
-    @ApiOperation("修改用户状态")
+    @Operation(summary = "修改用户状态")
     @PutMapping("/updateStatus/{id}")
     @PreventDuplicateSubmit
     @OperationLog(moduleTitle = "修改用户状态", businessType = BusinessType.UPDATE)
@@ -49,7 +49,7 @@ public class UserController {
         return userService.updateStatus(id);
     }
 
-    @ApiOperation("删除用户")
+    @Operation(summary = "删除用户")
     @DeleteMapping("/delete/{id}")
     @PreventDuplicateSubmit
     @OperationLog(moduleTitle = "删除用户", businessType = BusinessType.DELETE)
@@ -57,7 +57,7 @@ public class UserController {
         return userService.delete(id);
     }
 
-    @ApiOperation("新增用户")
+    @Operation(summary = "新增用户")
     @PostMapping("/add")
     @PreventDuplicateSubmit
     @OperationLog(moduleTitle = "新增用户", businessType = BusinessType.INSERT)
@@ -65,7 +65,7 @@ public class UserController {
         return userService.add(dto);
     }
 
-    @ApiOperation("修改用户")
+    @Operation(summary = "修改用户")
     @PutMapping("/update")
     @PreventDuplicateSubmit
     @OperationLog(moduleTitle = "修改用户", businessType = BusinessType.UPDATE)
@@ -73,7 +73,7 @@ public class UserController {
         return userService.update(dto);
     }
 
-    @ApiOperation("重置用户密码")
+    @Operation(summary = "重置用户密码")
     @PutMapping("/resetPassword/{id}")
     @PreventDuplicateSubmit
     @OperationLog(moduleTitle = "重置用户密码", businessType = BusinessType.UPDATE)

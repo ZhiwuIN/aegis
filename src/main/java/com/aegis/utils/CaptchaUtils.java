@@ -5,12 +5,11 @@ import cn.hutool.core.util.RandomUtil;
 import com.aegis.common.constant.RedisConstants;
 import com.aegis.common.domain.vo.CaptchaVO;
 import com.aegis.common.exception.BusinessException;
+import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.RandomUtils;
 import org.springframework.stereotype.Component;
 
-import javax.annotation.PostConstruct;
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -21,6 +20,7 @@ import java.util.ArrayList;
 import java.util.Base64;
 import java.util.List;
 import java.util.Objects;
+import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -201,12 +201,12 @@ public final class CaptchaUtils {
         double po = Math.pow(BLOCK_RADIUS, 2);
         // 随机生成两个圆的坐标，在4个方向上 随机找到2个方向添加凸/凹
         // 凸/凹1
-        int face1 = RandomUtils.nextInt(0, 4);
+        int face1 = ThreadLocalRandom.current().nextInt(0, 4);
         // 凸/凹2
         int face2;
         // 保证两个凸/凹不在同一位置
         do {
-            face2 = RandomUtils.nextInt(0, 4);
+            face2 = ThreadLocalRandom.current().nextInt(0, 4);
         } while (face1 == face2);
         // 获取凸/凹起位置坐标
         int[] circle1 = getCircleCoords(face1);

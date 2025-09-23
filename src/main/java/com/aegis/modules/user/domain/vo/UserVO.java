@@ -5,8 +5,7 @@ import com.aegis.common.mask.MaskTypeEnum;
 import com.aegis.modules.dept.domain.entity.Dept;
 import com.aegis.modules.role.domain.entity.Role;
 import com.fasterxml.jackson.annotation.JsonFormat;
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
 import java.util.Date;
@@ -18,58 +17,58 @@ import java.util.List;
  * @Description: 用户VO
  */
 @Data
-@ApiModel("用户VO")
+@Schema(description = "用户VO")
 public class UserVO {
 
-    @ApiModelProperty("主键ID")
+    @Schema(description = "主键ID")
     private Long id;
 
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
-    @ApiModelProperty("创建时间")
+    @Schema(description = "创建时间")
     private Date createTime;
 
-    @ApiModelProperty("部门ID")
+    @Schema(description = "部门ID")
     private Long deptId;
 
-    @ApiModelProperty("部门名称")
+    @Schema(description = "部门名称")
     private String deptName;
 
-    @ApiModelProperty("用户名")
+    @Schema(description = "用户名")
     private String username;
 
-    @ApiModelProperty("呢称")
+    @Schema(description = "呢称")
     private String nickname;
 
-    @ApiModelProperty("邮箱")
+    @Schema(description = "邮箱")
     @DataMask(type = MaskTypeEnum.EMAIL)
     private String email;
 
-    @ApiModelProperty("性别")
+    @Schema(description = "性别")
     private String sex;
 
-    @ApiModelProperty("电话")
+    @Schema(description = "电话")
     @DataMask(type = MaskTypeEnum.PHONE)
     private String phone;
 
-    @ApiModelProperty("头像")
+    @Schema(description = "头像")
     private String avatar;
 
-    @ApiModelProperty("状态")
+    @Schema(description = "状态")
     private String status;
 
-    @ApiModelProperty("最后登录IP")
+    @Schema(description = "最后登录IP")
     private String lastLoginIp;
 
-    @ApiModelProperty("最后登录时间")
+    @Schema(description = "最后登录时间")
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     private Date lastLoginTime;
 
-    @ApiModelProperty("部门信息")
+    @Schema(description = "部门信息")
     private Dept dept;
 
-    @ApiModelProperty("角色列表")
+    @Schema(description = "角色列表")
     private List<Role> roleList;
 
-    @ApiModelProperty("权限列表")
+    @Schema(description = "权限列表")
     private List<String> permissions;
 }

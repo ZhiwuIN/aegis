@@ -1,8 +1,7 @@
 package com.aegis.modules.role.domain.vo;
 
 import com.aegis.common.domain.vo.TreeVO;
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
 import java.util.List;
@@ -13,12 +12,12 @@ import java.util.List;
  * @Description: 角色对应的菜单树或部门树
  */
 @Data
-@ApiModel("角色对应的菜单树或部门树")
+@Schema(description = "角色对应的菜单树或部门树")
 public class RoleWithMenuOrDeptVO {
 
-    @ApiModelProperty("被选中的节点")
+    @Schema(description = "被选中的节点")
     private List<Long> checkedKeys;
 
-    @ApiModelProperty("树形结构")
+    @Schema(description = "树形结构")
     private List<TreeVO> trees;
 }

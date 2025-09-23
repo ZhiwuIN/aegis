@@ -13,8 +13,7 @@ import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.fasterxml.jackson.annotation.JsonFormat;
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
@@ -31,7 +30,7 @@ import java.time.LocalDateTime;
 @Data
 @Accessors(chain = true)
 @EqualsAndHashCode(callSuper = false)
-@ApiModel("操作日志表")
+@Schema(description = "操作日志表")
 @TableName(value = "t_sys_operate_log")
 @ColumnWidth(25)
 @HeadRowHeight(30)
@@ -45,14 +44,14 @@ public class SysOperateLog implements Serializable {
     /**
      * 主键ID
      */
-    @ApiModelProperty("主键ID")
+    @Schema(description = "主键ID")
     @TableId(value = "id", type = IdType.ASSIGN_ID)
     private Long id;
 
     /**
      * 模块标题
      */
-    @ApiModelProperty("模块标题")
+    @Schema(description = "模块标题")
     @TableField(value = "module_title")
     @ExcelProperty("模块标题")
     private String moduleTitle;
@@ -60,7 +59,7 @@ public class SysOperateLog implements Serializable {
     /**
      * 业务类型(0-其它,1-新增,2-修改,3-删除)
      */
-    @ApiModelProperty("业务类型(0-其它,1-新增,2-修改,3-删除)")
+    @Schema(description = "业务类型(0-其它,1-新增,2-修改,3-删除)")
     @TableField(value = "business_type")
     @ExcelProperty(value = "业务类型", converter = BusinessTypeConvert.class)
     private Integer businessType;
@@ -68,7 +67,7 @@ public class SysOperateLog implements Serializable {
     /**
      * 请求地址
      */
-    @ApiModelProperty("请求地址")
+    @Schema(description = "请求地址")
     @TableField(value = "request_url")
     @ExcelProperty("请求地址")
     private String requestUrl;
@@ -76,7 +75,7 @@ public class SysOperateLog implements Serializable {
     /**
      * 请求IP
      */
-    @ApiModelProperty("请求IP")
+    @Schema(description = "请求IP")
     @TableField(value = "request_ip")
     @ExcelProperty("请求IP")
     private String requestIp;
@@ -84,7 +83,7 @@ public class SysOperateLog implements Serializable {
     /**
      * 请求地点
      */
-    @ApiModelProperty("请求地点")
+    @Schema(description = "请求地点")
     @TableField(value = "request_local")
     @ExcelProperty("请求地点")
     private String requestLocal;
@@ -92,7 +91,7 @@ public class SysOperateLog implements Serializable {
     /**
      * 请求方式
      */
-    @ApiModelProperty("请求方式")
+    @Schema(description = "请求方式")
     @TableField(value = "request_type")
     @ExcelProperty("请求方式")
     private String requestType;
@@ -100,7 +99,7 @@ public class SysOperateLog implements Serializable {
     /**
      * 请求方法
      */
-    @ApiModelProperty("请求方法")
+    @Schema(description = "请求方法")
     @TableField(value = "request_method")
     @ExcelProperty("请求方法")
     private String requestMethod;
@@ -108,7 +107,7 @@ public class SysOperateLog implements Serializable {
     /**
      * 请求参数
      */
-    @ApiModelProperty("请求参数")
+    @Schema(description = "请求参数")
     @TableField(value = "request_args")
     @ExcelProperty("请求参数")
     private String requestArgs;
@@ -116,7 +115,7 @@ public class SysOperateLog implements Serializable {
     /**
      * 响应结果
      */
-    @ApiModelProperty("响应结果")
+    @Schema(description = "响应结果")
     @TableField(value = "response_result")
     @ExcelProperty("响应结果")
     private String responseResult;
@@ -124,7 +123,7 @@ public class SysOperateLog implements Serializable {
     /**
      * 错误响应
      */
-    @ApiModelProperty("错误响应")
+    @Schema(description = "错误响应")
     @TableField(value = "error_message")
     @ExcelProperty("错误响应")
     private String errorMessage;
@@ -132,7 +131,7 @@ public class SysOperateLog implements Serializable {
     /**
      * 操作用户
      */
-    @ApiModelProperty("操作用户")
+    @Schema(description = "操作用户")
     @TableField(value = "operate_user")
     @ExcelProperty("操作用户")
     private String operateUser;
@@ -140,7 +139,7 @@ public class SysOperateLog implements Serializable {
     /**
      * 操作时间
      */
-    @ApiModelProperty("操作时间")
+    @Schema(description = "操作时间")
     @TableField(value = "operate_time")
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     @ExcelProperty("操作时间")
@@ -149,7 +148,7 @@ public class SysOperateLog implements Serializable {
     /**
      * 消耗时间(单位：毫秒)
      */
-    @ApiModelProperty("消耗时间(单位：毫秒)")
+    @Schema(description = "消耗时间(单位：毫秒)")
     @TableField(value = "deplete_time")
     @ExcelProperty("消耗时间(单位：毫秒)")
     private Long depleteTime;
@@ -157,7 +156,7 @@ public class SysOperateLog implements Serializable {
     /**
      * 操作状态(0-成功,1-失败)
      */
-    @ApiModelProperty("操作状态(0-成功,1-失败)")
+    @Schema(description = "操作状态(0-成功,1-失败)")
     @TableField(value = "operate_status")
     @ExcelProperty(value = "操作状态", converter = StatusConvert.class)
     private String operateStatus;

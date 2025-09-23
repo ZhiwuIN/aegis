@@ -3,8 +3,7 @@ package com.aegis.common.domain.vo;
 import com.aegis.modules.dept.domain.entity.Dept;
 import com.aegis.modules.menu.domain.entity.Menu;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
 import java.io.Serializable;
@@ -18,7 +17,7 @@ import java.util.stream.Collectors;
  * @Description: 树形结构VO
  */
 @Data
-@ApiModel("树形结构VO")
+@Schema(description = "树形结构VO")
 public class TreeVO implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -26,19 +25,19 @@ public class TreeVO implements Serializable {
     /**
      * 节点id
      */
-    @ApiModelProperty("节点id")
+    @Schema(description = "节点id")
     private Long id;
 
     /**
      * 节点名称
      */
-    @ApiModelProperty("节点名称")
+    @Schema(description = "节点名称")
     private String label;
 
     /**
      * 子节点
      */
-    @ApiModelProperty("子节点")
+    @Schema(description = "子节点")
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
     private List<TreeVO> children;
 

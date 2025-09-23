@@ -2,8 +2,8 @@ package com.aegis.common.validator;
 
 import com.aegis.common.exception.BusinessException;
 
-import javax.validation.ConstraintValidator;
-import javax.validation.ConstraintValidatorContext;
+import jakarta.validation.ConstraintValidator;
+import jakarta.validation.ConstraintValidatorContext;
 import java.lang.reflect.Field;
 
 /**

@@ -1,8 +1,7 @@
 package com.aegis.common.domain.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
 /**
@@ -11,19 +10,19 @@ import lombok.Data;
  * @Description: 邮箱验证码DTO
  */
 @Data
-@ApiModel("邮箱验证码DTO")
+@Schema(description = "邮箱验证码DTO")
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class EmailLoginRequestDTO {
 
     /**
      * 邮箱
      */
-    @ApiModelProperty("邮箱")
+    @Schema(description = "邮箱")
     private String email;
 
     /**
      * 验证码
      */
-    @ApiModelProperty("验证码")
+    @Schema(description = "验证码")
     private String code;
 }

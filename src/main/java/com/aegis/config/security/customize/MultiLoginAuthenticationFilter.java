@@ -14,17 +14,18 @@ import com.aegis.utils.RsaUtils;
 import com.aegis.utils.SpringContextUtil;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.AbstractAuthenticationProcessingFilter;
-import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
+import org.springframework.security.web.util.matcher.RegexRequestMatcher;
 import org.springframework.util.StringUtils;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Map;
 
@@ -38,7 +39,7 @@ public class MultiLoginAuthenticationFilter extends AbstractAuthenticationProces
     private final ObjectMapper objectMapper = new ObjectMapper();
 
     public MultiLoginAuthenticationFilter() {
-        super(new AntPathRequestMatcher("/login", "POST"));
+        super(new RegexRequestMatcher("/login", HttpMethod.POST.name()));
     }
 
     @Override

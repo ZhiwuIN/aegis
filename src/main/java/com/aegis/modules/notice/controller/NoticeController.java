@@ -8,8 +8,8 @@ import com.aegis.common.validator.ValidGroup;
 import com.aegis.modules.notice.domain.dto.NoticeDTO;
 import com.aegis.modules.notice.domain.entity.Notice;
 import com.aegis.modules.notice.service.NoticeService;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -20,26 +20,26 @@ import org.springframework.web.bind.annotation.*;
  * @Description: 通知接口
  */
 @RestController
-@Api(tags = "通知接口")
+@Tag(name = "通知接口")
 @RequestMapping("/notice")
 @RequiredArgsConstructor
 public class NoticeController {
 
     private final NoticeService noticeService;
 
-    @ApiOperation("分页列表")
+    @Operation(summary = "分页列表")
     @GetMapping("/pageList")
     public PageVO<Notice> pageList(NoticeDTO dto) {
         return noticeService.pageList(dto);
     }
 
-    @ApiOperation("详情")
+    @Operation(summary = "详情")
     @GetMapping("/detail/{id}")
     public Notice detail(@PathVariable("id") Long id) {
         return noticeService.detail(id);
     }
 
-    @ApiOperation("删除通知")
+    @Operation(summary = "删除通知")
     @DeleteMapping("/delete/{id}")
     @PreventDuplicateSubmit
     @OperationLog(moduleTitle = "删除通知", businessType = BusinessType.DELETE)
@@ -47,7 +47,7 @@ public class NoticeController {
         return noticeService.delete(id);
     }
 
-    @ApiOperation("新增通知")
+    @Operation(summary = "新增通知")
     @PostMapping("/add")
     @PreventDuplicateSubmit
     @OperationLog(moduleTitle = "新增通知", businessType = BusinessType.INSERT)
@@ -55,7 +55,7 @@ public class NoticeController {
         return noticeService.add(dto);
     }
 
-    @ApiOperation("修改通知")
+    @Operation(summary = "修改通知")
     @PutMapping("/update")
     @PreventDuplicateSubmit
     @OperationLog(moduleTitle = "修改通知", businessType = BusinessType.UPDATE)
@@ -63,7 +63,7 @@ public class NoticeController {
         return noticeService.update(dto);
     }
 
-    @ApiOperation("发布通知")
+    @Operation(summary = "发布通知")
     @GetMapping("/publish/{id}")
     @PreventDuplicateSubmit
     @OperationLog(moduleTitle = "发布通知", businessType = BusinessType.INSERT)
@@ -71,7 +71,7 @@ public class NoticeController {
         return noticeService.publish(id);
     }
 
-    @ApiOperation("撤销通知")
+    @Operation(summary = "撤销通知")
     @GetMapping("/revoke/{id}")
     @PreventDuplicateSubmit
     @OperationLog(moduleTitle = "撤销通知", businessType = BusinessType.UPDATE)

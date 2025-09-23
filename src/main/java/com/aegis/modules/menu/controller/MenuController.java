@@ -8,8 +8,8 @@ import com.aegis.common.validator.ValidGroup;
 import com.aegis.modules.menu.domain.dto.MenuDTO;
 import com.aegis.modules.menu.domain.entity.Menu;
 import com.aegis.modules.menu.service.MenuService;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -22,26 +22,26 @@ import java.util.List;
  * @Description: 菜单接口
  */
 @RestController
-@Api(tags = "菜单接口")
+@Tag(name = "菜单接口")
 @RequestMapping("/menu")
 @RequiredArgsConstructor
 public class MenuController {
 
     private final MenuService menuService;
 
-    @ApiOperation("列表")
+    @Operation(summary = "列表")
     @GetMapping("/list")
     public List<Menu> list(MenuDTO dto) {
         return menuService.list(dto);
     }
 
-    @ApiOperation("详情")
+    @Operation(summary = "详情")
     @GetMapping("/detail/{id}")
     public Menu detail(@PathVariable("id") Long id) {
         return menuService.detail(id);
     }
 
-    @ApiOperation("删除")
+    @Operation(summary = "删除")
     @DeleteMapping("/delete/{id}")
     @PreventDuplicateSubmit
     @OperationLog(moduleTitle = "删除菜单", businessType = BusinessType.DELETE)
@@ -49,7 +49,7 @@ public class MenuController {
         return menuService.delete(id);
     }
 
-    @ApiOperation("新增")
+    @Operation(summary = "新增")
     @PostMapping("/add")
     @PreventDuplicateSubmit
     @OperationLog(moduleTitle = "新增菜单", businessType = BusinessType.INSERT)
@@ -57,7 +57,7 @@ public class MenuController {
         return menuService.add(dto);
     }
 
-    @ApiOperation("修改")
+    @Operation(summary = "修改")
     @PutMapping("/update")
     @PreventDuplicateSubmit
     @OperationLog(moduleTitle = "修改菜单", businessType = BusinessType.UPDATE)
@@ -65,7 +65,7 @@ public class MenuController {
         return menuService.update(dto);
     }
 
-    @ApiOperation("获取树形结构菜单")
+    @Operation(summary = "获取树形结构菜单")
     @GetMapping("/tree")
     public List<TreeVO> tree(MenuDTO dto) {
         return menuService.tree(dto);

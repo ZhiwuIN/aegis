@@ -1,10 +1,9 @@
 package com.aegis.modules.role.domain.dto;
 
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
-import javax.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotNull;
 import java.util.List;
 
 /**
@@ -13,14 +12,14 @@ import java.util.List;
  * @Description: 批量选择角色授权用户DTO
  */
 @Data
-@ApiModel("批量选择角色授权用户DTO")
+@Schema(description = "批量选择角色授权用户DTO")
 public class CancelAllDTO {
 
     @NotNull(message = "角色ID不能为空")
-    @ApiModelProperty("角色ID")
+    @Schema(description = "角色ID")
     private Long roleId;
 
     @NotNull(message = "用户组ID不能为空")
-    @ApiModelProperty("用户组ID")
+    @Schema(description = "用户组ID")
     private List<Long> userIds;
 }

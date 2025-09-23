@@ -8,8 +8,7 @@ import cn.idev.excel.annotation.write.style.HeadStyle;
 import cn.idev.excel.enums.poi.FillPatternTypeEnum;
 import com.aegis.common.excel.StatusConvert;
 import com.baomidou.mybatisplus.annotation.*;
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
@@ -29,7 +28,7 @@ import java.util.Date;
 @Data
 @Accessors(chain = true)
 @EqualsAndHashCode(callSuper = false)
-@ApiModel("登录日志表")
+@Schema(description = "登录日志表")
 @TableName(value = "t_sys_login_log")
 @ColumnWidth(25)
 @HeadRowHeight(30)
@@ -43,14 +42,14 @@ public class SysLoginLog implements Serializable {
     /**
      * 主键ID
      */
-    @ApiModelProperty("主键ID")
+    @Schema(description = "主键ID")
     @TableId(value = "id", type = IdType.ASSIGN_ID)
     private Long id;
 
     /**
      * 用户名
      */
-    @ApiModelProperty("用户名")
+    @Schema(description = "用户名")
     @TableField(value = "login_username")
     @ExcelProperty("用户名")
     private String loginUsername;
@@ -58,7 +57,7 @@ public class SysLoginLog implements Serializable {
     /**
      * 登录IP地址
      */
-    @ApiModelProperty("登录IP地址")
+    @Schema(description = "登录IP地址")
     @TableField(value = "login_ip")
     @ExcelProperty("登录IP地址")
     private String loginIp;
@@ -66,7 +65,7 @@ public class SysLoginLog implements Serializable {
     /**
      * 登录地点
      */
-    @ApiModelProperty("登录地点")
+    @Schema(description = "登录地点")
     @TableField(value = "login_local")
     @ExcelProperty("登录地点")
     private String loginLocal;
@@ -74,7 +73,7 @@ public class SysLoginLog implements Serializable {
     /**
      * 浏览器类型
      */
-    @ApiModelProperty("浏览器类型")
+    @Schema(description = "浏览器类型")
     @TableField(value = "login_browser")
     @ExcelProperty("浏览器类型")
     private String loginBrowser;
@@ -82,7 +81,7 @@ public class SysLoginLog implements Serializable {
     /**
      * 操作系统
      */
-    @ApiModelProperty("操作系统")
+    @Schema(description = "操作系统")
     @TableField(value = "login_os")
     @ExcelProperty("操作系统")
     private String loginOs;
@@ -90,7 +89,7 @@ public class SysLoginLog implements Serializable {
     /**
      * 登录时间
      */
-    @ApiModelProperty("登录时间")
+    @Schema(description = "登录时间")
     @TableField(value = "login_time")
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
@@ -100,7 +99,7 @@ public class SysLoginLog implements Serializable {
     /**
      * 操作状态(0-成功,1-失败)
      */
-    @ApiModelProperty("操作状态(0-成功,1-失败)")
+    @Schema(description = "操作状态(0-成功,1-失败)")
     @TableField(value = "login_status")
     @ExcelProperty(value = "操作状态", converter = StatusConvert.class)
     private String loginStatus;
@@ -108,7 +107,7 @@ public class SysLoginLog implements Serializable {
     /**
      * 错误响应
      */
-    @ApiModelProperty("错误响应")
+    @Schema(description = "错误响应")
     @TableField(value = "error_message")
     @ExcelProperty("错误响应")
     private String errorMessage;

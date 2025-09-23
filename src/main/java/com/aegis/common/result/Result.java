@@ -1,7 +1,6 @@
 package com.aegis.common.result;
 
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -13,7 +12,7 @@ import java.io.Serializable;
  * @Description: 统一返回格式
  */
 @Data
-@ApiModel("统一返回格式")
+@Schema(description = "统一返回格式")
 @NoArgsConstructor
 public class Result<T> implements Serializable {
 
@@ -22,19 +21,19 @@ public class Result<T> implements Serializable {
     /**
      * 状态码
      */
-    @ApiModelProperty("状态码")
+    @Schema(description = "状态码")
     private Integer code;
 
     /**
      * 响应消息
      */
-    @ApiModelProperty("响应消息")
+    @Schema(description = "响应消息")
     private String message;
 
     /**
      * 响应数据
      */
-    @ApiModelProperty("响应数据")
+    @Schema(description = "响应数据")
     private T data;
 
     /**

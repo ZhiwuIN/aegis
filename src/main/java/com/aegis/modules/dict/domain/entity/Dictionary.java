@@ -1,8 +1,7 @@
 package com.aegis.modules.dict.domain.entity;
 
 import com.baomidou.mybatisplus.annotation.*;
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
@@ -22,7 +21,7 @@ import java.util.Date;
 @Data
 @Accessors(chain = true)
 @EqualsAndHashCode(callSuper = false)
-@ApiModel("字典表")
+@Schema(description = "字典表")
 @TableName(value = "t_dictionary")
 public class Dictionary implements Serializable {
 
@@ -32,28 +31,28 @@ public class Dictionary implements Serializable {
     /**
      * 主键ID
      */
-    @ApiModelProperty("主键ID")
+    @Schema(description = "主键ID")
     @TableId(value = "id", type = IdType.ASSIGN_ID)
     private Long id;
 
     /**
      * 创建人
      */
-    @ApiModelProperty("创建人")
+    @Schema(description = "创建人")
     @TableField(value = "create_by")
     private Long createBy;
 
     /**
      * 更新人
      */
-    @ApiModelProperty("更新人")
+    @Schema(description = "更新人")
     @TableField(value = "update_by")
     private Long updateBy;
 
     /**
      * 创建时间
      */
-    @ApiModelProperty("创建时间")
+    @Schema(description = "创建时间")
     @TableField(value = "create_time", fill = FieldFill.INSERT)
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
@@ -62,7 +61,7 @@ public class Dictionary implements Serializable {
     /**
      * 更新时间
      */
-    @ApiModelProperty("更新时间")
+    @Schema(description = "更新时间")
     @TableField(value = "update_time", fill = FieldFill.INSERT_UPDATE)
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
@@ -71,7 +70,7 @@ public class Dictionary implements Serializable {
     /**
      * 逻辑删除标记(0=正常,1=删除)
      */
-    @ApiModelProperty("逻辑删除标记(0=正常,1=删除)")
+    @Schema(description = "逻辑删除标记(0=正常,1=删除)")
     @TableLogic
     @TableField(value = "deleted")
     private Integer deleted;
@@ -79,7 +78,7 @@ public class Dictionary implements Serializable {
     /**
      * 版本号,用于乐观锁
      */
-    @ApiModelProperty("版本号,用于乐观锁")
+    @Schema(description = "版本号,用于乐观锁")
     @Version
     @TableField(value = "version")
     private Integer version;
@@ -87,49 +86,49 @@ public class Dictionary implements Serializable {
     /**
      * 备注
      */
-    @ApiModelProperty("备注")
+    @Schema(description = "备注")
     @TableField(value = "remark")
     private String remark;
 
     /**
      * 字典名称
      */
-    @ApiModelProperty("字典名称")
+    @Schema(description = "字典名称")
     @TableField(value = "dict_name")
     private String dictName;
 
     /**
      * 字典类型
      */
-    @ApiModelProperty("字典类型")
+    @Schema(description = "字典类型")
     @TableField(value = "dict_type")
     private String dictType;
 
     /**
      * 字典排序
      */
-    @ApiModelProperty("字典排序")
+    @Schema(description = "字典排序")
     @TableField(value = "dict_sort")
     private Integer dictSort;
 
     /**
      * 字典标签
      */
-    @ApiModelProperty("字典标签")
+    @Schema(description = "字典标签")
     @TableField(value = "dict_label")
     private String dictLabel;
 
     /**
      * 字典键值
      */
-    @ApiModelProperty("字典键值")
+    @Schema(description = "字典键值")
     @TableField(value = "dict_value")
     private String dictValue;
 
     /**
      * 状态(0-正常,1停用)
      */
-    @ApiModelProperty("状态(0-正常,1停用)")
+    @Schema(description = "状态(0-正常,1停用)")
     @TableField(value = "status")
     private String status;
 

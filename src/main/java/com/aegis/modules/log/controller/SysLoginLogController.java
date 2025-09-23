@@ -6,12 +6,12 @@ import com.aegis.common.log.OperationLog;
 import com.aegis.modules.log.domain.dto.SysLoginLogDTO;
 import com.aegis.modules.log.domain.entity.SysLoginLog;
 import com.aegis.modules.log.service.SysLoginLogService;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletResponse;
 
 /**
  * @Author: xuesong.lei
@@ -19,21 +19,21 @@ import javax.servlet.http.HttpServletResponse;
  * @Description: 登录日志接口
  */
 @RestController
-@Api(tags = "登录日志接口")
+@Tag(name = "登录日志接口")
 @RequiredArgsConstructor
 @RequestMapping("/loginLog")
 public class SysLoginLogController {
 
     private final SysLoginLogService sysLoginLogService;
 
-    @ApiOperation("分页列表")
+    @Operation(summary = "分页列表")
     @GetMapping("/pageList")
     public PageVO<SysLoginLog> pageList(SysLoginLogDTO dto) {
         return sysLoginLogService.pageList(dto);
     }
 
     @GetMapping("/export")
-    @ApiOperation("导出登录日志")
+    @Operation(summary = "导出登录日志")
     @OperationLog(moduleTitle = "导出登录日志", businessType = BusinessType.EXPORT)
     public void export(SysLoginLogDTO dto, HttpServletResponse response) {
         sysLoginLogService.export(dto, response);

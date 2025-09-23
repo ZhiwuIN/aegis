@@ -1,13 +1,13 @@
 package com.aegis.common.ip2region;
 
 import com.aegis.utils.IpUtils;
+import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
 import org.lionsoul.ip2region.xdb.Searcher;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StreamUtils;
 
-import javax.annotation.PostConstruct;
-import javax.annotation.PreDestroy;
+import jakarta.annotation.PreDestroy;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 

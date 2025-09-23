@@ -1,8 +1,7 @@
 package com.aegis.modules.log.domain.dto;
 
 import com.aegis.common.domain.dto.PageDTO;
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -15,27 +14,27 @@ import java.util.Date;
  * @Description: 操作日志DTO
  */
 @Data
-@ApiModel("操作日志DTO")
+@Schema(description = "操作日志DTO")
 @EqualsAndHashCode(callSuper = true)
 public class SysOperateLogDTO extends PageDTO {
 
-    @ApiModelProperty("模块标题")
+    @Schema(description = "模块标题")
     private String moduleTitle;
 
-    @ApiModelProperty("操作人员")
+    @Schema(description = "操作人员")
     private String operateUser;
 
-    @ApiModelProperty("操作类型")
+    @Schema(description = "操作类型")
     private Integer businessType;
 
-    @ApiModelProperty("状态")
+    @Schema(description = "状态")
     private String operateStatus;
 
-    @ApiModelProperty("开始时间")
+    @Schema(description = "开始时间")
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date beginTime;
 
-    @ApiModelProperty("结束时间")
+    @Schema(description = "结束时间")
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date endTime;
 }

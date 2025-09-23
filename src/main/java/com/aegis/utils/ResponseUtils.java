@@ -6,7 +6,7 @@ import com.aegis.common.result.ResultCodeEnum;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;

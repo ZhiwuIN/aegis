@@ -4,7 +4,7 @@ import com.aegis.common.domain.vo.PageVO;
 import com.aegis.modules.log.domain.dto.SysOperateLogDTO;
 import com.aegis.modules.log.domain.entity.SysOperateLog;
 
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletResponse;
 
 /**
  * @Author: xuesong.lei
