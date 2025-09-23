@@ -1,7 +1,7 @@
 <div align="center">
 
-[![Spring Boot](https://img.shields.io/badge/Spring%20Boot-2.7.18-brightgreen.svg)](https://spring.io/projects/spring-boot)
-[![Java](https://img.shields.io/badge/Java-1.8+-orange.svg)](https://www.oracle.com/java/technologies/javase-jdk8-downloads.html)
+[![Spring Boot](https://img.shields.io/badge/Spring%20Boot-3.5.6-brightgreen.svg)](https://spring.io/projects/spring-boot)
+[![Java](https://img.shields.io/badge/Java-21-orange.svg)](https://www.oracle.com/java/technologies/javase-jdk8-downloads.html)
 [![MySQL](https://img.shields.io/badge/MySQL-5.7+-blue.svg)](https://www.mysql.com/)
 [![Redis](https://img.shields.io/badge/Redis-6.0+-red.svg)](https://redis.io/)
 [![License](https://img.shields.io/badge/License-MIT-green.svg)](https://opensource.org/licenses/MIT)
@@ -35,19 +35,19 @@ Aegis是一个功能完整的企业级RBAC(Role-Based Access Control)权限管�
 
 ### 后端技术栈
 
-| 技术 | 版本 | 描述 |
-|------|------|------|
-| Spring Boot | 2.7.18 | 基础框架 |
-| Spring Security | - | 安全框架 |
+| 技术 | 版本     | 描述 |
+|------|--------|------|
+| Spring Boot | 3.5.6  | 基础框架 |
+| Spring Security | -      | 安全框架 |
 | JWT | 0.13.0 | JWT Token |
 | MyBatis-Plus | 3.5.12 | ORM框架 |
-| Redis | - | 缓存中间件 |
-| MySQL | 5.7+ | 关系型数据库 |
-| HikariCP | - | 数据库连接池 |
-| MapStruct | 1.6.3 | 对象映射 |
-| Knife4j | 4.5.0 | API文档 |
-| FastExcel | 1.3.0 | Excel处理 |
-| UserAgentUtils | 1.21 | 浏览器解析 |
+| Redis | -      | 缓存中间件 |
+| MySQL | 5.7+   | 关系型数据库 |
+| HikariCP | -      | 数据库连接池 |
+| MapStruct | 1.6.3  | 对象映射 |
+| Knife4j | 4.5.0  | API文档 |
+| FastExcel | 1.3.0  | Excel处理 |
+| UserAgentUtils | 1.21   | 浏览器解析 |
 
 ## 🚀 快速开始
 
@@ -87,11 +87,12 @@ spring:
     username: your_mysql_username
     password: your_mysql_password
 
-  redis:
-    host: 127.0.0.1
-    port: 6379
-    password: your_redis_password
-    database: 1
+  data:
+    redis:
+      host: 127.0.0.1
+      port: 6379
+      password: your_redis_password
+      database: 1
 
   mail:
     host: smtp.163.com

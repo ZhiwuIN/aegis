@@ -5,16 +5,18 @@ spring:
     multipart:
       max-file-size: 100MB # 上传文件大小限制
       max-request-size: 100MB # 上传文件总大小限制
-  redis: # Redis配置
-    host: 127.0.0.1 # 地址(需要改成你的Redis地址)
-    port: 6379 # 端口
-    password: aegis # 密码(需要改成你的Redis密码)
-    database: 1 # Redis数据库索引
-    lettuce:
-      pool: # Redis连接池配置
-        max-idle: 16 # 连接池中的最大空闲连接
-        min-idle: 8 # 连接池中的最小空闲连接
-        max-active: 32 # 最大连接数
+  data:
+    redis:
+      host: 127.0.0.1 # 地址(需要改成你的Redis地址)
+      port: 6379 # 端口
+      password: aegis # 密码(需要改成你的Redis密码)
+      database: 1 # Redis数据库索引
+      lettuce:
+        pool: # Redis连接池配置
+          max-idle: 16 # 连接池中的最大空闲连接
+          min-idle: 8 # 连接池中的最小空闲连接
+          max-active: 32 # 最大连接数
+
   datasource: # 数据库配置
     url: jdbc:mysql://127.0.0.1:3306/aegis?serverTimezone=Asia/Shanghai&useSSL=false # 连接地址(需要改成你的MySQL地址)
     username: root # 账号(需要改成你的MySQL账号)
