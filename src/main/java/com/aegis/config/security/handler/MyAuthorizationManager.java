@@ -41,8 +41,8 @@ public class MyAuthorizationManager implements AuthorizationManager<RequestAutho
         // 获取当前请求需要的角色
         Set<String> requiredRoles = securityMetadataService.getRequiredRoles(requestURI, method);
 
-        // 如果是白名单或无需权限，直接放行
-        if (requiredRoles == null || requiredRoles.isEmpty()) {
+        // 如果是白名单，直接放行
+        if (requiredRoles == null) {
             return new AuthorizationDecision(true);
         }
 
