@@ -1,4 +1,4 @@
-package com.aegis.config.knife4j;
+package com.aegis.config.doc;
 
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.Contact;
@@ -9,10 +9,10 @@ import org.springframework.context.annotation.Configuration;
 /**
  * @Author: xuesong.lei
  * @Date: 2025/9/7 14:14
- * @Description: Knife4j配置类
+ * @Description: SpringDoc配置类
  */
 @Configuration
-public class Knife4jConfig {
+public class OpenApiConfig {
 
     @Bean
     public OpenAPI openAPI() {

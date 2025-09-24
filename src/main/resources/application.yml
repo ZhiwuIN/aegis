@@ -95,13 +95,16 @@ jwt:
   access-token-expiration: 900  # 15分钟
   refresh-token-expiration: 604800  # 7天
 
-knife4j:
-  enable: true # 是否启用Knife4j
-  production: false # 是否生产环境
-  basic:
-    enable: true # 是否启用基础认证
-    username: aegis # 用户名
-    password: aegis # 密码
+springdoc:
+  swagger-ui:
+    enabled: true # 是否启用swagger-ui
+    tryItOutEnabled: true # 是否启用"Try it out"按钮
+    filter: true # 是否启用过滤器
+    display-request-duration: true # 是否显示请求持续时间
+  api-docs:
+    enabled: true # 是否启用api-docs
+  cache:
+    disabled: true  # 开发时禁用缓存，便于实时更新
 
 task:
   scheduling:
