@@ -12,12 +12,12 @@ import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.access.intercept.FilterSecurityInterceptor;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import java.util.List;
@@ -43,16 +43,15 @@ public class SpringSecurityConfig {
 
     private final MyLogoutSuccessHandler myLogoutSuccessHandler;
 
-    private final MyFilterInvocationSecurityMetadataSource myFilterInvocationSecurityMetadataSource;
-
-    private final MyAccessDecisionManager myAccessDecisionManager;
+    private final MyAuthorizationManager myAuthorizationManager;
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http, AuthenticationManager authenticationManager) throws Exception {
         return http
                 .csrf(AbstractHttpConfigurer::disable)
                 .anonymous(AbstractHttpConfigurer::disable)
-                .headers(headers -> headers.frameOptions().sameOrigin()) // Swagger等页面可内嵌，其他页面禁止
+                .headers(headers -> headers
+                        .frameOptions(HeadersConfigurer.FrameOptionsConfig::sameOrigin)) // Swagger等页面可内嵌，其他页面禁止
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))// 禁用session
                 .exceptionHandling(ex -> ex
                         .authenticationEntryPoint(myAuthenticationEntryPoint)// 未登录处理
@@ -61,7 +60,8 @@ public class SpringSecurityConfig {
                 .logout(logout -> logout.logoutSuccessHandler(myLogoutSuccessHandler))// 退出登录处理
                 .addFilterBefore(jwtTokenFilter, UsernamePasswordAuthenticationFilter.class)
                 .addFilterAt(multiLoginAuthenticationFilter(authenticationManager), UsernamePasswordAuthenticationFilter.class)
-                .addFilterAt(filterSecurityInterceptor(authenticationManager), FilterSecurityInterceptor.class)
+                .authorizeHttpRequests(auth -> auth
+                        .anyRequest().access(myAuthorizationManager))
                 .build();
     }
 
@@ -77,25 +77,13 @@ public class SpringSecurityConfig {
         return multiLoginAuthenticationFilter;
     }
 
-    /**
-     * 自定义FilterSecurityInterceptor
-     */
-    @Bean
-    public FilterSecurityInterceptor filterSecurityInterceptor(AuthenticationManager authenticationManager) {
-        FilterSecurityInterceptor interceptor = new FilterSecurityInterceptor();
-        interceptor.setSecurityMetadataSource(myFilterInvocationSecurityMetadataSource);
-        interceptor.setAccessDecisionManager(myAccessDecisionManager);
-        interceptor.setAuthenticationManager(authenticationManager);
-        return interceptor;
-    }
 
     /**
      * 使用自定义的UserDetailsService和密码加密器
      */
     @Bean
     public DaoAuthenticationProvider daoAuthenticationProvider(UserDetailsService userDetailsService, PasswordEncoder passwordEncoder) {
-        DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
-        provider.setUserDetailsService(userDetailsService);
+        DaoAuthenticationProvider provider = new DaoAuthenticationProvider(userDetailsService);
         provider.setPasswordEncoder(passwordEncoder);
         return provider;
     }

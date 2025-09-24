@@ -1,10 +1,10 @@
 package com.aegis.common.event;
 
 import com.aegis.common.constant.RedisConstants;
-import com.aegis.config.security.handler.MyFilterInvocationSecurityMetadataSource;
+import com.aegis.config.security.customize.SecurityMetadataService;
+import com.aegis.modules.common.domain.dto.UserRegisterDTO;
 import com.aegis.modules.log.domain.entity.SysOperateLog;
 import com.aegis.modules.log.mapper.SysOperateLogMapper;
-import com.aegis.modules.common.domain.dto.UserRegisterDTO;
 import com.aegis.utils.EmailUtils;
 import com.aegis.utils.RedisUtils;
 import lombok.RequiredArgsConstructor;
@@ -27,7 +27,7 @@ public class DataChangeListener {
 
     private final EmailUtils emailUtils;
 
-    private final MyFilterInvocationSecurityMetadataSource securityMetadataSource;
+    private final SecurityMetadataService securityMetadataService;
 
     private final SysOperateLogMapper sysOperateLogMapper;
 
@@ -66,7 +66,7 @@ public class DataChangeListener {
      */
     private void handleMenuChange(DataChangeEvent event) {
         redisUtils.delete(RedisConstants.MENUS);
-        securityMetadataSource.loadDataSourceAllUrl();
+        securityMetadataService.loadDataSourceAllUrl();
         log.info("菜单数据刷新完成，描述: {}", event.getDescription());
     }
 
@@ -75,7 +75,7 @@ public class DataChangeListener {
      */
     private void handleWhitelistChange(DataChangeEvent event) {
         redisUtils.delete(RedisConstants.WHITELIST);
-        securityMetadataSource.loadDataSourceAllWhitelist();
+        securityMetadataService.loadDataSourceAllWhitelist();
         log.info("白名单数据刷新完成，描述: {}", event.getDescription());
     }
 
