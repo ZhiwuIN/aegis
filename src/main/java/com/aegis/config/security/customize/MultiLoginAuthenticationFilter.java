@@ -49,7 +49,7 @@ public class MultiLoginAuthenticationFilter extends AbstractAuthenticationProces
         }
 
         String rawJson = RequestUtils.getRequestBody(request);
-        Map<String, Object> map = objectMapper.readValue(rawJson, new TypeReference<Map<String, Object>>() {
+        Map<String, Object> map = objectMapper.readValue(rawJson, new TypeReference<>() {
         });
 
         // 获取登录类型
@@ -89,8 +89,7 @@ public class MultiLoginAuthenticationFilter extends AbstractAuthenticationProces
     }
 
     protected void setDetails(HttpServletRequest request, Authentication authRequest) {
-        if (authRequest instanceof AbstractAuthenticationToken) {
-            AbstractAuthenticationToken token = (AbstractAuthenticationToken) authRequest;
+        if (authRequest instanceof AbstractAuthenticationToken token) {
             token.setDetails(this.authenticationDetailsSource.buildDetails(request));
         }
     }

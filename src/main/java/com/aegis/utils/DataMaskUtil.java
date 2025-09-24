@@ -27,22 +27,15 @@ public final class DataMaskUtil {
             return data;
         }
 
-        switch (type) {
-            case PHONE:
-                return maskPhone(data, maskChar);
-            case ID_CARD:
-                return maskIdCard(data, maskChar);
-            case EMAIL:
-                return maskEmail(data, maskChar);
-            case BANK_CARD:
-                return maskBankCard(data, maskChar);
-            case NAME:
-                return maskName(data, maskChar);
-            case ADDRESS:
-                return maskAddress(data, maskChar);
-            default:
-                return data;
-        }
+        return switch (type) {
+            case PHONE -> maskPhone(data, maskChar);
+            case ID_CARD -> maskIdCard(data, maskChar);
+            case EMAIL -> maskEmail(data, maskChar);
+            case BANK_CARD -> maskBankCard(data, maskChar);
+            case NAME -> maskName(data, maskChar);
+            case ADDRESS -> maskAddress(data, maskChar);
+            default -> data;
+        };
     }
 
     /**
@@ -175,10 +168,6 @@ public final class DataMaskUtil {
         if (str == null || count <= 0) {
             return "";
         }
-        StringBuilder sb = new StringBuilder(str.length() * count);
-        for (int i = 0; i < count; i++) {
-            sb.append(str);
-        }
-        return sb.toString();
+        return str.repeat(count);
     }
 }

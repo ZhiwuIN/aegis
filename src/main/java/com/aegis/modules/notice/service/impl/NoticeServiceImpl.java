@@ -228,22 +228,17 @@ public class NoticeServiceImpl implements NoticeService {
         final Integer targetType = notice.getTargetType();
         final String targetIdsStr = notice.getTargetIds();
 
-        switch (targetType) {
-            case 1: // 全部用户
-                return noticeUserMapper.selectAllUserIds();
-
-            case 2: // 指定用户
-                return processIds(targetIdsStr, Function.identity());
-
-            case 3: // 指定角色，查询角色对应的用户ID
-                return processIds(targetIdsStr, noticeUserMapper::selectUserIdsByRoleIds);
-
-            case 4: // 指定部门，查询部门对应的用户ID
-                return processIds(targetIdsStr, noticeUserMapper::selectUserIdsByDeptIds);
-
-            default:
-                throw new BusinessException("未知的目标类型: " + targetType);
-        }
+        return switch (targetType) {
+            case 1 -> // 全部用户
+                    noticeUserMapper.selectAllUserIds();
+            case 2 -> // 指定用户
+                    processIds(targetIdsStr, Function.identity());
+            case 3 -> // 指定角色，查询角色对应的用户ID
+                    processIds(targetIdsStr, noticeUserMapper::selectUserIdsByRoleIds);
+            case 4 -> // 指定部门，查询部门对应的用户ID
+                    processIds(targetIdsStr, noticeUserMapper::selectUserIdsByDeptIds);
+            default -> throw new BusinessException("未知的目标类型: " + targetType);
+        };
     }
 
     private List<Long> processIds(String idsStr, Function<List<Long>, List<Long>> processor) {

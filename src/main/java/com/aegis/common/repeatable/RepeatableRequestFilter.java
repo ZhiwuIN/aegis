@@ -20,13 +20,12 @@ import java.util.*;
 @Order(Ordered.HIGHEST_PRECEDENCE)
 public class RepeatableRequestFilter implements Filter {
 
-    private static final Set<String> METHODS_WITH_BODY = Collections.unmodifiableSet(new HashSet<>(Arrays.asList("POST", "PUT", "PATCH")));
+    private static final Set<String> METHODS_WITH_BODY = Set.of("POST", "PUT", "PATCH");
 
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
             throws IOException, ServletException {
-        if (request instanceof HttpServletRequest && shouldWrapRequest((HttpServletRequest) request)) {
-            HttpServletRequest httpRequest = (HttpServletRequest) request;
+        if (request instanceof HttpServletRequest httpRequest && shouldWrapRequest(httpRequest)) {
 
             try {
                 RepeatableHttpServletRequestWrapper cachedRequest = new RepeatableHttpServletRequestWrapper(httpRequest);

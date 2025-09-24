@@ -36,17 +36,11 @@ public class FileStorageServiceFactory {
     }
 
     private String getServiceName(StoragePlatform platform) {
-        switch (platform) {
-            case LOCAL:
-                return FileConstants.LOCAL;
-            case MINIO:
-                return FileConstants.MINIO;
-            case ALIYUN_OSS:
-                return FileConstants.ALIYUN;
-            case TENCENT_COS:
-                return FileConstants.TENCENT;
-            default:
-                throw new BusinessException("不支持的存储平台: " + platform);
-        }
+        return switch (platform) {
+            case LOCAL -> FileConstants.LOCAL;
+            case MINIO -> FileConstants.MINIO;
+            case ALIYUN_OSS -> FileConstants.ALIYUN;
+            case TENCENT_COS -> FileConstants.TENCENT;
+        };
     }
 }

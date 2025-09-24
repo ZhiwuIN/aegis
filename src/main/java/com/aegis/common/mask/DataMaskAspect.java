@@ -69,37 +69,42 @@ public class DataMaskAspect {
         }
 
         // 处理字符串
-        if (data instanceof String) {
-            return data;
-        }
-
-        // 特殊处理PageVO
-        if (data instanceof PageVO) {
-            return maskPageVO((PageVO<?>) data);
-        }
-
-        // 处理Result包装类型
-        if (data instanceof Result) {
-            Result<?> result = (Result<?>) data;
-            if (result.getData() != null) {
-                Object maskedData = maskData(result.getData());
-                // 创建新的Result对象避免修改原对象
-                return Result.success(maskedData);
+        switch (data) {
+            case String s -> {
+                return data;
             }
-            return result;
-        }
 
-        // 处理集合
-        if (data instanceof Collection) {
-            Collection<?> collection = (Collection<?>) data;
-            collection.forEach(item -> {
-                try {
-                    maskData(item);
-                } catch (IllegalAccessException e) {
-                    log.warn("集合元素脱敏失败", e);
+
+            // 特殊处理PageVO
+            case PageVO<?> pageVO -> {
+                return maskPageVO(pageVO);
+            }
+
+
+            // 处理Result包装类型
+            case Result<?> result -> {
+                if (result.getData() != null) {
+                    Object maskedData = maskData(result.getData());
+                    // 创建新的Result对象避免修改原对象
+                    return Result.success(maskedData);
                 }
-            });
-            return data;
+                return result;
+            }
+
+
+            // 处理集合
+            case Collection<?> collection -> {
+                collection.forEach(item -> {
+                    try {
+                        maskData(item);
+                    } catch (IllegalAccessException e) {
+                        log.warn("集合元素脱敏失败", e);
+                    }
+                });
+                return data;
+            }
+            default -> {
+            }
         }
 
         // 处理数组

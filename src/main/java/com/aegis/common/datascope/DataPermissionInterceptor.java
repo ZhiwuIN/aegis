@@ -64,11 +64,10 @@ public class DataPermissionInterceptor implements InnerInterceptor {
         try {
             // 解析 SQL
             Statement statement = CCJSqlParserUtil.parse(originalSql);
-            if (!(statement instanceof Select)) {
+            if (!(statement instanceof Select select)) {
                 return;
             }
 
-            Select select = (Select) statement;
             if (select.getPlainSelect() == null) {
                 return;
             }
@@ -161,8 +160,7 @@ public class DataPermissionInterceptor implements InnerInterceptor {
         }
 
         FromItem fromItem = plainSelect.getFromItem();
-        if (fromItem instanceof Table) {
-            Table table = (Table) fromItem;
+        if (fromItem instanceof Table table) {
             return table.getAlias() != null ? table.getAlias().getName() : table.getName();
         }
 
