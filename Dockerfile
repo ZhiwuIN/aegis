@@ -1,4 +1,4 @@
-FROM maven:3.8.8-openjdk-8 AS builder
+FROM maven:3.9.9-eclipse-temurin-21 AS builder
 
 WORKDIR /build
 
@@ -8,16 +8,16 @@ RUN mvn dependency:go-offline -B
 COPY src ./src
 RUN mvn clean package -DskipTests
 
-FROM openjdk:8-jre-slim
+FROM eclipse-temurin:21-jre
 
 LABEL maintainer="xuesong.lei <228389787@qq.com>"
 
 ENV TZ=Asia/Shanghai
 
-RUN apt-get update && apt-get install -y tzdata \
+RUN apt-get update && apt-get install -y --no-install-recommends tzdata \
     && ln -sf /usr/share/zoneinfo/$TZ /etc/localtime \
     && echo $TZ > /etc/timezone \
-    && rm -rf /var/lib/apt/lists/*
+    && apt-get clean && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /aegis
 
