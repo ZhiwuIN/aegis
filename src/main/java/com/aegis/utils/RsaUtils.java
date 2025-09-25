@@ -1,5 +1,6 @@
 package com.aegis.utils;
 
+import jakarta.annotation.PostConstruct;
 import lombok.Data;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
@@ -140,6 +141,7 @@ public final class RsaUtils {
     /**
      * 构建RSA密钥对
      */
+    @PostConstruct
     @SneakyThrows
     @Scheduled(cron = "0 0 0 ? * 1")
     public void generateKeyPair() {
