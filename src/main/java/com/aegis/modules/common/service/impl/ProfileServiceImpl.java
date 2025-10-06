@@ -35,6 +35,7 @@ import org.springframework.web.multipart.MultipartFile;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -142,7 +143,7 @@ public class ProfileServiceImpl implements ProfileService {
         }
 
         // 校验邮箱验证码
-        emailService.validateEmailCode(dto.getEmail(), dto.getCode());
+        emailService.validateEmailCode(dto.getEmail(), dto.getCode(), false);
 
         if (!RsaUtils.decryptByPrivateKey(dto.getPassword()).equals(RsaUtils.decryptByPrivateKey(dto.getConfirmPassword()))) {
             throw new BusinessException("两次密码不一致");
