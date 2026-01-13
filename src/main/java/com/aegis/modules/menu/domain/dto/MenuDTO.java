@@ -1,15 +1,13 @@
 package com.aegis.modules.menu.domain.dto;
 
-import com.aegis.common.validator.ConditionalRequiredFields;
 import com.aegis.common.validator.EnumString;
 import com.aegis.common.validator.ValidGroup;
 import io.swagger.v3.oas.annotations.media.Schema;
-import lombok.Data;
-
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Null;
 import jakarta.validation.constraints.Size;
+import lombok.Data;
 
 /**
  * @Author: xuesong.lei
@@ -18,20 +16,17 @@ import jakarta.validation.constraints.Size;
  */
 @Data
 @Schema(description = "菜单DTO")
-@ConditionalRequiredFields.List({
-        @ConditionalRequiredFields(groups = {ValidGroup.Create.class, ValidGroup.Update.class},
-                field = "menuType", value = "D", requiredFields = {"icon", "orderNum", "menuName", "path"}),// 当菜单类型为目录时，图标、显示顺序、菜单名称、路由地址必填
-        @ConditionalRequiredFields(groups = {ValidGroup.Create.class, ValidGroup.Update.class},
-                field = "menuType", value = "M", requiredFields = {"icon", "orderNum", "menuName", "path"}),// 当菜单类型为菜单时，图标、显示顺序、菜单名称、路由地址必填
-        @ConditionalRequiredFields(groups = {ValidGroup.Create.class, ValidGroup.Update.class},
-                field = "menuType", value = "B", requiredFields = {"orderNum", "menuName", "requestMethod", "requestUri", "perms"})// 当菜单类型为按钮时，显示顺序、菜单名称、请求方法、请求地址、权限标识必填
-})
 public class MenuDTO {
 
     @Schema(description = "主键ID")
     @Null(groups = ValidGroup.Create.class, message = "应用ID必须为空")
     @NotNull(groups = ValidGroup.Update.class, message = "应用ID不能为空")
     private Long id;
+
+    @Schema(description = "菜单编码")
+    @NotBlank(groups = {ValidGroup.Create.class, ValidGroup.Update.class}, message = "菜单编码不能为空")
+    @Size(groups = {ValidGroup.Create.class, ValidGroup.Update.class}, max = 64, message = "菜单编码长度不能超过64个字符")
+    private String menuCode;
 
     @Schema(description = "菜单名称")
     @NotBlank(groups = {ValidGroup.Create.class, ValidGroup.Update.class}, message = "菜单名称不能为空")
@@ -46,31 +41,17 @@ public class MenuDTO {
     @NotNull(groups = {ValidGroup.Create.class, ValidGroup.Update.class}, message = "显示顺序不能为空")
     private Integer orderNum;
 
-    @Schema(description = "请求方法,GET,POST,PUT,DELETE,ALL=不限制")
-    @EnumString(groups = {ValidGroup.Create.class, ValidGroup.Update.class}, value = {"GET", "POST", "PUT", "DELETE", "ALL"}, message = "请求方法参数错误")
-    private String requestMethod;
-
-    @Schema(description = "URL匹配模式,支持Ant风格,比如/api/user/**")
-    private String requestUri;
-
     @Schema(description = "路由名称")
+    @NotNull(groups = {ValidGroup.Create.class, ValidGroup.Update.class}, message = "路由名称不能为空")
     private String name;
 
     @Schema(description = "路由地址")
+    @NotNull(groups = {ValidGroup.Create.class, ValidGroup.Update.class}, message = "路由地址不能为空")
     private String path;
 
-    @Schema(description = "组件路径")
-    private String component;
-
-    @Schema(description = "是否为外链(0-否,1-是)")
-    private Boolean isFrame;
-
-    @Schema(description = "是否缓存(0-缓存,1-不缓存)")
-    private Boolean keepAlive;
-
-    @Schema(description = "菜单类型(D-目录,M-菜单,B-按钮)")
+    @Schema(description = "菜单类型(D-目录,M-菜单)")
     @NotBlank(groups = {ValidGroup.Create.class, ValidGroup.Update.class}, message = "菜单类型不能为空")
-    @EnumString(groups = {ValidGroup.Create.class, ValidGroup.Update.class}, value = {"D", "M", "B"}, message = "菜单类型参数错误")
+    @EnumString(groups = {ValidGroup.Create.class, ValidGroup.Update.class}, value = {"D", "M"}, message = "菜单类型参数错误")
     private String menuType;
 
     @Schema(description = "菜单状态(0-显示,1-隐藏)")
@@ -79,9 +60,6 @@ public class MenuDTO {
     @Schema(description = "菜单状态(0-正常,1-停用)")
     @EnumString(groups = {ValidGroup.Create.class, ValidGroup.Update.class}, value = {"0", "1"}, message = "状态只允许为0或1")
     private String status;
-
-    @Schema(description = "权限标识")
-    private String perms;
 
     @Schema(description = "菜单图标")
     private String icon;

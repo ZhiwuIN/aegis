@@ -4,13 +4,13 @@ import com.aegis.common.domain.dto.PageDTO;
 import com.aegis.common.validator.EnumString;
 import com.aegis.common.validator.ValidGroup;
 import io.swagger.v3.oas.annotations.media.Schema;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Null;
 import jakarta.validation.constraints.Size;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+
 import java.util.List;
 
 /**
@@ -47,18 +47,12 @@ public class RoleDTO extends PageDTO {
     @Schema(description = "数据范围(1-全部数据权限,2-自定数据权限,3-本部门数据权限,4-本部门及以下数据权限)")
     private String dataScope;
 
-    @Schema(description = "菜单树选择项是否关联显示")
-    private Integer menuCheckStrictly;
-
     @Schema(description = "部门树选择项是否关联显示")
     private Integer deptCheckStrictly;
 
     @Schema(description = "角色状态(0-正常,1-停用)")
     @EnumString(groups = {ValidGroup.Create.class, ValidGroup.Update.class}, value = {"0", "1"}, message = "状态只允许为0或1")
     private String status;
-
-    @Schema(description = "菜单组")
-    private List<Long> menuIds;
 
     @Schema(description = "部门组(数据权限)")
     private List<Long> deptIds;

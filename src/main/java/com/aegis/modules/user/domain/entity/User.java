@@ -1,13 +1,11 @@
 package com.aegis.modules.user.domain.entity;
 
-import com.aegis.modules.role.domain.entity.Role;
 import com.baomidou.mybatisplus.annotation.*;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
-
-import com.fasterxml.jackson.annotation.JsonFormat;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.io.Serializable;
@@ -172,9 +170,9 @@ public class User implements Serializable {
     private Date lastLoginTime;
 
     /**
-     * 角色列表
+     * 权限编码列表（用于鉴权）
      */
-    @Schema(description = "角色列表")
+    @Schema(description = "权限编码列表")
     @TableField(exist = false)
-    private List<Role> roleList;
+    private List<String> permCodeList;
 }

@@ -14,8 +14,13 @@ import java.util.List;
  */
 public interface RoleDeptMapper extends BaseMapper<RoleDept> {
 
-    void batchRoleDept(List<RoleDept> roleDeptList);
-
+    /**
+     * 根据角色ID和部门选择严格标志获取部门ID列表
+     *
+     * @param roleId            角色ID
+     * @param deptCheckStrictly 部门选择严格标志
+     * @return 部门ID列表
+     */
     List<Long> selectDeptListByRoleId(@Param("roleId") Long roleId, @Param("deptCheckStrictly") Integer deptCheckStrictly);
 }
 

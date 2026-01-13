@@ -70,4 +70,19 @@ public class MenuController {
     public List<TreeVO> tree(MenuDTO dto) {
         return menuService.tree(dto);
     }
+
+
+    @Operation(summary = "获取菜单的权限列表")
+    @GetMapping("/{id}/permissions")
+    public List<String> getMenuPermissions(@PathVariable("id") Long id) {
+        return menuService.getMenuPermissions(id);
+    }
+
+    @Operation(summary = "给菜单配置权限")
+    @PostMapping("/{id}/permissions")
+    @PreventDuplicateSubmit
+    @OperationLog(moduleTitle = "给菜单配置权限", businessType = BusinessType.UPDATE)
+    public String assignPermissions(@PathVariable("id") Long id, @RequestBody List<String> permCodes) {
+        return menuService.assignPermissions(id, permCodes);
+    }
 }

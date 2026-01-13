@@ -4,9 +4,8 @@ package com.aegis.config.security.customize;
 import com.aegis.common.constant.CommonConstants;
 import com.aegis.common.constant.RedisConstants;
 import com.aegis.common.event.DataChangeListener;
-import com.aegis.modules.menu.domain.entity.Menu;
-import com.aegis.modules.menu.mapper.MenuMapper;
-import com.aegis.modules.role.domain.entity.Role;
+import com.aegis.modules.resource.domain.entity.Resource;
+import com.aegis.modules.resource.mapper.ResourceMapper;
 import com.aegis.modules.whitelist.domain.entity.Whitelist;
 import com.aegis.modules.whitelist.mapper.WhitelistMapper;
 import com.aegis.utils.RedisUtils;
@@ -19,7 +18,6 @@ import org.springframework.util.AntPathMatcher;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
-import java.util.stream.Collectors;
 
 /**
  * @Author: xuesong.lei
@@ -30,7 +28,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class SecurityMetadataService {
 
-    private final MenuMapper menuMapper;
+    private final ResourceMapper resourceMapper;
 
     private final WhitelistMapper whitelistMapper;
 
@@ -40,8 +38,8 @@ public class SecurityMetadataService {
 
     @PostConstruct
     public void init() {
-        // 系统启动时预加载菜单数据
-        loadDataSourceAllUrl();
+        // 系统启动时预加载资源数据
+        loadDataSourceAllResource();
         // 系统启动时预加载白名单数据
         loadDataSourceAllWhitelist();
     }
@@ -50,19 +48,17 @@ public class SecurityMetadataService {
      * 获取指定URL和HTTP方法需要的角色
      */
     public Set<String> getRequiredRoles(String requestURI, String method) {
-        // 检查白名单
+        // 判断请求路径是否在白名单内,在白名单内直接放行
         if (isWhitelisted(requestURI, method)) {
             return null;// 白名单直接放行
         }
 
-        // 检查菜单权限
-        List<Menu> allMenu = loadDataSourceAllUrl();
-        for (Menu menu : allMenu) {
-            if (matchesRequestMethod(menu.getRequestMethod(), method) &&
-                    antPathMatcher.match(menu.getRequestUri(), requestURI)) {
-                return menu.getRoleList().stream()
-                        .map(Role::getRoleCode)
-                        .collect(Collectors.toSet());
+        // 从 t_resource 中匹配 (request_method + request_uri)，获取 perm_code
+        List<Resource> allResource = loadDataSourceAllResource();
+        for (Resource resource : allResource) {
+            if (matchesRequestMethod(resource.getRequestMethod(), method) &&
+                    antPathMatcher.match(resource.getRequestUri(), requestURI)) {
+                return Set.of(resource.getPermCode());
             }
         }
 
@@ -90,16 +86,16 @@ public class SecurityMetadataService {
     }
 
     /**
-     * 加载所有的URL存入Redis中
-     * 在新增、修改、删除 【菜单、角色、角色关联菜单】时,发布事件监听器{@link DataChangeListener},重新加载
+     * 加载所有的资源存入Redis中
+     * 在新增、修改、删除资源时,发布事件监听器{@link DataChangeListener},重新加载
      */
-    public List<Menu> loadDataSourceAllUrl() {
-        if (redisUtils.hasKey(RedisConstants.MENUS)) {
-            return redisUtils.getList(RedisConstants.MENUS, Menu.class);
+    public List<Resource> loadDataSourceAllResource() {
+        if (redisUtils.hasKey(RedisConstants.RESOURCES)) {
+            return redisUtils.getList(RedisConstants.RESOURCES, Resource.class);
         } else {
-            List<Menu> allMenu = menuMapper.getAllMenu();
-            redisUtils.set(RedisConstants.MENUS, allMenu, 1, TimeUnit.DAYS);
-            return allMenu;
+            List<Resource> allResource = resourceMapper.getAllResource();
+            redisUtils.set(RedisConstants.RESOURCES, allResource, 1, TimeUnit.DAYS);
+            return allResource;
         }
     }
 

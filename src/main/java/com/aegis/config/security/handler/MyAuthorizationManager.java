@@ -51,12 +51,7 @@ public class MyAuthorizationManager implements AuthorizationManager<RequestAutho
 
         // 需要登录但不需要特定角色
         if (requiredRoles.contains(CommonConstants.NONE)) {
-            return new AuthorizationDecision(auth != null && auth.isAuthenticated());
-        }
-
-        // 检查用户是否已认证
-        if (auth == null || !auth.isAuthenticated()) {
-            return new AuthorizationDecision(false);
+            return new AuthorizationDecision(true);
         }
 
         // 检查用户角色
