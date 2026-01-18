@@ -75,4 +75,7 @@ public class UserVO {
 
     @Schema(description = "路由列表")
     private List<RouterVo> routerVoList;
+
+    @Schema(description = "是否在线")
+    private Boolean online;
 }
