@@ -119,13 +119,6 @@ public class Role implements Serializable {
     private String dataScope;
 
     /**
-     * 菜单树选择项是否关联显示
-     */
-    @Schema(description = "菜单树选择项是否关联显示")
-    @TableField(value = "menu_check_strictly")
-    private Integer menuCheckStrictly;
-
-    /**
      * 部门树选择项是否关联显示
      */
     @Schema(description = "部门树选择项是否关联显示")
