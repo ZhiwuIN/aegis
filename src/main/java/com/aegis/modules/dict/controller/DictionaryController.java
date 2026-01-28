@@ -35,12 +35,6 @@ public class DictionaryController {
         return dictionaryService.pageList(dto);
     }
 
-    @Operation(summary = "详情")
-    @GetMapping("/detail/{id}")
-    public Dictionary detail(@PathVariable("id") Long id) {
-        return dictionaryService.detail(id);
-    }
-
     @Operation(summary = "删除字典")
     @DeleteMapping("/delete/{id}")
     @PreventDuplicateSubmit
