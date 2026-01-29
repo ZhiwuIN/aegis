@@ -13,7 +13,7 @@ import java.util.List;
  */
 @Data
 @Schema(description = "角色对应的菜单树或部门树")
-public class RoleWithMenuOrDeptVO {
+public class RoleWithDeptVO {
 
     @Schema(description = "被选中的节点")
     private List<Long> checkedKeys;
