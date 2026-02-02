@@ -5,13 +5,14 @@ import com.aegis.common.validator.ValidGroup;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Null;
+import jakarta.validation.constraints.Size;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.springframework.format.annotation.DateTimeFormat;
 
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Null;
 import java.util.Date;
 import java.util.List;
 
@@ -40,6 +41,7 @@ public class NoticeDTO extends PageDTO {
 
     @Schema(description = "通知内容")
     @NotBlank(groups = {ValidGroup.Create.class, ValidGroup.Update.class}, message = "通知内容不能为空")
+    @Size(max = 100000, groups = {ValidGroup.Create.class, ValidGroup.Update.class}, message = "通知内容不能超过100000字符")
     private String noticeContent;
 
     @Schema(description = "目标类型(1=全部用户,2=指定用户,3=指定角色,4=指定部门))")
