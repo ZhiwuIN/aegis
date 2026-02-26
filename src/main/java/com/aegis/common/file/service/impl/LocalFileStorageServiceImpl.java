@@ -1,7 +1,6 @@
 package com.aegis.common.file.service.impl;
 
 import cn.hutool.core.io.FileUtil;
-import cn.hutool.core.util.StrUtil;
 import cn.hutool.crypto.SecureUtil;
 import com.aegis.common.constant.FileConstants;
 import com.aegis.common.exception.BusinessException;
@@ -43,10 +42,11 @@ public class LocalFileStorageServiceImpl extends AbstractFileStorageService {
     @Override
     public FileMetadata upload(MultipartFile file, String directory) {
         try {
+            directory = FileConstants.sanitizeDirectory(directory);
+
             String fullDirectory = basePath + FileConstants.SEPARATOR +
-                    (StrUtil.isNotBlank(directory) ? directory + FileConstants.SEPARATOR : "") +
-                    FileConstants.FILE_FOLDER;
-            FileUtil.mkdir(fullDirectory);
+                    (directory != null ? directory + FileConstants.SEPARATOR : "") +
+                    FileConstants.getFileFolder();
 
             String fileName = generateFileName(file.getOriginalFilename());
             String filePath = fullDirectory + FileConstants.SEPARATOR + fileName;
