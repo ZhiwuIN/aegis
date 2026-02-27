@@ -2,6 +2,7 @@ package com.aegis.modules.user.domain.entity;
 
 import com.baomidou.mybatisplus.annotation.*;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -107,6 +108,7 @@ public class User implements Serializable {
     /**
      * 密码
      */
+    @JsonIgnore
     @Schema(description = "密码")
     @TableField(value = "password")
     private String password;

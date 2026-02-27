@@ -9,6 +9,7 @@ import com.aegis.common.exception.BusinessException;
 import com.aegis.common.file.FileStorageServiceFactory;
 import com.aegis.common.file.service.FileStorageService;
 import com.aegis.common.result.ResultCodeEnum;
+import com.aegis.config.security.LoginSecurityProperties;
 import com.aegis.modules.common.domain.dto.UserRegisterDTO;
 import com.aegis.modules.common.domain.dto.UserUpdateDTO;
 import com.aegis.modules.common.service.EmailService;
@@ -81,6 +82,8 @@ public class ProfileServiceImpl implements ProfileService {
 
     private final RedisUtils redisUtils;
 
+    private final LoginSecurityProperties loginSecurityProperties;
+
     @Override
     public CaptchaVO generateCaptcha() {
         return captchaUtils.generateCaptcha();
@@ -132,7 +135,7 @@ public class ProfileServiceImpl implements ProfileService {
         Cookie cookie = new Cookie(CommonConstants.REFRESH_TOKEN_COOKIE, tokenResponse.getRefreshToken());
         cookie.setHttpOnly(true);
         cookie.setPath("/api/profile/refreshToken");
-        cookie.setSecure(false);
+        cookie.setSecure(loginSecurityProperties.isCookieSecure());
         cookie.setMaxAge(Math.toIntExact(jwtTokenUtil.getRefreshTokenExpiration()));
         response.addCookie(cookie);
 
