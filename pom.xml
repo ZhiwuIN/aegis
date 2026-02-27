@@ -240,6 +240,7 @@
                     <groupId>org.mybatis</groupId>
                 </exclusion>
             </exclusions>
+            <scope>test</scope>
         </dependency>
     </dependencies>
 
