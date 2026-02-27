@@ -6,7 +6,7 @@ import com.aegis.common.log.BusinessType;
 import com.aegis.common.log.OperationLog;
 import com.aegis.common.validator.ValidGroup;
 import com.aegis.modules.notice.domain.dto.NoticeDTO;
-import com.aegis.modules.notice.domain.entity.Notice;
+import com.aegis.modules.notice.domain.vo.NoticeAdminVO;
 import com.aegis.modules.notice.service.NoticeService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -29,13 +29,13 @@ public class NoticeController {
 
     @Operation(summary = "分页列表")
     @GetMapping("/pageList")
-    public PageVO<Notice> pageList(NoticeDTO dto) {
+    public PageVO<NoticeAdminVO> pageList(NoticeDTO dto) {
         return noticeService.pageList(dto);
     }
 
     @Operation(summary = "详情")
     @GetMapping("/detail/{id}")
-    public Notice detail(@PathVariable("id") Long id) {
+    public NoticeAdminVO detail(@PathVariable("id") Long id) {
         return noticeService.detail(id);
     }
 

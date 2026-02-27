@@ -2,6 +2,7 @@ package com.aegis.modules.role.domain.dto;
 
 import com.aegis.common.domain.dto.PageDTO;
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -16,6 +17,7 @@ import lombok.EqualsAndHashCode;
 public class UserAndRoleQueryDTO extends PageDTO {
 
     @Schema(description = "角色ID")
+    @NotNull(message = "角色ID不能为空")
     private Long roleId;
 
     @Schema(description = "用户名")

@@ -6,7 +6,7 @@ import com.aegis.common.log.BusinessType;
 import com.aegis.common.log.OperationLog;
 import com.aegis.common.validator.ValidGroup;
 import com.aegis.modules.resource.domain.dto.ResourceDTO;
-import com.aegis.modules.resource.domain.entity.Resource;
+import com.aegis.modules.resource.domain.vo.ResourceVO;
 import com.aegis.modules.resource.service.ResourceService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -29,13 +29,13 @@ public class ResourceController {
 
     @Operation(summary = "分页列表")
     @GetMapping("/pageList")
-    public PageVO<Resource> pageList(ResourceDTO dto) {
+    public PageVO<ResourceVO> pageList(ResourceDTO dto) {
         return resourceService.pageList(dto);
     }
 
     @Operation(summary = "详情")
     @GetMapping("/detail/{id}")
-    public Resource detail(@PathVariable("id") Long id) {
+    public ResourceVO detail(@PathVariable("id") Long id) {
         return resourceService.detail(id);
     }
 
