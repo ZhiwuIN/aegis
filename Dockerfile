@@ -25,4 +25,4 @@ COPY --from=builder /build/target/aegis-1.0.0.jar /aegis/aegis-1.0.0.jar
 
 EXPOSE 9090
 
-ENTRYPOINT ["java", "-jar", "/aegis/aegis-1.0.0.jar", "--spring.profiles.active=prod"]
+ENTRYPOINT ["java", "-jar", "/aegis/aegis-1.0.0.jar"]
