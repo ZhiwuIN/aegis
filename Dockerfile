@@ -1,28 +1,16 @@
-FROM maven:3.9.9-eclipse-temurin-21 AS builder
-
-WORKDIR /build
-
-COPY pom.xml .
-RUN mvn dependency:go-offline -B
-
-COPY src ./src
-RUN mvn clean package -DskipTests
-
 FROM eclipse-temurin:21-jre
 
 LABEL maintainer="xuesong.lei <228389787@qq.com>"
 
 ENV TZ=Asia/Shanghai
 
-RUN apt-get update && apt-get install -y --no-install-recommends tzdata \
-    && ln -sf /usr/share/zoneinfo/$TZ /etc/localtime \
-    && echo $TZ > /etc/timezone \
-    && apt-get clean && rm -rf /var/lib/apt/lists/*
+RUN ln -sf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
 WORKDIR /aegis
 
-COPY --from=builder /build/target/aegis-1.0.0.jar /aegis/aegis-1.0.0.jar
+ADD ./target/aegis-1.0.0.jar aegis-1.0.0.jar
 
-EXPOSE 9090
+EXPOSE 8088
 
-ENTRYPOINT ["java", "-jar", "/aegis/aegis-1.0.0.jar"]
+ENTRYPOINT ["java", "-jar", "aegis-1.0.0.jar", "--spring.profiles.active=prod"]
+
