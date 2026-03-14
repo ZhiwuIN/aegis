@@ -15,6 +15,7 @@ import com.aegis.modules.user.mapper.UserRoleMapper;
 import com.aegis.modules.user.service.UserConvert;
 import com.aegis.modules.user.service.UserService;
 import com.aegis.utils.PageUtils;
+import com.aegis.utils.RandomDataUtils;
 import com.aegis.utils.RedisUtils;
 import com.aegis.utils.SecurityUtils;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
@@ -126,7 +127,18 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public String add(UserDTO dto) {
+        // 1. 如果前端没传，自动填充随机数据
+        if (StringUtils.isBlank(dto.getNickname())) {
+            dto.setNickname(RandomDataUtils.getRandomNickname());
+        }
+        if (StringUtils.isBlank(dto.getPhone())) {
+            dto.setPhone(RandomDataUtils.getRandomPhone());
+        }
+        if (StringUtils.isBlank(dto.getEmail())) {
+            dto.setEmail(RandomDataUtils.getRandomEmail());
+        }
 
+        // 2. 现有的唯一性校验逻辑（保持不变）
         LambdaQueryWrapper<User> userQueryWrapper = new LambdaQueryWrapper<>();
         userQueryWrapper.and(w -> {
             w.eq(User::getUsername, dto.getUsername());
@@ -137,11 +149,13 @@ public class UserServiceImpl implements UserService {
                 w.or().eq(User::getEmail, dto.getEmail());
             }
         });
+
         if (userMapper.selectCount(userQueryWrapper) > 0) {
             throw new BusinessException("用户名、手机号或邮箱已存在");
         }
 
         User user = userConvert.toUser(dto);
+        // 使用你之前定义的默认密码
         user.setPassword(SecurityUtils.encryptPassword(CommonConstants.DEFAULT_PASSWORD));
         user.setCreateBy(SecurityUtils.getUserId());
         userMapper.insert(user);
