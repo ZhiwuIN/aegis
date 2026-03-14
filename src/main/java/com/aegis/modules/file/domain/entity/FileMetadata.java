@@ -156,4 +156,11 @@ public class FileMetadata implements Serializable {
     @TableField(value = "md5")
     private String md5;
 
+    /**
+     * 可直接访问的文件URL（仅响应返回，不入库）
+     */
+    @Schema(description = "文件访问URL")
+    @TableField(exist = false)
+    private String accessUrl;
+
 }
