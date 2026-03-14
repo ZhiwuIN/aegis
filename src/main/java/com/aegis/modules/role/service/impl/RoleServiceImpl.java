@@ -70,7 +70,7 @@ public class RoleServiceImpl implements RoleService {
         Role role = roleMapper.selectById(id);
         if (ObjectUtils.isNotNull(role)) {
             // 不能操作超级管理员角色
-            checkIsAdminRole(role.getRoleCode());
+            //checkIsAdminRole(role.getRoleCode());
 
             if (CommonConstants.NORMAL_STATUS.equals(role.getStatus())) {
                 role.setStatus(CommonConstants.DISABLE_STATUS);
@@ -296,7 +296,7 @@ public class RoleServiceImpl implements RoleService {
         if (role == null) {
             throw new BusinessException("角色不存在");
         }
-        checkIsAdminRole(role.getRoleCode());
+        //checkIsAdminRole(role.getRoleCode());
 
         // 先删除角色原有权限
         rolePermissionMapper.delete(new LambdaQueryWrapper<RolePermission>().eq(RolePermission::getRoleId, roleId));

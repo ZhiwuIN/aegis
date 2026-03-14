@@ -2,20 +2,7 @@
 <configuration debug="false" scan="false">
 
     <springProperty scope="context" name="logPath" source="logging.file.path" defaultValue="logs"/>
-    <springProperty scope="context" name="appName" source="spring.application.name" defaultValue="springBoot"/>
-
-    <appender name="COMMON_FILE_LOG" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <file>${logPath}/${appName}.log</file>
-        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-            <fileNamePattern>${logPath}/${appName}.%d{yyyy-MM-dd}.log</fileNamePattern>
-            <maxHistory>30</maxHistory>
-            <totalSizeCap>1GB</totalSizeCap>
-        </rollingPolicy>
-        <encoder>
-            <charset>UTF-8</charset>
-            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] [%X{traceId}] %-5level %logger{36} - %msg%n</pattern>
-        </encoder>
-    </appender>
+    <springProperty scope="context" name="appName" source="spring.application.name" defaultValue="zw-phone"/>
 
     <conversionRule conversionWord="clr" class="org.springframework.boot.logging.logback.ColorConverter"/>
     <conversionRule conversionWord="wex" class="org.springframework.boot.logging.logback.WhitespaceThrowableProxyConverter"/>
@@ -31,17 +18,31 @@
         </encoder>
     </appender>
 
+    <appender name="COMMON_FILE_LOG" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${logPath}/${appName}.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${logPath}/${appName}.%d{yyyy-MM-dd}.log</fileNamePattern>
+            <maxHistory>30</maxHistory>
+            <totalSizeCap>1GB</totalSizeCap>
+        </rollingPolicy>
+        <encoder>
+            <charset>UTF-8</charset>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] [%X{traceId}] %-5level %logger{36} - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <root level="INFO">
+        <appender-ref ref="CONSOLE"/>
+    </root>
+
     <springProfile name="dev">
-        <logger name="com.aegis" level="INFO"/>
-        <root level="INFO">
-            <appender-ref ref="CONSOLE"/>
-        </root>
+        <logger name="com.aegis" level="DEBUG"/>
+        <logger name="com.mobaijun" level="DEBUG"/>
     </springProfile>
 
     <springProfile name="prod">
         <logger name="com.aegis" level="INFO"/>
         <root level="INFO">
-            <appender-ref ref="CONSOLE"/>
             <appender-ref ref="COMMON_FILE_LOG"/>
         </root>
     </springProfile>

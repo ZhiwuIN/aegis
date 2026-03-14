@@ -63,11 +63,16 @@ public class SpringSecurityConfig {
                         .authenticationEntryPoint(myAuthenticationEntryPoint)// 未登录处理
                         .accessDeniedHandler(myAccessDeniedHandler)// 无权限处理
                 )
+                .authorizeHttpRequests(auth -> auth
+                        // 放行获取公钥、登录、验证码等接口
+                        .requestMatchers("/auth/login", "/profile/publicKey", "/captcha/**","/demo/reset/**").permitAll()
+                        // 放行 Swagger 相关（如果你在用的话）
+                        .requestMatchers("/doc.html", "/v3/api-docs/**", "/webjars/**","/demo/reset/**").permitAll()
+                        // 剩下的交给你的自定义 Manager
+                        .anyRequest().access(myAuthorizationManager))
                 .logout(logout -> logout.logoutSuccessHandler(myLogoutSuccessHandler))// 退出登录处理
                 .addFilterBefore(jwtTokenFilter, UsernamePasswordAuthenticationFilter.class)
                 .addFilterAt(multiLoginAuthenticationFilter(authenticationManager), UsernamePasswordAuthenticationFilter.class)
-                .authorizeHttpRequests(auth -> auth
-                        .anyRequest().access(myAuthorizationManager))
                 .build();
     }
 
