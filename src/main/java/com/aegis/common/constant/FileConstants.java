@@ -1,5 +1,7 @@
 package com.aegis.common.constant;
 
+import cn.hutool.core.util.StrUtil;
+
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Collections;
@@ -50,19 +52,32 @@ public class FileConstants {
      * 文件存储目录
      * 按照日期进行分类存储，格式为yyyy-MM-dd
      */
-    public static String getFileFolder(){
+    public static String getFileFolder() {
         return LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy/MM/dd"));
     }
+
     /**
      * 允许的文件类型
      */
-    public static final Set<String> ALLOWED_EXTENSIONS  = Stream.of(
+    public static final Set<String> ALLOWED_EXTENSIONS = Stream.of(
             "jpg", "jpeg", "png", "gif", "bmp", "webp",  // 图片
             "pdf", "doc", "docx", "xls", "xlsx", "ppt", "pptx",  // 文档
             "txt", "md", "csv", "json", "xml",  // 文本
             "mp4", "avi", "mov", "wmv", "flv",  // 视频
             "mp3", "wav", "flac", "aac"  // 音频
     ).collect(Collectors.toSet());
+
+    /**
+     * 支持预览的图片后缀
+     */
+    public static final Set<String> IMAGE_EXTENSIONS = Stream.of(
+            "jpg", "jpeg", "png", "gif", "bmp", "webp"
+    ).collect(Collectors.toSet());
+
+    /**
+     * 图片后缀对应的标准Content-Type
+     */
+    public static final Map<String, String> IMAGE_CONTENT_TYPES;
 
     /**
      * 危险文件类型黑名单
@@ -83,15 +98,25 @@ public class FileConstants {
         map.put("pdf", new byte[]{0x25, 0x50, 0x44, 0x46});
         map.put("zip", new byte[]{0x50, 0x4B, 0x03, 0x04});
         FILE_SIGNATURES = Collections.unmodifiableMap(map);
+
+        Map<String, String> imageContentTypes = new HashMap<>();
+        imageContentTypes.put("jpg", "image/jpeg");
+        imageContentTypes.put("jpeg", "image/jpeg");
+        imageContentTypes.put("png", "image/png");
+        imageContentTypes.put("gif", "image/gif");
+        imageContentTypes.put("bmp", "image/bmp");
+        imageContentTypes.put("webp", "image/webp");
+        IMAGE_CONTENT_TYPES = Collections.unmodifiableMap(imageContentTypes);
     }
 
-    public static final String[]  MALICIOUS_PATTERNS= {
+    public static final String[] MALICIOUS_PATTERNS = {
             "<script", "javascript:", "vbscript:", "onload=", "onerror=",
             "<?php", "<%", "#!/bin/sh", "#!/bin/bash"
     };
 
     /**
      * 校验并清洗目录参数
+     *
      * @return 校验后的目录字符串，如果为空则返回 null
      */
     public static String sanitizeDirectory(String directory) {
@@ -130,5 +155,20 @@ public class FileConstants {
             throw new IllegalArgumentException("目录层级不能超过5层");
         }
         return directory;
+    }
+
+    public static String normalizeExtension(String suffix) {
+        if (StrUtil.isBlank(suffix)) {
+            return "";
+        }
+        return StrUtil.removePrefix(suffix.trim().toLowerCase(), POINT);
+    }
+
+    public static boolean isImageExtension(String suffix) {
+        return IMAGE_EXTENSIONS.contains(normalizeExtension(suffix));
+    }
+
+    public static String getImageContentType(String suffix) {
+        return IMAGE_CONTENT_TYPES.get(normalizeExtension(suffix));
     }
 }
