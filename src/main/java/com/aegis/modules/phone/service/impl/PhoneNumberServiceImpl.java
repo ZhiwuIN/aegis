@@ -43,6 +43,7 @@ public class PhoneNumberServiceImpl implements PhoneNumberService {
         LambdaQueryWrapper<PhoneNumber> queryWrapper = new LambdaQueryWrapper<>();
 
         queryWrapper.like(StringUtils.isNotBlank(dto.getPhone()), PhoneNumber::getPhone, dto.getPhone());
+        queryWrapper.eq(StringUtils.isNotBlank(dto.getLevel()), PhoneNumber::getLevel, dto.getLevel());
 
         Long currentUserId = SecurityUtils.getUserId();
 
@@ -71,9 +72,13 @@ public class PhoneNumberServiceImpl implements PhoneNumberService {
                 java.util.Map<Long, String> userNameMap = users.stream()
                         .collect(java.util.stream.Collectors.toMap(User::getId, User::getUsername));
 
+                java.util.Map<Long, String> projectNameMap = users.stream()
+                        .collect(java.util.stream.Collectors.toMap(User::getId, User::getProjectName));
+
                 page.getRecords().forEach(vo -> {
                     if (vo.getOwnerUserId() != null) {
                         vo.setOwnerUsername(userNameMap.get(vo.getOwnerUserId()));
+                        vo.setProjectName(projectNameMap.get(vo.getOwnerUserId()));
                     }
                     if (vo.getCreateBy() != null) {
                         vo.setCreateByName(userNameMap.get(vo.getCreateBy()));
@@ -114,8 +119,11 @@ public class PhoneNumberServiceImpl implements PhoneNumberService {
         PhoneNumber existByPhone = phoneNumberMapper.selectOne(wrapper);
         if (existByPhone != null) {
             // 已存在时，直接把已有记录的备注抛给前端
-            String remark = existByPhone.getRemark();
-            throw new BusinessException(remark != null ? remark : "手机号已存在");
+            User user = userMapper.selectById(existByPhone.getOwnerUserId());
+            String now = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+            String autoRemark = String.format("用户【%s】在【%s】已创建手机号【%s】，对应级别为【%s】", user.getUsername(), now,
+                    dto.getPhone(), StringUtils.isBlank(existByPhone.getLevel()) ? "空" : existByPhone.getLevel());
+            throw new BusinessException(autoRemark);
         }
 
         PhoneNumber phoneNumber = phoneNumberConvert.toPhoneNumber(dto);

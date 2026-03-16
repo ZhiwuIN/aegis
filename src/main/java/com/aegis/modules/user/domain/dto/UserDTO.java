@@ -48,6 +48,9 @@ public class UserDTO extends PageDTO {
     @Schema(description = "电话")
     private String phone;
 
+    @Schema(description = "所属项目")
+    private String projectName;
+
     @Schema(description = "状态")
     private String status;
 

@@ -99,6 +99,13 @@ public class PhoneNumber implements Serializable {
     private String phone;
 
     /**
+     * 手机号
+     */
+    @Schema(description = "等级")
+    @TableField(value = "level")
+    private String level;
+
+    /**
      * 归属用户ID（哪个用户创建的）
      */
     @Schema(description = "归属用户ID")

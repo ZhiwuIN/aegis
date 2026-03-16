@@ -49,4 +49,10 @@ public class PhoneNumberVO {
 
     @Schema(description = "更新人名称")
     private String updateByName;
+
+    @Schema(description = "所属项目")
+    private String projectName;
+
+    @Schema(description = "等级")
+    private String level;
 }

@@ -177,4 +177,11 @@ public class User implements Serializable {
     @Schema(description = "权限编码列表")
     @TableField(exist = false)
     private List<String> permCodeList;
+
+    /**
+     * 所属项目
+     */
+    @Schema(description = "所属项目")
+    @TableField(value = "project_name")
+    private String projectName;
 }

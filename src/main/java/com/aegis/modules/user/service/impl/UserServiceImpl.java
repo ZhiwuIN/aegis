@@ -129,7 +129,7 @@ public class UserServiceImpl implements UserService {
     public String add(UserDTO dto) {
         // 1. 如果前端没传，自动填充随机数据
         if (StringUtils.isBlank(dto.getNickname())) {
-            dto.setNickname(RandomDataUtils.getRandomNickname());
+            dto.setNickname(dto.getUsername());
         }
         if (StringUtils.isBlank(dto.getPhone())) {
             dto.setPhone(RandomDataUtils.getRandomPhone());
@@ -138,20 +138,20 @@ public class UserServiceImpl implements UserService {
             dto.setEmail(RandomDataUtils.getRandomEmail());
         }
 
-        // 2. 现有的唯一性校验逻辑（保持不变）
+        // 2. 对 username 和 projectName 去空格并统一转小写
+        String trimUsername = dto.getUsername() != null ? dto.getUsername().trim().toLowerCase() : null;
+        String trimProjectName = dto.getProjectName() != null ? dto.getProjectName().trim().toLowerCase() : null;
+
+        // 3. 唯一性校验：不区分大小写，忽略首尾空格
         LambdaQueryWrapper<User> userQueryWrapper = new LambdaQueryWrapper<>();
         userQueryWrapper.and(w -> {
-            w.eq(User::getUsername, dto.getUsername());
-            if (StringUtils.isNotBlank(dto.getPhone())) {
-                w.or().eq(User::getPhone, dto.getPhone());
-            }
-            if (StringUtils.isNotBlank(dto.getEmail())) {
-                w.or().eq(User::getEmail, dto.getEmail());
+            w.eq(User::getUsername, trimUsername);
+            if (StringUtils.isNotBlank(trimProjectName)) {
+                w.or().eq(User::getProjectName, trimProjectName);
             }
         });
-
         if (userMapper.selectCount(userQueryWrapper) > 0) {
-            throw new BusinessException("用户名、手机号或邮箱已存在");
+            throw new BusinessException("用户名获所属项目已存在");
         }
 
         User user = userConvert.toUser(dto);
@@ -176,19 +176,23 @@ public class UserServiceImpl implements UserService {
 
         User user = userConvert.toUser(dto);
 
+        // 对 phone 和 projectName 去空格并统一转小写
+        String trimPhone = dto.getPhone() != null ? dto.getPhone().trim().toLowerCase() : null;
+        String trimProjectName = dto.getProjectName() != null ? dto.getProjectName().trim().toLowerCase() : null;
+
         LambdaQueryWrapper<User> userQueryWrapper = new LambdaQueryWrapper<>();
         userQueryWrapper.ne(User::getId, dto.getId())
                 .and(w -> {
                     boolean hasCondition = false;
-                    if (StringUtils.isNotBlank(dto.getPhone())) {
-                        w.eq(User::getPhone, dto.getPhone());
+                    if (StringUtils.isNotBlank(trimPhone)) {
+                        w.eq(User::getPhone, trimPhone);
                         hasCondition = true;
                     }
-                    if (StringUtils.isNotBlank(dto.getEmail())) {
+                    if (StringUtils.isNotBlank(trimProjectName)) {
                         if (hasCondition) {
                             w.or();
                         }
-                        w.eq(User::getEmail, dto.getEmail());
+                        w.eq(User::getProjectName, trimProjectName);
                         hasCondition = true;
                     }
                     if (!hasCondition) {
@@ -197,7 +201,7 @@ public class UserServiceImpl implements UserService {
                     }
                 });
         if (userMapper.selectCount(userQueryWrapper) > 0) {
-            throw new BusinessException("手机号或邮箱已存在");
+            throw new BusinessException("手机号或所属项目已存在");
         }
 
         user.setUpdateBy(SecurityUtils.getUserId());

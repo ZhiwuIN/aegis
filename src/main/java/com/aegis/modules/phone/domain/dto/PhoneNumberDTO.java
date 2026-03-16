@@ -31,6 +31,12 @@ public class PhoneNumberDTO extends PageDTO {
     @Schema(description = "备注")
     private String remark;
 
+    @Schema(description = "所属项目")
+    private String projectName;
+
+    @Schema(description = "等级")
+    private String level;
+
     /**
      * 所属用户ID（管理员查询某个子用户手机数量时使用）
      */

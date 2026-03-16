@@ -37,6 +37,9 @@ public class UserVO {
     @Schema(description = "用户名")
     private String username;
 
+    @Schema(description = "所属项目")
+    private String projectName;
+
     @Schema(description = "呢称")
     private String nickname;
 

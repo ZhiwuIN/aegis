@@ -20,6 +20,7 @@
         <result property="email" column="email"/>
         <result property="sex" column="sex"/>
         <result property="phone" column="phone"/>
+        <result property="projectName" column="project_name"/>
         <result property="avatar" column="avatar"/>
         <result property="status" column="status"/>
         <result property="lastLoginIp" column="last_login_ip"/>
@@ -48,7 +49,8 @@
                u.username,
                u.PASSWORD,
                u.STATUS,
-               p.perm_code AS perm_code
+               p.perm_code AS perm_code,
+               u.project_name
         FROM t_user u
                  LEFT JOIN t_user_role ur ON ur.user_id = u.id
                  LEFT JOIN t_role r ON ur.role_id = r.id AND r.deleted = 0 AND r.status = '0'
