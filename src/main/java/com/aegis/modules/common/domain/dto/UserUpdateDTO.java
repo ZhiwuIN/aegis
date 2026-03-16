@@ -33,7 +33,7 @@ public class UserUpdateDTO {
 
     @Schema(description = "密码")
     @NotBlank(message = "密码不能为空")
-    @Size(min = 8, max = 16, message = "密码长度必须在8到16个字符之间")
+//    @Size(min = 8, max = 16, message = "密码长度必须在8到16个字符之间")
     private String password;
 
     @Schema(description = "确认密码")
