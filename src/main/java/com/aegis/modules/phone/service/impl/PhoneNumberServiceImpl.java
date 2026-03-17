@@ -128,29 +128,12 @@ public class PhoneNumberServiceImpl implements PhoneNumberService {
         // 手机号唯一性校验（全局唯一）
         LambdaQueryWrapper<PhoneNumber> wrapper = new LambdaQueryWrapper<>();
         wrapper.eq(PhoneNumber::getPhone, dto.getPhone());
-        PhoneNumber existByPhone = phoneNumberMapper.selectOne(wrapper);
-        if (existByPhone != null) {
-            // 已存在时，直接把已有记录的备注抛给前端
-            User user = userMapper.selectById(existByPhone.getOwnerUserId());
-            String now = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
-            String autoRemark = String.format("用户【%s】在【%s】已创建手机号【%s】，对应级别为【%s】", user.getUsername(), now,
-                    dto.getPhone(), StringUtils.isBlank(existByPhone.getLevel()) ? "空" : existByPhone.getLevel());
-            throw new BusinessException(autoRemark);
-        }
+
+        checkPhone(dto, wrapper);
 
         PhoneNumber phoneNumber = phoneNumberConvert.toPhoneNumber(dto);
         phoneNumber.setOwnerUserId(currentUserId);
         phoneNumber.setCreateBy(currentUserId);
-
-        // 备注自动填充：例如 “用户【张三】在【2026-03-14 10:00:00】创建手机号【13800000000】”
-        String username = SecurityUtils.getCurrentUser().getUsername();
-        String now = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
-        String autoRemark = String.format("用户【%s】在【%s】创建手机号【%s】", username, now, dto.getPhone());
-        if (StringUtils.isNotBlank(dto.getRemark())) {
-            phoneNumber.setRemark(dto.getRemark() + "；" + autoRemark);
-        } else {
-            phoneNumber.setRemark(autoRemark);
-        }
 
         phoneNumberMapper.insert(phoneNumber);
         return CommonConstants.SUCCESS_MESSAGE;
@@ -173,28 +156,28 @@ public class PhoneNumberServiceImpl implements PhoneNumberService {
         LambdaQueryWrapper<PhoneNumber> wrapper = new LambdaQueryWrapper<>();
         wrapper.eq(PhoneNumber::getPhone, dto.getPhone())
                 .ne(PhoneNumber::getId, dto.getId());
-        PhoneNumber existByPhone = phoneNumberMapper.selectOne(wrapper);
-        if (existByPhone != null) {
-            String remark = existByPhone.getRemark();
-            throw new BusinessException(remark != null ? remark : "手机号已存在");
-        }
+
+        checkPhone(dto, wrapper);
 
         PhoneNumber update = phoneNumberConvert.toPhoneNumber(dto);
         update.setUpdateBy(currentUserId);
         update.setOwnerUserId(exist.getOwnerUserId());
 
-        // 备注重新生成：例如 “用户【张三】在【2026-03-14 11:00:00】更新手机号【13800000000】”
-        String username = SecurityUtils.getCurrentUser().getUsername();
-        String now = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
-        String autoRemark = String.format("用户【%s】在【%s】更新手机号【%s】", username, now, dto.getPhone());
-        if (StringUtils.isNotBlank(dto.getRemark())) {
-            update.setRemark(dto.getRemark() + "；" + autoRemark);
-        } else {
-            update.setRemark(autoRemark);
-        }
-
         phoneNumberMapper.updateById(update);
         return CommonConstants.SUCCESS_MESSAGE;
+    }
+
+    private void checkPhone(PhoneNumberDTO dto, LambdaQueryWrapper<PhoneNumber> wrapper) {
+        PhoneNumber existByPhone = phoneNumberMapper.selectOne(wrapper);
+        if (existByPhone != null) {
+            // 已存在时，直接把已有记录的备注抛给前端
+            User user = userMapper.selectById(existByPhone.getOwnerUserId());
+            Project project = projectMapper.selectById(user.getProjectId());
+            String now = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+            String autoRemark = String.format("用户【%s】于【%s】在项目【%s】中已创建手机号【%s】，对应级别为【%s】", user.getUsername(), now, project.getProjectName(),
+                    dto.getPhone(), StringUtils.isBlank(existByPhone.getLevel()) ? "空" : existByPhone.getLevel());
+            throw new BusinessException(autoRemark);
+        }
     }
 
     @Override
