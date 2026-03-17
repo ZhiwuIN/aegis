@@ -6,6 +6,8 @@ import com.aegis.common.domain.vo.PageVO;
 import com.aegis.common.exception.BusinessException;
 import com.aegis.modules.dept.domain.entity.Dept;
 import com.aegis.modules.dept.mapper.DeptMapper;
+import com.aegis.modules.project.domain.entity.Project;
+import com.aegis.modules.project.mapper.ProjectMapper;
 import com.aegis.modules.user.domain.dto.UserDTO;
 import com.aegis.modules.user.domain.entity.User;
 import com.aegis.modules.user.domain.entity.UserRole;
@@ -46,6 +48,8 @@ public class UserServiceImpl implements UserService {
 
     private final UserRoleMapper userRoleMapper;
 
+    private final ProjectMapper projectMapper;
+
     private final UserConvert userConvert;
 
     private final RedisUtils redisUtils;
@@ -72,8 +76,11 @@ public class UserServiceImpl implements UserService {
         setOnlineStatus(pageResult.getRecords());
         setDeptInfo(pageResult.getRecords());
         setRoleInfo(pageResult.getRecords());
+        setProjectInfo(pageResult.getRecords());
         return pageResult;
     }
+
+
 
     @Override
     public UserVO detail(Long id) {
@@ -131,27 +138,15 @@ public class UserServiceImpl implements UserService {
         if (StringUtils.isBlank(dto.getNickname())) {
             dto.setNickname(dto.getUsername());
         }
-        if (StringUtils.isBlank(dto.getPhone())) {
-            dto.setPhone(RandomDataUtils.getRandomPhone());
-        }
-        if (StringUtils.isBlank(dto.getEmail())) {
-            dto.setEmail(RandomDataUtils.getRandomEmail());
-        }
 
-        // 2. 对 username 和 projectName 去空格并统一转小写
-        String trimUsername = dto.getUsername() != null ? dto.getUsername().trim().toLowerCase() : null;
-        String trimProjectName = dto.getProjectName() != null ? dto.getProjectName().trim().toLowerCase() : null;
-
-        // 3. 唯一性校验：不区分大小写，忽略首尾空格
+        // 3. 唯一性校验
         LambdaQueryWrapper<User> userQueryWrapper = new LambdaQueryWrapper<>();
-        userQueryWrapper.and(w -> {
-            w.eq(User::getUsername, trimUsername);
-            if (StringUtils.isNotBlank(trimProjectName)) {
-                w.or().eq(User::getProjectName, trimProjectName);
-            }
-        });
+        userQueryWrapper.eq(User::getUsername, dto.getUsername());
+        if (dto.getProjectId() != null) {
+            userQueryWrapper.eq(User::getProjectId, dto.getProjectId());
+        }
         if (userMapper.selectCount(userQueryWrapper) > 0) {
-            throw new BusinessException("用户名获所属项目已存在");
+            throw new BusinessException("用户获所属项目已存在");
         }
 
         User user = userConvert.toUser(dto);
@@ -176,23 +171,19 @@ public class UserServiceImpl implements UserService {
 
         User user = userConvert.toUser(dto);
 
-        // 对 phone 和 projectName 去空格并统一转小写
-        String trimPhone = dto.getPhone() != null ? dto.getPhone().trim().toLowerCase() : null;
-        String trimProjectName = dto.getProjectName() != null ? dto.getProjectName().trim().toLowerCase() : null;
-
         LambdaQueryWrapper<User> userQueryWrapper = new LambdaQueryWrapper<>();
         userQueryWrapper.ne(User::getId, dto.getId())
                 .and(w -> {
                     boolean hasCondition = false;
-                    if (StringUtils.isNotBlank(trimPhone)) {
-                        w.eq(User::getPhone, trimPhone);
+                    if (StringUtils.isNotBlank(dto.getPhone())) {
+                        w.eq(User::getPhone, dto.getPhone());
                         hasCondition = true;
                     }
-                    if (StringUtils.isNotBlank(trimProjectName)) {
+                    if (dto.getProjectId() != null) {
                         if (hasCondition) {
                             w.or();
                         }
-                        w.eq(User::getProjectName, trimProjectName);
+                        w.eq(User::getProjectId, dto.getProjectId());
                         hasCondition = true;
                     }
                     if (!hasCondition) {
@@ -201,7 +192,7 @@ public class UserServiceImpl implements UserService {
                     }
                 });
         if (userMapper.selectCount(userQueryWrapper) > 0) {
-            throw new BusinessException("手机号或所属项目已存在");
+            throw new BusinessException("用户名获所属项目已存在");
         }
 
         user.setUpdateBy(SecurityUtils.getUserId());
@@ -332,6 +323,37 @@ public class UserServiceImpl implements UserService {
                 if (dept != null) {
                     userVo.setDeptName(dept.getDeptName());
                     userVo.setDept(dept);
+                }
+            }
+        }
+    }
+
+    private void setProjectInfo(List<UserVO> records) {
+
+        if (ObjectUtils.isEmpty(records)) {
+            return;
+        }
+
+        List<Long> projectIds = records.stream()
+                .map(UserVO::getProjectId)
+                .filter(Objects::nonNull)
+                .distinct()
+                .collect(Collectors.toList());
+
+        if (projectIds.isEmpty()) {
+            return;
+        }
+
+        List<Project> projects = projectMapper.selectByIds(projectIds);
+        Map<Long, Project> projectMap = projects.stream()
+                .collect(Collectors.toMap(Project::getId, d -> d, (a, b) -> a));
+
+        for (UserVO userVo : records) {
+            if (userVo.getProjectId() != null) {
+                Project project = projectMap.get(userVo.getProjectId());
+                if (project != null) {
+                    userVo.setProjectName(project.getProjectName());
+                    userVo.setProjectId(project.getId());
                 }
             }
         }

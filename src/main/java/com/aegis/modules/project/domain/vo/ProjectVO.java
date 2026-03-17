@@ -1,4 +1,4 @@
-package com.aegis.modules.phone.domain.vo;
+package com.aegis.modules.project.domain.vo;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -6,14 +6,9 @@ import lombok.Data;
 
 import java.util.Date;
 
-/**
- * @Author: xuesong.lei
- * @Date: 2026/3/14
- * @Description: 手机号码VO
- */
 @Data
-@Schema(description = "手机号码VO")
-public class PhoneNumberVO {
+@Schema(description = "项目信息VO")
+public class ProjectVO {
 
     @Schema(description = "主键ID")
     private Long id;
@@ -25,14 +20,20 @@ public class PhoneNumberVO {
     @Schema(description = "备注")
     private String remark;
 
-    @Schema(description = "手机号")
-    private String phone;
+    @Schema(description = "项目名称")
+    private String projectName;
 
-    @Schema(description = "归属用户ID")
-    private Long ownerUserId;
+    /**
+     * 项目管理员
+     */
+    @Schema(description = "项目管理员")
+    private Long owner;
 
-    @Schema(description = "归属用户名")
-    private String ownerUsername;
+    /**
+     * 项目管理员
+     */
+    @Schema(description = "项目管理员名称")
+    private String ownerName;
 
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     @Schema(description = "更新时间")
@@ -50,12 +51,5 @@ public class PhoneNumberVO {
     @Schema(description = "更新人名称")
     private String updateByName;
 
-    @Schema(description = "所属项目ID")
-    private Long projectId;
 
-    @Schema(description = "所属项目")
-    private String projectName;
-
-    @Schema(description = "等级")
-    private String level;
 }

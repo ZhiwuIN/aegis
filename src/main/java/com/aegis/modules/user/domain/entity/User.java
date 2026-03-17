@@ -182,6 +182,6 @@ public class User implements Serializable {
      * 所属项目
      */
     @Schema(description = "所属项目")
-    @TableField(value = "project_name")
-    private String projectName;
+    @TableField(value = "project_id")
+    private Long projectId;
 }

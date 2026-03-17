@@ -49,17 +49,17 @@ public class UserDTO extends PageDTO {
     private String phone;
 
     @Schema(description = "所属项目")
-    private String projectName;
+    private Long projectId;
 
     @Schema(description = "状态")
     private String status;
 
     @Schema(description = "开始时间")
-    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Date beginTime;
 
     @Schema(description = "结束时间")
-    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Date endTime;
 
     @Schema(description = "角色列表")

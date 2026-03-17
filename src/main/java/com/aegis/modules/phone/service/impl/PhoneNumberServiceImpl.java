@@ -9,7 +9,10 @@ import com.aegis.modules.phone.domain.vo.PhoneNumberVO;
 import com.aegis.modules.phone.mapper.PhoneNumberMapper;
 import com.aegis.modules.phone.service.PhoneNumberConvert;
 import com.aegis.modules.phone.service.PhoneNumberService;
+import com.aegis.modules.project.domain.entity.Project;
+import com.aegis.modules.project.mapper.ProjectMapper;
 import com.aegis.modules.user.domain.entity.User;
+import com.aegis.modules.user.domain.vo.UserVO;
 import com.aegis.modules.user.mapper.UserMapper;
 import com.aegis.utils.PageUtils;
 import com.aegis.utils.SecurityUtils;
@@ -22,6 +25,11 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 /**
  * @Author: xuesong.lei
@@ -37,6 +45,8 @@ public class PhoneNumberServiceImpl implements PhoneNumberService {
     private final PhoneNumberConvert phoneNumberConvert;
 
     private final UserMapper userMapper;
+
+    private final ProjectMapper projectMapper;
 
     @Override
     public PageVO<PhoneNumberVO> pageList(PhoneNumberDTO dto) {
@@ -72,13 +82,15 @@ public class PhoneNumberServiceImpl implements PhoneNumberService {
                 java.util.Map<Long, String> userNameMap = users.stream()
                         .collect(java.util.stream.Collectors.toMap(User::getId, User::getUsername));
 
-                java.util.Map<Long, String> projectNameMap = users.stream()
-                        .collect(java.util.stream.Collectors.toMap(User::getId, User::getProjectName));
+                Map<Long, Long> projectMap = users.stream()
+                        .collect(java.util.stream.Collectors.toMap(User::getId, User::getProjectId, (a, b) -> a));
+
+                setProjectInfo(projectMap, page.getRecords());
+
 
                 page.getRecords().forEach(vo -> {
                     if (vo.getOwnerUserId() != null) {
                         vo.setOwnerUsername(userNameMap.get(vo.getOwnerUserId()));
-                        vo.setProjectName(projectNameMap.get(vo.getOwnerUserId()));
                     }
                     if (vo.getCreateBy() != null) {
                         vo.setCreateByName(userNameMap.get(vo.getCreateBy()));
@@ -200,5 +212,23 @@ public class PhoneNumberServiceImpl implements PhoneNumberService {
 
         phoneNumberMapper.deleteById(id);
         return CommonConstants.SUCCESS_MESSAGE;
+    }
+
+    private void setProjectInfo(Map<Long, Long> projectMap, List<PhoneNumberVO> records) {
+        Collection<Long> projectIds = projectMap.values();
+
+        if (projectIds.isEmpty()) {
+            return;
+        }
+        List<Project> projects = projectMapper.selectByIds(projectIds);
+        Map<Long, String> projectNameMap = projects.stream()
+                .collect(Collectors.toMap(Project::getId, Project::getProjectName, (a, b) -> a));
+
+        for (PhoneNumberVO phoneNumberVO : records) {
+            if (phoneNumberVO.getOwnerUserId() != null) {
+                Long projectId = projectMap.get(phoneNumberVO.getOwnerUserId());
+                phoneNumberVO.setProjectName(projectNameMap.get(projectId));
+            }
+        }
     }
 }
