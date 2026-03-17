@@ -142,13 +142,15 @@ public class UserServiceImpl implements UserService {
         // 3. 唯一性校验
         LambdaQueryWrapper<User> userQueryWrapper = new LambdaQueryWrapper<>();
         userQueryWrapper.eq(User::getUsername, dto.getUsername());
+        if (userMapper.selectCount(userQueryWrapper) > 0) {
+            throw new BusinessException("用户【%s】已存在".formatted(dto.getUsername()));
+        }
         if (dto.getProjectId() != null) {
             userQueryWrapper.eq(User::getProjectId, dto.getProjectId());
         }
         if (userMapper.selectCount(userQueryWrapper) > 0) {
-            throw new BusinessException("用户获所属项目已存在");
+            throw new BusinessException("用户+所属项目已存在");
         }
-
         User user = userConvert.toUser(dto);
         // 使用你之前定义的默认密码
         user.setPassword(SecurityUtils.encryptPassword(CommonConstants.DEFAULT_PASSWORD));
@@ -192,7 +194,7 @@ public class UserServiceImpl implements UserService {
                     }
                 });
         if (userMapper.selectCount(userQueryWrapper) > 0) {
-            throw new BusinessException("用户名获所属项目已存在");
+            throw new BusinessException("用户名+所属项目已存在");
         }
 
         user.setUpdateBy(SecurityUtils.getUserId());
