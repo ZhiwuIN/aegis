@@ -103,28 +103,11 @@ public class ProjectServiceImpl implements ProjectService {
         // 项目名称唯一性校验（全局唯一）
         LambdaQueryWrapper<Project> wrapper = new LambdaQueryWrapper<>();
         wrapper.eq(Project::getProjectName, dto.getProjectName());
-        Project existByName = projectMapper.selectOne(wrapper);
-        if (existByName != null) {
-            // 已存在时，直接把已有记录的信息抛给前端
-            User user = userMapper.selectById(existByName.getOwner());
-            String now = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
-            String autoRemark = String.format("用户【%s】在【%s】已创建项目【%s】", user.getUsername(), now, dto.getProjectName());
-            throw new BusinessException(autoRemark);
-        }
+        checkProjectName(dto, wrapper);
 
         Project project = projectConvert.toProject(dto);
         project.setOwner(currentUserId);
         project.setCreateBy(currentUserId);
-
-        // 备注自动填充
-        String username = SecurityUtils.getCurrentUser().getUsername();
-        String now = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
-        String autoRemark = String.format("用户【%s】在【%s】创建项目【%s】", username, now, dto.getProjectName());
-        if (StringUtils.isNotBlank(dto.getRemark())) {
-            project.setRemark(dto.getRemark() + "；" + autoRemark);
-        } else {
-            project.setRemark(autoRemark);
-        }
 
         projectMapper.insert(project);
         return CommonConstants.SUCCESS_MESSAGE;
@@ -147,28 +130,25 @@ public class ProjectServiceImpl implements ProjectService {
         LambdaQueryWrapper<Project> wrapper = new LambdaQueryWrapper<>();
         wrapper.eq(Project::getProjectName, dto.getProjectName())
                 .ne(Project::getId, dto.getId());
-        Project existByProjectName = projectMapper.selectOne(wrapper);
-        if (existByProjectName != null) {
-            String remark = existByProjectName.getRemark();
-            throw new BusinessException(remark != null ? remark : "项目名称已存在");
-        }
+        checkProjectName(dto, wrapper);
 
         Project update = projectConvert.toProject(dto);
         update.setUpdateBy(currentUserId);
         update.setOwner(exist.getOwner());
 
-        // 备注重新生成：例如 “用户【张三】在【2026-03-14 11:00:00】更新项目【13800000000】”
-        String username = SecurityUtils.getCurrentUser().getUsername();
-        String now = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
-        String autoRemark = String.format("用户【%s】在【%s】更新项目【%s】", username, now, dto.getProjectName());
-        if (StringUtils.isNotBlank(dto.getRemark())) {
-            update.setRemark(dto.getRemark() + "；" + autoRemark);
-        } else {
-            update.setRemark(autoRemark);
-        }
-
         projectMapper.updateById(update);
         return CommonConstants.SUCCESS_MESSAGE;
+    }
+
+    private void checkProjectName(ProjectDTO dto, LambdaQueryWrapper<Project> wrapper) {
+        Project existByProjectName = projectMapper.selectOne(wrapper);
+        if (existByProjectName != null) {
+            // 已存在时，直接把已有记录的信息抛给前端
+            User user = userMapper.selectById(existByProjectName.getCreateBy());
+            String now = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+            String autoRemark = String.format("用户【%s】在【%s】已创建项目【%s】", user.getUsername(), now, dto.getProjectName());
+            throw new BusinessException(autoRemark);
+        }
     }
 
     @Override
