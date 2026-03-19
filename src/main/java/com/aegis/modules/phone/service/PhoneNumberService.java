@@ -2,7 +2,11 @@ package com.aegis.modules.phone.service;
 
 import com.aegis.common.domain.vo.PageVO;
 import com.aegis.modules.phone.domain.dto.PhoneNumberDTO;
+import com.aegis.modules.phone.domain.dto.PhoneNumberImportDTO;
 import com.aegis.modules.phone.domain.vo.PhoneNumberVO;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.util.List;
 
 /**
  * @Author: xuesong.lei
@@ -38,4 +42,9 @@ public interface PhoneNumberService {
      * 删除手机号
      */
     String delete(Long id);
+
+    /**
+     * 批量导入手机号（从 Excel 文件）
+     */
+    String importPhoneNumbers(List<PhoneNumberImportDTO> dto);
 }

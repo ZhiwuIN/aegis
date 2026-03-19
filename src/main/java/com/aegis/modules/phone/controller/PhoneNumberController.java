@@ -1,11 +1,15 @@
 package com.aegis.modules.phone.controller;
 
+import cn.idev.excel.FastExcel;
+import com.aegis.common.constant.CommonConstants;
 import com.aegis.common.domain.vo.PageVO;
 import com.aegis.common.duplicate.PreventDuplicateSubmit;
+import com.aegis.common.exception.BusinessException;
 import com.aegis.common.log.BusinessType;
 import com.aegis.common.log.OperationLog;
 import com.aegis.common.validator.ValidGroup;
 import com.aegis.modules.phone.domain.dto.PhoneNumberDTO;
+import com.aegis.modules.phone.domain.dto.PhoneNumberImportDTO;
 import com.aegis.modules.phone.domain.vo.PhoneNumberVO;
 import com.aegis.modules.phone.service.PhoneNumberService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -13,6 +17,11 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @Author: xuesong.lei
@@ -61,5 +70,25 @@ public class PhoneNumberController {
     @OperationLog(moduleTitle = "删除手机号", businessType = BusinessType.DELETE)
     public String delete(@PathVariable("id") Long id) {
         return phoneNumberService.delete(id);
+    }
+
+    @Operation(summary = "导入手机号")
+    @PostMapping("/import")
+    @PreventDuplicateSubmit
+    @OperationLog(moduleTitle = "导入手机号", businessType = BusinessType.IMPORT)
+    public String importPhoneNumbers(@RequestParam("file") MultipartFile file) throws IOException {
+        if (file.isEmpty()) {
+            throw new BusinessException("导入的 Excel 文件不能为空");
+        }
+
+        List<PhoneNumberImportDTO> dtoList = FastExcel.read(file.getInputStream())
+                .head(PhoneNumberImportDTO.class)
+                .sheet(0)
+                .doReadSync();
+
+        if (dtoList == null || dtoList.isEmpty()) {
+            throw new BusinessException("Excel 文件中没有数据");
+        }
+        return phoneNumberService.importPhoneNumbers(dtoList);
     }
 }
