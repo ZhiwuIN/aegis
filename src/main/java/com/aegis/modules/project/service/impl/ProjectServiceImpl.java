@@ -3,6 +3,7 @@ package com.aegis.modules.project.service.impl;
 import com.aegis.common.constant.CommonConstants;
 import com.aegis.common.domain.vo.PageVO;
 import com.aegis.common.exception.BusinessException;
+import com.aegis.modules.phone.domain.entity.PhoneNumber;
 import com.aegis.modules.project.domain.dto.ProjectDTO;
 import com.aegis.modules.project.domain.entity.Project;
 import com.aegis.modules.project.domain.vo.ProjectVO;
@@ -48,6 +49,8 @@ public class ProjectServiceImpl implements ProjectService {
             queryWrapper.eq(Project::getCreateBy, currentUserId);
         }
 
+        // 按更新时间降序排列
+        queryWrapper.orderByDesc(Project::getUpdateTime);
         PageVO<ProjectVO> page = PageUtils.of(dto)
                 .pagingAndConvert(projectMapper, queryWrapper, projectConvert::toProjectVo);
 

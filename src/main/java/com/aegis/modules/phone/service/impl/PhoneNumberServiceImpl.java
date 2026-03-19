@@ -67,6 +67,8 @@ public class PhoneNumberServiceImpl extends ServiceImpl<PhoneNumberMapper, Phone
             queryWrapper.eq(PhoneNumber::getOwnerUserId, currentUserId);
         }
 
+        // 按更新时间降序排列
+        queryWrapper.orderByDesc(PhoneNumber::getUpdateTime);
         PageVO<PhoneNumberVO> page = PageUtils.of(dto)
                 .pagingAndConvert(phoneNumberMapper, queryWrapper, phoneNumberConvert::toPhoneNumberVo);
 
